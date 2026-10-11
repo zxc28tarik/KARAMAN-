@@ -28,4 +28,4 @@ python -I Tools/pixel_characters.py hero                                        
 - Unity runs one instance per project: one batch job at a time, and never kill a Unity process you didn't start (the user may have the Editor open).
 - License exit 198 (wrapper exit 4): the user must sign in to Unity Hub. Never sign in for them.
 - Never edit, re-save or resample the source paintings in `KaramaniReborn/Assets/Resources/Art/`.
-- `KaramaniReborn` is not a git repository yet. Ask before `git init`, commits or pushes.
+- The git repository is the `karamani/` root (branch `main`, created 2026-10-12 at the user's request). `.gitignore` excludes Unity's Library/Temp/Logs/Build, `*.zip` and `Review/animation/`. Commit or push only when the user asks.
