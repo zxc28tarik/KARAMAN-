@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Karamani</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #0b0709; overflow: hidden; }
+    body { display: flex; align-items: center; justify-content: center; }
+    canvas {
+      width: min(100vw, calc(100vh * 16 / 9));
+      height: min(100vh, calc(100vw * 9 / 16));
+      image-rendering: auto;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game" width="1280" height="720"></canvas>
+  <script src="js/core.js"></script>
+  <script src="assets/assets.js"></script>
+  <script src="js/assets.js"></script>
+  <script src="js/draw.js"></script>
+  <script src="js/pixelbg.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/enemies.js"></script>
+  <script src="js/painter.js"></script>
+  <script src="js/level.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+# Task board
+
+Owned by the integrator (main session). One row per delegated task. A file lock is held from delegation until the result is reviewed.
+
+Status values: `proposed` · `active` · `review` · `done` · `blocked` · `waived`
+
+## Active file locks
+| File / area | Locked by | Task | Since |
+| --- | --- | --- | --- |
+| - | - | - | - |
+
+## Tasks
+| ID | Title | Owner | Status | Owned files | Depends on | Gate | Evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| T-000 | Multi-agent production setup | integrator | done | `.claude/agents/*`, `CLAUDE.md`, `Docs/*`, `Tools/compile_check.ps1`, `Tools/unity_batch.ps1`, `Tools/frame_metrics.py` | - | - | `Docs/SETUP_DISCOVERY.md` |
+| T-001 | Delegation test: build health (proxy run) | unity-tester | done | `Review/test-reports/*` | T-000 | - | `Review/test-reports/2026-10-11-T-001-baseline.md`; compile exit 0; Verify exit 0, 143 s, 20/20 PASS; log `Logs/batch/Verify-20261011-000706.log` |
+| T-002 | Delegation test: baseline visual review (proxy run) | visual-reviewer | done | `Review/reviews/*`, `Review/snapshots/*` | T-000 | E (baseline) | `Review/reviews/2026-10-11-baseline-visual-reviewer.md`; snapshot `Review/snapshots/baseline-E-20261011-0006/` (SHA256 verified); verdict FAIL: 2 Critical, 5 Major, 3 Minor |
+| T-003 | Single-piece characters in game (user rule 2026-10-11): `PixelCharacter.cs` replaces the part rig for all 6 actor types; import settings; checks adapted | integrator | done | `Assets/Scripts/PixelCharacter.cs`, `GameTypes/GameWorld/GameRoot/RuntimeVerification.cs`, `Assets/Editor/*`, `Tools/unity_batch.ps1` | - | C, D | Verify exit 0 (20/20; three part-rig lines replaced by single-piece equivalents per the user rule), EXE verify 10/10, ReviewCharacters PASS (slip 0.000000); `Review/characters/ingame-lineup-*.png`; PaintedRig kept in `_yedek/retired-paintedrig-20261011/` |
+| T-004 | HD Karamani (256 px, user-supplied profile sheets): idle 8, walk 8, run 8, light1 7 in `Characters/hd/hero`; drawn at screen resolution on UILayer; missing clips fall back to the pixel sheet; light2/3 alias light1 | integrator | done | `Tools/hd_sheet.py`, `Assets/Resources/Characters/hd/*`, `Assets/Scripts/PixelCharacter.cs`, `RuntimeVerification.cs`, `Assets/Editor/BuildTools.cs`, `ArtValidation.cs` | T-003 | C, D | compile_check exit 0; Verify exit 0 (all PASS, `KARAMANI_WALK_PASS hd=True 13 steps`), `Logs/batch/Verify-20261011-193446.log`; Build exit 0; VERIFY_WINDOWS 10/10; captures `Review/chapter-1.png`, `Review/player-combat.png` (opened). Open: zone grade not applied to HD sprite; sprite draws above world FX/foreground; walk frames 9-14 stray blade fragment |
+| T-005 | Smaller on-screen scale (user 2026-10-11, then 12%): view 720×540 game px, ortho 10.8, background sized to view, undercroft footing fill, camera clamp keeps level edges; HD sheet rebuilt at PPU 75 | integrator | done | `GameView.cs`, `PixelPipeline.cs`, `GameRoot.cs`, `BuildTools.cs`, `Tools/hd_sheet.py`, `Characters/hd/*`, Docs | T-004 | C, D | compile exit 0; Verify exit 0 (`Logs/batch/Verify-20261011-200251.log`, occupancy 11.94%, pixel 724x544); Build exit 0 (`Build-20261011-200541.log`); VERIFY_WINDOWS 10/10; captures `Review/chapter-1.png`, `chapter-2.png` opened |
+| T-006 | HD character world integration: zone grade on HD sheet (`PixelLook.GradeOnly`, per-zone cache), foreground silhouettes / front FX (order > 142) / blade trail on UILayer so they draw over HD sprites | integrator | done | `PixelCharacter.cs`, `PixelPipeline.cs`, `StageArt.cs`, `Effects.cs`, `BladeTrail.cs` | T-004 | C, D | compile exit 0; Verify exit 0 `Logs/batch/Verify-20261011-201347.log`; Build exit 0 `Build-20261011-201607.log`; VERIFY_WINDOWS 10/10; captures `Review/chapter-3.png`, `Review/poses/Light.png` opened |
+| T-007 | Karamani HD clips from user sheets: rise/apex/fall/land (jump), flip (roll 1-3), roll, hurt, block, parry, heavy, light3, shoot (muzzle-derived origin), heal, dead; aliases light2→light1, dive→fall, backdash→hurt, skid→idle; trail off for HD frames (drawn smears). Still pixel: spirit, hang, climb; light2 sheet missing | integrator | done | `Docs/references/karamani-*.webp`, `Tools/hd_sheet.py`, `Characters/hd/hero.*`, `PixelCharacter.cs` | T-006 | C, D | Verify exit 0 `Logs/batch/Verify-20261011-215739.log` (11 PASS); Build exit 0 `Build-20261011-220050.log`; VERIFY_WINDOWS 10/10; `Review/poses/hd-poses-sheet.png` and animation frames opened |
+| T-008 | Karamani HD complete: light2, spirit (wolf dash), dive, backdash, hang, climb from user sheets (climb = diagonal sheet 19); hang/climb drawn at the ledge point (GRIP pivots in `hd_sheet.py`, `PixelCharacter` origin = `actor.ledge`), dive anchored at boots; square sheet layout (2712×2898, under 4096); only the active zone's graded copy kept | integrator | done | `Tools/hd_sheet.py`, `Characters/hd/hero.*`, `PixelCharacter.cs`, `BuildTools.cs` (ledge captures) | T-007 | C, D | Verify exit 0 `Logs/batch/Verify-20261012-021549.log` (11 PASS); Build exit 0 `Build-20261012-021743.log`; VERIFY_WINDOWS 10/10; `Review/poses/hd-ledge-sheet.png` opened |
+
+## Backlog from the baseline review (not in VS-01)
+| ID | Finding | Owner | Severity |
+| --- | --- | --- | --- |
+| B-01 | Chapter 2 (Yanmış Mahalle) mean luminance 0.089 < 0.10 (O4); lift by ≥ +0.03 with bigger distant fire glows | environment-artist + vfx-specialist | Critical (zone 2) |
+| B-02 | All zones share an identical playfield set; crescent banners in Karanlık Kale, no wolf statues in Kurt Geçidi, no ground snow | environment-artist | Major |
+| B-03 | Undercroft lantern glows are stepped rings with no lantern sprite and no light on the stone (zones other than 0) | vfx-specialist + environment-artist | Minor |
+| B-04 | Vista mosaic and checker-dither artefacts (ch4 clouds, ch1 haze) | vfx-specialist | Polish |
+| B-05 | Level is only ~2 screens wide at the 12% view (length 57 u vs 28.8 u view); 5 guards crowd two screens; upper half of the view unused | integrator + user (design) | Major |
+| B-06 | Enemies are still low-res pixel sheets next to the HD hero (style clash) | integrator (needs user sheets) | Major |
+| B-07 | HUD portrait is the retired turban rig head, not the helmeted design | integrator | Major |
+| B-08 | Actors have no body separation: hero walks into / overlaps enemies | gameplay-engineer + user (design) | Medium |
+| B-09 | World RT is 2896×2176 at Supersample 4 after the 720×540 view; possible stutter on MX130 (option: Supersample 2) | unity-tester measure, integrator | Medium (unmeasured) |
+| B-10 | Menu hint says left click to attack, HUD shows J/F; K block not shown | integrator | Minor |
+| B-11 | Walk frames 9-14 keep a stray blade fragment from the AI sheet | integrator | Minor |
+| B-12 | No version control: all work only on disk + manual `_yedek` | user decision (git init) | Major (risk) |
+
+Proposed slice VS-01 tasks are in `Docs/specs/VS-01-proposal.md` and get IDs here when the user approves the slice.

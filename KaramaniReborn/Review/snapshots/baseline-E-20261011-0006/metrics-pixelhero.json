@@ -1,0 +1,105 @@
+{
+ "sheetBackground": [
+  58,
+  64,
+  78
+ ],
+ "frames": {
+  "idle0": {
+   "index": 0,
+   "bboxGamePx": [
+    48,
+    28,
+    45,
+    61
+   ],
+   "feetRowFromTop": 88,
+   "pivotRowFromTop": 88,
+   "colours": 41,
+   "isolatedPixelShare": 0.161,
+   "figureLumMedian": 0.2924
+  },
+  "idle3": {
+   "index": 3,
+   "bboxGamePx": [
+    47,
+    28,
+    48,
+    61
+   ],
+   "feetRowFromTop": 88,
+   "pivotRowFromTop": 88,
+   "colours": 41,
+   "isolatedPixelShare": 0.19
+  },
+  "light1_0": {
+   "index": 37,
+   "bboxGamePx": [
+    47,
+    29,
+    47,
+    60
+   ],
+   "feetRowFromTop": 88,
+   "pivotRowFromTop": 88,
+   "colours": 41,
+   "isolatedPixelShare": 0.187
+  },
+  "light1_3": {
+   "index": 40,
+   "bboxGamePx": [
+    46,
+    31,
+    61,
+    58
+   ],
+   "feetRowFromTop": 88,
+   "pivotRowFromTop": 88,
+   "colours": 41,
+   "isolatedPixelShare": 0.186
+  },
+  "heavy_4": {
+   "index": 62,
+   "bboxGamePx": [
+    45,
+    13,
+    39,
+    76
+   ],
+   "feetRowFromTop": 88,
+   "pivotRowFromTop": 88,
+   "colours": 40,
+   "isolatedPixelShare": 0.154
+  }
+ },
+ "inGameHero_ch1": {
+  "gameBox": [
+   113,
+   120,
+   21,
+   62
+  ],
+  "figurePx": 481,
+  "colours": 14,
+  "isolatedPixelShare": 0.279,
+  "figureLumMedian": 0.053
+ },
+ "inGameHero_ch4": {
+  "gameBox": [
+   113,
+   120,
+   21,
+   62
+  ],
+  "figurePx": 580,
+  "colours": 21,
+  "isolatedPixelShare": 0.347,
+  "figureLumMedian": 0.053
+ }
+}
+zoom-pixelhero-idle0-8x.png
+zoom-pixelhero-head-24x.png
+zoom-pixelhero-light1-3x.png
+zoom-pixelhero-heavy-2x.png
+zoom-pixelhero-idle-3x.png
+compare-ingame-vs-pixelhero-samescale.png

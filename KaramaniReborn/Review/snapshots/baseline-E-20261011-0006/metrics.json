@@ -1,0 +1,154 @@
+[
+ {
+  "file": "Review/snapshots/baseline-E-20261011-0006/player-chapter-1.png",
+  "size": [
+   1440,
+   1080
+  ],
+  "aspect": 1.3333,
+  "letterbox": {
+   "left": 0,
+   "right": 0,
+   "top": 0,
+   "bottom": 0
+  },
+  "contentAspect": 1.3333,
+  "meanLuminance": 0.1606,
+  "luminanceP5_P50_P95": [
+   0.0186,
+   0.1622,
+   0.359
+  ],
+  "meanSaturation": 0.0992,
+  "gridScale": 4,
+  "flatBlockShare": 0.8071,
+  "gameColours": 1714,
+  "readability": {
+   "box": [
+    452,
+    481,
+    82,
+    245
+   ],
+   "boxLuminance": 0.2022,
+   "surroundLuminance": 0.1952,
+   "weberContrast": 0.036,
+   "rgbDistance": 0.0373,
+   "boxP95Luminance": 0.4366
+  }
+ },
+ {
+  "file": "Review/snapshots/baseline-E-20261011-0006/player-chapter-2.png",
+  "size": [
+   1440,
+   1080
+  ],
+  "aspect": 1.3333,
+  "letterbox": {
+   "left": 0,
+   "right": 0,
+   "top": 0,
+   "bottom": 0
+  },
+  "contentAspect": 1.3333,
+  "meanLuminance": 0.0886,
+  "luminanceP5_P50_P95": [
+   0.0166,
+   0.0738,
+   0.2281
+  ],
+  "meanSaturation": 0.0179,
+  "gridScale": 4,
+  "flatBlockShare": 0.8765,
+  "gameColours": 1237,
+  "readability": {
+   "box": [
+    452,
+    481,
+    82,
+    245
+   ],
+   "boxLuminance": 0.1585,
+   "surroundLuminance": 0.1209,
+   "weberContrast": 0.311,
+   "rgbDistance": 0.0672,
+   "boxP95Luminance": 0.4461
+  }
+ },
+ {
+  "file": "Review/snapshots/baseline-E-20261011-0006/player-chapter-3.png",
+  "size": [
+   1440,
+   1080
+  ],
+  "aspect": 1.3333,
+  "letterbox": {
+   "left": 0,
+   "right": 0,
+   "top": 0,
+   "bottom": 0
+  },
+  "contentAspect": 1.3333,
+  "meanLuminance": 0.1186,
+  "luminanceP5_P50_P95": [
+   0.0186,
+   0.097,
+   0.2563
+  ],
+  "meanSaturation": 0.0821,
+  "gridScale": 4,
+  "flatBlockShare": 0.8453,
+  "gameColours": 1374,
+  "readability": {
+   "box": [
+    452,
+    481,
+    82,
+    245
+   ],
+   "boxLuminance": 0.1832,
+   "surroundLuminance": 0.1698,
+   "weberContrast": 0.078,
+   "rgbDistance": 0.061,
+   "boxP95Luminance": 0.3994
+  }
+ },
+ {
+  "file": "Review/snapshots/baseline-E-20261011-0006/player-chapter-4.png",
+  "size": [
+   1440,
+   1080
+  ],
+  "aspect": 1.3333,
+  "letterbox": {
+   "left": 0,
+   "right": 0,
+   "top": 0,
+   "bottom": 0
+  },
+  "contentAspect": 1.3333,
+  "meanLuminance": 0.2385,
+  "luminanceP5_P50_P95": [
+   0.0241,
+   0.2404,
+   0.448
+  ],
+  "meanSaturation": 0.0846,
+  "gridScale": 4,
+  "flatBlockShare": 0.758,
+  "gameColours": 1569,
+  "readability": {
+   "box": [
+    452,
+    481,
+    82,
+    245
+   ],
+   "boxLuminance": 0.2543,
+   "surroundLuminance": 0.3112,
+   "weberContrast": -0.183,
+   "rgbDistance": 0.1173,
+   "boxP95Luminance": 0.5444
+  }
+ }
+]

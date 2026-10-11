@@ -1,0 +1,13 @@
+PASS: standalone Windows player initialized without an exception
+PASS: 4:3 viewport without painting stretch
+PASS: window-sized native camera render, visible content and black aspect margins
+PASS: native menu Start action
+PASS: single-piece frame characters: unscaled, on the pixel grid, stride-locked feet
+PASS: movement, jump and landing
+PASS: real blade contacts and buffered three-hit combo
+PASS: pause / resume
+PASS: checkpoint interaction / respawn
+PASS: all four chapters initialized and rendered
+Window: 1280x720
+Graphics: NVIDIA GeForce MX130
+Unity: 6000.6.0f1

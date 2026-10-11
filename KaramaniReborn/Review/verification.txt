@@ -1,0 +1,20 @@
+PASS: 4:3 presentation and uniform pixel projection on 4:3, 16:9, ultrawide and portrait windows
+PASS: menu, pause and gameplay HUD stay inside the 4:3 viewport
+PASS: idle hero occupies 20-26 percent of viewport height without source-art resizing
+PASS: Last Faith-style pixel pipeline: 360x270 world, every chapter limited to its palette, HUD on its own crisp layer
+PASS: ten source PNG dimensions match imported Unity textures exactly
+PASS: no power-of-two resizing / no texture compression
+PASS: single-piece frame characters: one sprite per actor, no separate limb parts, all 6 character sheets
+PASS: every action state has a drawn clip; the player never falls back to a substitute clip
+PASS: stride-locked planted feet (< 1 game pixel), unscaled frames on the game-pixel grid
+PASS: high-refresh and hit-stop input latch
+PASS: buffered three-hit combo and actual blade intersection
+PASS: timed parry and dodge invulnerability
+PASS: jump takeoff, apex and landing
+PASS: ledge grab, hang and climb onto the ledge
+PASS: double jump, backdash and bouncing downward strike
+PASS: pistol contact and elevated archer aim
+PASS: checkpoint interaction and respawn
+PASS: four chapter gate transitions and journey completion
+PASS: painted walkway / physical surface alignment (<0.001 units)
+PASS: four chapters rendered by Unity with native HUD

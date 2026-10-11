@@ -1,0 +1,57 @@
+{
+ "method": "mask from ch4 luminance < 0.62*bg(median x400-440,y481-726), closed r=2, region x440-560 y478-726 minus barrel x522-560 y615-726; ring = 8px dilation minus mask, rows < 726",
+ "maskPixels": 10090,
+ "ringPixels": 7828,
+ "maskBBox": [
+  444,
+  480,
+  112,
+  246
+ ],
+ "chapters": {
+  "1": {
+   "figureLum": 0.1117,
+   "ringLum": 0.3092,
+   "weber": -0.639,
+   "rgbDistance": 0.3745,
+   "figureLumP50_P95": [
+    0.053,
+    0.3955
+   ],
+   "ringShareWithin0.05OfFigureMedian": 0.052
+  },
+  "2": {
+   "figureLum": 0.1069,
+   "ringLum": 0.2395,
+   "weber": -0.554,
+   "rgbDistance": 0.2246,
+   "figureLumP50_P95": [
+    0.053,
+    0.3616
+   ],
+   "ringShareWithin0.05OfFigureMedian": 0.111
+  },
+  "3": {
+   "figureLum": 0.1139,
+   "ringLum": 0.2697,
+   "weber": -0.578,
+   "rgbDistance": 0.2796,
+   "figureLumP50_P95": [
+    0.1009,
+    0.3831
+   ],
+   "ringShareWithin0.05OfFigureMedian": 0.107
+  },
+  "4": {
+   "figureLum": 0.1159,
+   "ringLum": 0.3977,
+   "weber": -0.709,
+   "rgbDistance": 0.5048,
+   "figureLumP50_P95": [
+    0.053,
+    0.3835
+   ],
+   "ringShareWithin0.05OfFigureMedian": 0.052
+  }
+ }
+}
