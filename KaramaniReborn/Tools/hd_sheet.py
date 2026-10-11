@@ -69,7 +69,7 @@ GRIP = {
 }
 FEET = {'dive'}   # alt sınır kılıç ucu değil çizmeler: karakterin konumu ayaklarıdır
 # kaynak sayfada komşu karenin kılıç ucu bu karelerin sol kenarına biniyor (klip -> kare sırası; None: hepsi)
-EDGE_BLADE = {'heavy': None, 'spirit': [4]}
+EDGE_BLADE = {'heavy': None, 'spirit': [4], 'walk': None}
 # komşu karenin pelerin parçası sağ kenara biniyor: (klip, kare) -> sağdan temizlenecek sütun (258 px ölçeğinde)
 EDGE_RED = {('spirit', 3): 40}
 MUZZLE = {'shoot'}   # bu kliplerde kılıç kökü yerine tabanca: mermi BladeRoot + (0,46; 0,06) birimden çıkar
@@ -336,6 +336,18 @@ def build(variant, clips):
     print(variant, sheet.shape, 'frames', len(frames), 'cell', fw, fh, [(c['name'], c['count'], round(c['stride'], 1)) for c in out_clips])
 
 
+PORTRAIT = {'hero': ('idle', 0, (52, 0, 118, 80))}   # arayüz portresi: kaynak kare ve baş kırpması (258 px ölçeğinde)
+
+
+def portrait(variant):
+    clip, k, box = PORTRAIT[variant]
+    im = Image.open(CLIPS[variant][clip][k]).convert('RGBA').crop(box)
+    im.save(os.path.join(OUT, variant + '-portrait.png'))
+    print(variant, 'portrait', im.size)
+
+
 if __name__ == '__main__':
     for v, c in CLIPS.items():
         build(v, c)
+        if v in PORTRAIT:
+            portrait(v)

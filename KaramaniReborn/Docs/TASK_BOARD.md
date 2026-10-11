@@ -31,11 +31,11 @@ Status values: `proposed` · `active` · `review` · `done` · `blocked` · `wai
 | B-04 | Vista mosaic and checker-dither artefacts (ch4 clouds, ch1 haze) | vfx-specialist | Polish |
 | B-05 | Level is only ~2 screens wide at the 12% view (length 57 u vs 28.8 u view); 5 guards crowd two screens; upper half of the view unused | integrator + user (design) | Major |
 | B-06 | Enemies are still low-res pixel sheets next to the HD hero (style clash) | integrator (needs user sheets) | Major |
-| B-07 | HUD portrait is the retired turban rig head, not the helmeted design | integrator | Major |
+| B-07 | HUD portrait is the retired turban rig head, not the helmeted design | integrator | Fixed 2026-10-12 (portrait from HD idle head; hints unified J/Sol tık, K/Sağ tık; walk edge blade removed) |
 | B-08 | Actors have no body separation: hero walks into / overlaps enemies | gameplay-engineer + user (design) | Medium |
 | B-09 | World RT is 2896×2176 at Supersample 4 after the 720×540 view; possible stutter on MX130 (option: Supersample 2) | unity-tester measure, integrator | Medium (unmeasured) |
-| B-10 | Menu hint says left click to attack, HUD shows J/F; K block not shown | integrator | Minor |
-| B-11 | Walk frames 9-14 keep a stray blade fragment from the AI sheet | integrator | Minor |
+| B-10 | Menu hint says left click to attack, HUD shows J/F; K block not shown | integrator | Fixed 2026-10-12 (portrait from HD idle head; hints unified J/Sol tık, K/Sağ tık; walk edge blade removed) |
+| B-11 | Walk frames 9-14 keep a stray blade fragment from the AI sheet | integrator | Fixed 2026-10-12 (portrait from HD idle head; hints unified J/Sol tık, K/Sağ tık; walk edge blade removed) |
 | B-12 | No version control: all work only on disk + manual `_yedek` | user decision (git init) | Major (risk) |
 
 Proposed slice VS-01 tasks are in `Docs/specs/VS-01-proposal.md` and get IDs here when the user approves the slice.

@@ -46,7 +46,10 @@ namespace KaramaniReborn
             var p = playUI.transform;
             var portraitFrame = ImageAt(p, "Portrait ornament", 45, 25, 82, 82, gold); CenterRect(portraitFrame.rectTransform); portraitFrame.transform.localRotation = Quaternion.Euler(0, 0, -45);
             var portraitInner = ImageAt(p, "Portrait inset", 50, 30, 72, 72, new Color(.023f, .025f, .026f)); CenterRect(portraitInner.rectTransform); portraitInner.transform.localRotation = Quaternion.Euler(0, 0, -45);
-            ImageAt(p, "Painted portrait", 43, 18, 86, 104, Color.white, ArtLibrary.Rig(false)[0]).preserveAspect = true;
+            // Portre: HD Karamani'nin bekleme karesinden baş (Tools/hd_sheet.py); yoksa eski boyalı baş
+            var face = Resources.Load<Texture2D>("Characters/hd/hero-portrait");
+            var portrait = face ? Sprite.Create(face, new Rect(0, 0, face.width, face.height), new Vector2(.5f, .5f), 100) : ArtLibrary.Rig(false)[0];
+            ImageAt(p, "Painted portrait", 43, 18, 86, 104, Color.white, portrait).preserveAspect = true;
             health = FramedBar(p, 148, 42, 360, 18, new Color(.65f, .035f, .035f));
             stamina = FramedBar(p, 148, 73, 293, 10, new Color(.20f, .50f, .43f));
             Label(p, "K A R A M A N İ", 151, 98, 330, 26, 16, ivory);
@@ -79,7 +82,7 @@ namespace KaramaniReborn
             interaction = Label(p, "", 620, 860, 680, 40, 19, ivory, TextAnchor.MiddleCenter);
             notice = Label(p, "", 490, 818, 940, 40, 21, gold, TextAnchor.MiddleCenter);
             chapter = Label(LayoutGroup(playUI.transform, "Chapter heading", GameView.MiddleOffset), "", 460, 245, 1000, 180, 34, ivory, TextAnchor.MiddleCenter);
-            Label(p, "A/D hareket  ·  Boşluk zıpla (havada tekrar)  ·  Havada S+J dalış  ·  W tırman  ·  Shift kaçış  ·  Sağ tık blok  ·  Esc menü  ·  F2 fotoğraf", 480, 1043, 1230, 25, 17, muted, TextAnchor.MiddleCenter);
+            Label(p, "A/D hareket  ·  Boşluk zıpla  ·  J / Sol tık saldırı  ·  F ağır  ·  K / Sağ tık blok  ·  Shift kaçış  ·  W tırman  ·  Esc menü  ·  F2 fotoğraf", 480, 1043, 1230, 25, 17, muted, TextAnchor.MiddleCenter);
             numberRoot = Group(playUI.transform, "Damage numbers").transform;
             bossGroup = Group(p, "Boss encounter");
             bossName = Label(bossGroup.transform, "", 500, 961, 920, 34, 23, ivory, TextAnchor.MiddleCenter);
@@ -105,7 +108,7 @@ namespace KaramaniReborn
                 Label(m, ZoneDefinition.Create(i).title, x + 12, y + 118, 279, 30, 16, ivory, TextAnchor.MiddleCenter);
             }
             selectedName = Label(m, "", 996, 854, 641, 30, 18, gold, TextAnchor.MiddleCenter);
-            Label(m, "Sol tık saldırı · F ağır darbe · Sağ tık savuşturma, ardından saldırı: infaz\nBoşluk zıplama (havada tekrar) · Havada S + sol tık dalış · W kenara tırman\nShift + yön kaçış, yalnız Shift geri adım · Q kurt · R tabanca · H iksir", 121, 816, 733, 89, 17, muted);
+            Label(m, "J / Sol tık saldırı · F ağır darbe · K / Sağ tık blok\nBloğu tam zamanında aç: savuşturma, ardından saldırı: infaz\nBoşluk zıpla (havada tekrar) · Havada S + J dalış · W kenara tırman\nShift + yön kaçış, yalnız Shift geri adım · Q kurt · R tabanca · H iksir", 121, 806, 733, 112, 17, muted);
 
             pauseUI = CenterPanel("DURAKLATILDI", "Nefes al. Surlar bekler.", out var pauseParent);
             ButtonAt(pauseParent, "DEVAM ET", 724, 575, 472, 52, game.TogglePause);
