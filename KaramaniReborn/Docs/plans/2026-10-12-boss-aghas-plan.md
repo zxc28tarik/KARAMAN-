@@ -97,7 +97,7 @@ Add to `EnemyTests`. Call `Bosses(root);` from `Verify` after `Layouts(root);`.
 ```csharp
         static void Bosses(GameRoot root)
         {
-            // Her bölümün sonunda kendi ağası; değerler profilden, boy %12-25 büyük, ad çubukta
+            // Her bölümün sonunda kendi ağası; değerler profilden, boy kullanıcı kararı (Karamani'ye göre), ad çubukta
             EnemyRole[] expect = { EnemyRole.Arslan, EnemyRole.KorDemir, EnemyRole.Kurtbas, EnemyRole.KaraMurad };
             string[] names = { "Bayraktar Arslan", "Humbaracıbaşı Kör Demir", "Deli Kurtbaş", "Yeniçeri Ağası Kara Murad" };
             for (int zone = 0; zone < 4; zone++)
