@@ -22,3 +22,5 @@ KaramaniReborn/Review/animation/
 .claude/settings.local.json
 Thumbs.db
 .DS_Store
+# Ajan iş akışı çalışma alanı (geçici)
+.superpowers/
