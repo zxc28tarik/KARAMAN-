@@ -13,6 +13,7 @@ namespace KaramaniReborn.Editor
             Attacks(root);
             Behaviour(root);
             Ranged(root);
+            Sorcerer(root);
         }
 
         static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
@@ -77,11 +78,63 @@ namespace KaramaniReborn.Editor
             Assert(e.position.x - w.player.position.x > 2.3f, "Archer did not backstep, gap " + (e.position.x - w.player.position.x));
 
             // Platformdaki okçu geri çekilirken kenardan düşmez (platform 23.5 - 26.6, y = -0.75)
-            w = Arena(root, EnemyRole.Archer, 1f, out e);
+            w = Arena(root, EnemyRole.Archer, 1f, out e); e.intentTime = 0;
             e.position = new Vector2(26.2f, -.75f); w.player.position = new Vector2(24.8f, -.75f);
             Run(w, 2f);
+            Assert(e.attackReady.ContainsKey("backstep"), "Archer never tried to backstep at the platform edge");
             Assert(e.grounded && Mathf.Abs(e.position.y + .75f) < .01f, "Archer fell off the platform while retreating");
             Debug.Log("KARAMANI_ENEMY_RANGED_PASS · musket pierce + reload + dodge, interrupted chain, volley mark, backstep, platform edge");
+        }
+
+        static void Sorcerer(GameRoot root)
+        {
+            var flame = EnemyProfile.For(EnemyRole.Sorcerer).Find("flame");
+            // Alev dalgası: yerde duran yanar
+            var w = Arena(root, EnemyRole.Sorcerer, 6, out var e); var pl = w.player;
+            w.StartAttack(e, "flame"); Run(w, 2.4f);
+            Assert(pl.health == pl.maxHealth - 22, "Flame wave should hit a grounded player, health " + pl.health);
+
+            // Alev dalgası: zamanında zıplayan kurtulur
+            w = Arena(root, EnemyRole.Sorcerer, 6, out e); pl = w.player;
+            w.StartAttack(e, "flame");
+            float arrive = flame.windup + (6 - .6f - .53f) / 6;   // dalganın ön kenarı oyuncu kutusuna varır
+            int jump = Mathf.RoundToInt((arrive - .25f) * 120);
+            Run(w, 2.4f, i => new InputFrame { jump = i == jump, jumpHeld = i >= jump && i < jump + 40 });
+            Assert(pl.health == pl.maxHealth, "Jumping should clear the flame wave, health " + pl.health);
+
+            // Lanet küreleri: üç küre çıkar, kılıçla söndürülür
+            w = Arena(root, EnemyRole.Sorcerer, 6, out e);
+            var orbs = EnemyProfile.For(EnemyRole.Sorcerer).Find("orbs");
+            w.StartAttack(e, "orbs"); Run(w, orbs.windup + .05f);
+            Assert(w.projectiles.FindAll(s => s.kind == GameWorld.ShotKind.Orb).Count == 3, "Sorcerer should release three orbs");
+            Run(w, .02f, i => new InputFrame { light = i == 0 });
+            Run(w, .12f);   // hafif vuruşun etkin penceresine
+            var orb = w.projectiles.Find(s => s.kind == GameWorld.ShotKind.Orb);
+            orb.position = Vector2.Lerp(w.player.view.StrikeRoot, w.player.view.BladeTip, .7f); orb.velocity = Vector2.zero;
+            Run(w, 2f / 120);
+            Assert(!w.projectiles.Contains(orb), "A sword swing should snuff out a curse orb");
+
+            // Işınlanma: yaklaşan oyuncudan kaçar ve sağlam zemine iner
+            w = Arena(root, EnemyRole.Sorcerer, 1.2f, out e); e.intentTime = 0; float before = e.position.x;
+            Run(w, .9f);
+            Assert(Mathf.Abs(e.position.x - before) > 1.5f && e.grounded, "Sorcerer did not teleport away: " + before + " -> " + e.position.x);
+
+            // Işınlanma: oyuncunun arkası çukursa başka yere iner (çukur 13.5 - 15.7)
+            w = Arena(root, EnemyRole.Sorcerer, 1.2f, out e); e.intentTime = 0;
+            w.player.position = new Vector2(16.4f, w.zone.floor); w.player.face = 1; e.position.x = 17.6f;
+            Run(w, .9f);
+            Assert(e.grounded && Mathf.Abs(e.position.y - w.zone.floor) < .01f && !(e.position.x > 13.5f && e.position.x < 15.7f), "Sorcerer teleported into a pit: x " + e.position.x);
+
+            // İkinci evre: canı yarının altına inince alev dalgaları ikişer gelir
+            w = Arena(root, EnemyRole.Sorcerer, 6, out e);
+            e.health = e.maxHealth * .45f; Run(w, .05f);
+            Assert(e.phase == 2, "Sorcerer did not enter phase 2");
+            w.StartAttack(e, "flame"); Run(w, flame.windup + .6f);
+            Assert(w.projectiles.FindAll(s => s.kind == GameWorld.ShotKind.Wave).Count == 2, "Phase 2 flame should release two waves");
+
+            // Yarı-boss can çubuğu
+            Assert(w.BarTarget == e, "Half-boss bar should target the sorcerer");
+            Debug.Log("KARAMANI_ENEMY_SORCERER_PASS · flame wave + jump, orbs + snuff, teleport + pit guard, phase 2, half-boss bar");
         }
 
         static void Profiles(GameRoot root)

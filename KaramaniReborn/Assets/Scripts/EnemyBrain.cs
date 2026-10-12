@@ -41,6 +41,7 @@ namespace KaramaniReborn
             if (a.Dead) { SettleCorpse(a, dt); return; }
             var p = EnemyProfile.For(a.role);
             a.intentTime -= dt;
+            if (p.phaseAt > 0 && a.phase == 1 && a.health <= a.maxHealth * p.phaseAt) { a.phase = 2; Notify(p.title.ToUpperInvariant() + " · İKİNCİ EVRE"); }
             var k = a.attack;
             // Hazırlığın başında silahta parıltı: beyaz savuşturulabilir, kırmızı yalnız kaçışla atlatılır
             if (k != null && a.state == ActionState.Light && !a.telegraphed && a.stateTime >= k.windup * .25f)
@@ -125,7 +126,10 @@ namespace KaramaniReborn
                     Damage(player, k.damage, a.face, k.heavy, false, a, -1, k.red);
                     if (k.push > 0 && player.state == ActionState.Hurt) player.knockback = a.face * k.push;
                     return;
-                case AttackKind.Reload: case AttackKind.Backstep: case AttackKind.Teleport:
+                case AttackKind.Teleport:
+                    if (a.stateTime >= k.windup && !a.attackConnected) { a.attackConnected = true; Teleport(a); }
+                    return;
+                case AttackKind.Reload: case AttackKind.Backstep:
                     return;
                 default:   // mermi ve büyüler: hazırlık bittiği an bir kez
                     if (a.state == ActionState.Light && a.stateTime >= k.windup && !a.attackConnected) { a.attackConnected = true; Release(a, k); }
@@ -151,10 +155,55 @@ namespace KaramaniReborn
                 {
                     // Düşeceği yer önceden kırmızı işaretle belli olur; oklar .8 sn sonra yukarıdan iner
                     float x = player.position.x, y = player.position.y;
-                    AddShot(ShotKind.VolleyMark, new Vector2(x, y + .05f), Vector2.zero, .8f, k, a);
+                    AddShot(ShotKind.VolleyMark, new Vector2(x, y + .05f), Vector2.zero, .8f + 5f / 16 + .05f, k, a);   // işaret oklar inene dek görünür kalır
                     for (int i = -1; i <= 1; i++) AddShot(ShotKind.VolleyArrow, new Vector2(x + i * .8f, y + 5), new Vector2(0, -16), 5f / 16 + .05f, k, a, .8f);
                     break;
                 }
+                case AttackKind.FlameWave:
+                {
+                    // Yerde ilerleyen kara alev; ikinci evrede yarım saniye arayla iki dalga
+                    Vector2 start = new Vector2(a.position.x + a.face * .6f, a.position.y);
+                    int waves = a.phase > 1 ? 2 : 1;
+                    for (int i = 0; i < waves; i++) AddShot(ShotKind.Wave, start, new Vector2(a.face * 6, 0), 2, k, a, i * .5f);
+                    break;
+                }
+                case AttackKind.Orbs:
+                    for (int i = 0; i < 3; i++) AddShot(ShotKind.Orb, hand + new Vector2(0, .4f * (i - 1)), new Vector2(a.face * (1 + i * .4f), .6f * (i - 1)), 4, k, a);
+                    break;
+            }
+        }
+
+        // Duman olup oyuncunun arkasına, olmazsa uzağa geçer; yalnız sağlam (tek yönlü olmayan) zemine iner
+        void Teleport(Actor a)
+        {
+            var smoke = new Color(.35f, .1f, .45f);
+            effects.GlowBurst(a.position + Vector2.up, smoke);
+            float away = -Mathf.Sign(player.position.x - a.position.x);
+            float[] options = { player.position.x - player.face * 2.2f, a.position.x + away * 5, player.position.x + player.face * 3 };
+            foreach (float x in options)
+                if (Standable(x, out float y)) { a.position = new Vector2(x, y); a.velocity = Vector2.zero; break; }
+            a.face = player.position.x > a.position.x ? 1 : -1;
+            effects.GlowBurst(a.position + Vector2.up, smoke);
+        }
+
+        bool Standable(float x, out float y)
+        {
+            foreach (var s in zone.surfaces) if (!s.oneWay && x >= s.left + .3f && x <= s.right - .3f) { y = s.y; return true; }
+            y = 0; return false;
+        }
+
+        // Arayüzün can çubuğu: yakındaki boss ya da yarı-boss
+        public Actor BarTarget
+        {
+            get
+            {
+                Actor best = null; float near = 9;
+                foreach (var e in enemies)
+                {
+                    if (e.Dead || !(e.boss || EnemyProfile.For(e.role).halfBoss)) continue;
+                    float d = Mathf.Abs(e.position.x - player.position.x); if (d < near) { near = d; best = e; }
+                }
+                return best;
             }
         }
 

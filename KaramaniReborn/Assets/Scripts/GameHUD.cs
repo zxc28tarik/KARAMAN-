@@ -162,9 +162,9 @@ namespace KaramaniReborn
                 widget.health.fillAmount = a.health / a.maxHealth; widget.intent.enabled = a.Attacking; widget.intent.fillAmount = a.Progress;
             }
             TickNumbers(w, dt);
-            var boss = w.enemies.Find(a => a.boss);
-            bossGroup.SetActive(boss != null && !boss.Dead && Mathf.Abs(boss.position.x - player.position.x) < 9);
-            if (boss != null) { bossName.text = w.zone.bossName; bossBar.fillAmount = boss.health / boss.maxHealth; }
+            var boss = w.BarTarget;
+            bossGroup.SetActive(boss != null);
+            if (boss != null) { bossName.text = boss.boss ? w.zone.bossName : EnemyProfile.For(boss.role).title; bossBar.fillAmount = boss.health / boss.maxHealth; }
             deathUI.SetActive(player.Dead && player.stateTime > .8f && !game.menu);
         }
 

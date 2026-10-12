@@ -290,7 +290,14 @@ namespace KaramaniReborn
         void ResolveBlade(Actor source)
         {
             if (!source.Attacking || !Active(source) || source.Dead) return;
-            if (source.player) { foreach (var target in enemies) TryBlade(source, target); }
+            if (source.player)
+            {
+                // Lanet küreleri kılıçla söndürülür
+                foreach (var shot in projectiles)
+                    if (shot.kind == ShotKind.Orb && shot.life > 0 && shot.delay <= 0 && SegmentHits(source.view.StrikeRoot, source.view.BladeTip, new Rect(shot.position.x - .3f, shot.position.y - .3f, .6f, .6f)))
+                    { shot.life = 0; effects.GlowBurst(shot.position, new Color(.55f, .1f, .8f)); }
+                foreach (var target in enemies) TryBlade(source, target);
+            }
             else TryBlade(source, player);
         }
 
