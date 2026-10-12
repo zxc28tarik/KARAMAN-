@@ -36,6 +36,13 @@ namespace KaramaniReborn
             a.Enter(state, k.Duration); a.attack = k; a.combo = 1;
             a.attackReady[k.name] = clock + k.cooldown * (a.phase > 1 ? .6f : 1);
             if (k.kind == AttackKind.Teleport) a.invincible = k.Duration;
+            if (k.kind == AttackKind.LeapOver)
+            {
+                // Oyuncunun üstünden arkasına; arkası sağlam değilse önüne iner
+                float side = Mathf.Sign(player.position.x - a.position.x);
+                float behind = player.position.x + side * 1.6f, front = player.position.x - side * 1.6f;
+                Leap(a, Standable(behind, out _) ? behind : front, k.active);
+            }
             if (state == ActionState.Light && !k.Ranged) sound?.Invoke(k.heavy || k.red ? "heavy" : "swing");
         }
 
@@ -95,7 +102,16 @@ namespace KaramaniReborn
                 if (a.grounded && !GroundAhead(a, Mathf.Sign(vx) * .34f)) vx = 0;   // atılış / geri sıçrama kenardan taşmaz
             }
             if (a.state == ActionState.Hurt) vx = a.knockback * (1 - a.Progress);
-            a.velocity.x = Mathf.MoveTowards(a.velocity.x, vx, dt * (k != null && k.dash != 0 ? 80 : 24)); KinematicMotor.Step(a, zone, dt);
+            // Sıçrayışta yatay hız korunur (havada yön değiştirmez)
+            bool leaping = k != null && (k.kind is AttackKind.LeapOver or AttackKind.LeapSlam) && !a.grounded;
+            if (!leaping) a.velocity.x = Mathf.MoveTowards(a.velocity.x, vx, dt * (k != null && k.dash != 0 ? 80 : 24));
+            KinematicMotor.Step(a, zone, dt);
+        }
+
+        // Sıçrayış: time sn'de targetX'e aynı yüksekliğe iner (yerçekimi 20: dikey hız 10 x time)
+        void Leap(Actor a, float targetX, float time)
+        {
+            a.velocity = new Vector2((targetX - a.position.x) / time, 10 * time); a.grounded = false; a.view.ResetContacts();
         }
 
         // Mesafeye ve yüksekliğe uyan, beklemesi dolmuş saldırılardan biri; 'first' işaretli olan önceliklidir
@@ -152,6 +168,20 @@ namespace KaramaniReborn
                     // Kalkanla itme: blok ya da savuşturma da olsa geri iter ve dayanıklılığı düşürür
                     if (!avoided && !player.Dead && k.pushBack > 0) { player.pushTime = .2f; player.pushSpeed = dir * k.pushBack / .2f; }
                     if (!avoided && !player.Dead && k.staminaDrain > 0) { player.stamina = Mathf.Max(0, player.stamina - k.staminaDrain); player.staminaDelay = .7f; }
+                    return;
+                case AttackKind.LeapSlam:
+                    // Hazırlık bitince oyuncunun bulunduğu yere sıçrar; yere değdiği an çevresine kırmızı çakılma
+                    if (a.state != ActionState.Light) return;
+                    if (!a.attackConnected && a.stateTime >= k.windup) { a.attackConnected = true; Leap(a, player.position.x, .8f); return; }
+                    if (a.attackConnected && a.strike < 0 && a.grounded && a.stateTime > k.windup + .1f)
+                    {
+                        a.strike = 0; effects.cameraShake = Mathf.Max(effects.cameraShake, .12f);
+                        effects.GlowBurst(a.position + Vector2.up * .3f, new Color(1, .8f, .55f));
+                        if (Mathf.Abs(player.position.x - a.position.x) <= k.radius && Mathf.Abs(player.position.y - a.position.y) < 1.2f)
+                            Damage(player, k.damage, (int)Mathf.Sign(player.position.x - a.position.x), true, false, a, -1, k.red);
+                    }
+                    return;
+                case AttackKind.LeapOver:
                     return;
                 case AttackKind.Pull:
                 {

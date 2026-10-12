@@ -19,6 +19,7 @@ namespace KaramaniReborn.Editor
             Bosses(root);
             Arslan(root);
             KorDemir(root);
+            Kurtbas(root);
         }
 
         static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
@@ -284,6 +285,44 @@ namespace KaramaniReborn.Editor
             pl.position = new Vector2(home - 2, w.zone.floor); pl.invincible = 0; hp = pl.health; Run(w, 1f);
             Assert(pl.health == hp || e.Attacking, "The middle strip (home - 2) must stay free of fire");
             Debug.Log("KARAMANI_BOSS_KORDEMIR_PASS · grenade blast + fire patch, dodge, jump over fire, throws up to a platform, hook pull / blocked, oil strip, arena fire");
+        }
+
+        static void Kurtbas(GameRoot root)
+        {
+            // Balta fırtınası: 4 vuruş x 10, aralar .42 (oyuncunun .4 sn dokunulmazlığından uzun)
+            // Her vuruşta oyuncu ~.2 birim geri savrulur: 1.0'dan başlayınca dördüncü vuruş da menzilde (1.6 + .23)
+            var w = Arena(root, EnemyRole.Kurtbas, 1f, out var e); var pl = w.player;
+            var storm = EnemyProfile.For(EnemyRole.Kurtbas).Find("storm");
+            w.StartAttack(e, "storm"); Run(w, storm.Duration + .05f);
+            Assert(pl.health == pl.maxHealth - 40, "Axe storm should land 4 x 10, health " + pl.health);
+
+            // Üstünden atlama: oyuncunun arkasına, sağlam zemine iner
+            w = Arena(root, EnemyRole.Kurtbas, 1.5f, out e); pl = w.player;
+            w.StartAttack(e, "leapover"); Run(w, 1.2f);
+            Assert(e.position.x < pl.position.x && e.grounded, "Leap-over must land behind the player: boss " + e.position.x + " player " + pl.position.x);
+            // Arkası çukursa önüne iner (çukur 13.5-15.7)
+            w = Arena(root, EnemyRole.Kurtbas, 1.5f, out e); pl = w.player;
+            pl.position = new Vector2(16.4f, w.zone.floor); e.position.x = 17.9f; e.face = -1;
+            w.StartAttack(e, "leapover"); Run(w, 1.4f);
+            Assert(e.grounded && Mathf.Abs(e.position.y - w.zone.floor) < .01f && !(e.position.x > 13.5f && e.position.x < 15.7f), "Leap-over landed in the pit at " + e.position.x);
+
+            // Sıçrayıp çakılma: kırmızı, blok işe yaramaz (24); kaçan kurtulur
+            w = Arena(root, EnemyRole.Kurtbas, 6, out e); pl = w.player;
+            w.StartAttack(e, "leapslam"); Run(w, 1.8f, i => new InputFrame { block = true });
+            Assert(pl.health == pl.maxHealth - 24, "Leap slam must ignore block for 24, health " + pl.health);
+            w = Arena(root, EnemyRole.Kurtbas, 6, out e); pl = w.player;
+            w.StartAttack(e, "leapslam");
+            Run(w, 1.8f, i => new InputFrame { move = i >= 60 && i < 120 ? -1 : 0 });
+            Assert(pl.health == pl.maxHealth, "Running out of the slam radius should avoid it, health " + pl.health);
+
+            // Çılgınlık: ikinci evrede vuruşla sendelemez, %25 fazla hasar alır, denge kırılsa da durmaz
+            w = Arena(root, EnemyRole.Kurtbas, 1.3f, out e);
+            e.health = e.maxHealth * .45f; Run(w, 1.5f);
+            Assert(e.phase == 2, "Kurtbaş did not enter phase 2");
+            e.Enter(ActionState.Idle); e.invincible = 0; float hp = e.health; e.guard = 5;
+            w.Damage(e, 20, 1, false, false, w.player);
+            Assert(Mathf.Approximately(e.health, hp - 25) && e.state != ActionState.Hurt && e.guard > 0, "Frenzy: +25% damage, no stagger, guard refills");
+            Debug.Log("KARAMANI_BOSS_KURTBAS_PASS · 4-hit storm, leap-over behind + pit fallback, red leap slam + dodge, frenzy");
         }
 
         static void Sorcerer(GameRoot root)
