@@ -761,3 +761,737 @@ Pixel art sprite sheet of the SAME character as the attached reference image: Ja
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
+---
+
+# 2. Kısım: Çatlak Kaya goblinleri
+
+Tasarım: `Docs/specs/2026-10-12-goblin-part2-design.md`. Goblinler ciddi, vahşi, korkutucu yağmacılardır: komik ya da sevimli değil, makine ve barut yok. Ten kül-gri ve soluk yeşilimsi (Kısmet'in canlı yeşili DEĞİL), kırmızı-siyah savaş dövmeleri, kemik küpe, deri-kürk-kemik zırh. Sıradan goblin Karamani'nin yaklaşık %68'i boyundadır. Kullanım yukarıdakiyle aynı (önce ana poz, sonra hareketler).
+
+**Sıra:** Bıçakçı, Okçu, Pusucu, Kalkanlı, Çömlekçi, Kaba, Kırçıl (+ efektleri), Çatal (binekli, yaya, domuz), Kara Diş en son (+ efektleri). Çatal'ın üç bölümünün her birinin kendi ana pozu var.
+
+---
+
+## Bıçakçı
+Sürünün temeli; 2-3'lü gruplar hâlinde gelir. Cılız, sırım gibi, sinsi.
+
+### bicakci 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; lean and stringy, a broad rusty dagger (kama) in the right hand, a leather rag wrap on the other arm, a red tattoo across the face, a necklace of bone and teeth on the bare chest. The character is about 68% of the height of the man in the reference (about a third shorter), wiry.
+Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
+```
+
+### bicakci 1. bekleme: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; lean and stringy, a broad rusty dagger (kama) in the right hand, a leather rag wrap on the other arm, a red tattoo across the face, a necklace of bone and teeth on the bare chest.
+4 frames of a subtle menacing IDLE loop in a low wary stance with the weapon held: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### bicakci 2. koşu: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; lean and stringy, a broad rusty dagger (kama) in the right hand, a leather rag wrap on the other arm, a red tattoo across the face, a necklace of bone and teeth on the bare chest.
+8 frames of a FAST RUNNING cycle, loopable, low and predatory, evenly spaced phases of the stride, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### bicakci 3. saplama: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; lean and stringy, a broad rusty dagger (kama) in the right hand, a leather rag wrap on the other arm, a red tattoo across the face, a necklace of bone and teeth on the bare chest.
+6 frames of a LEAPING DOUBLE DAGGER STAB: 1 coiling low, 2 springing forward, 3 first stab in mid-air, 4 second stab in mid-air, 5 landing, 6 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### bicakci 4. yuvarlanıp dolanma: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; lean and stringy, a broad rusty dagger (kama) in the right hand, a leather rag wrap on the other arm, a red tattoo across the face, a necklace of bone and teeth on the bare chest.
+6 frames of a SIDE-STEP ROLL past the enemy: 1 ducking low, 2 starting to roll forward, 3 tucked in mid-roll, 4 coming out of the roll, 5 rising into a crouch, 6 a quick dagger stab, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### bicakci 5. geri sıçrama: 3 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; lean and stringy, a broad rusty dagger (kama) in the right hand, a leather rag wrap on the other arm, a red tattoo across the face, a necklace of bone and teeth on the bare chest.
+3 frames of a QUICK BACKWARD HOP while facing right: 1 pushing off, 2 in the air hopping back, 3 landing in a crouch, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### bicakci 6. darbe alma: 3 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; lean and stringy, a broad rusty dagger (kama) in the right hand, a leather rag wrap on the other arm, a red tattoo across the face, a necklace of bone and teeth on the bare chest.
+3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### bicakci 7. ölüm: 5 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; lean and stringy, a broad rusty dagger (kama) in the right hand, a leather rag wrap on the other arm, a red tattoo across the face, a necklace of bone and teeth on the bare chest.
+5 frames of a DEATH: 1 struck and staggering, 2 dropping to the knees, 3 weapon slipping from the hand, 4 falling forward, 5 lying face down on the ground, limp. Not gory, no blood, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+---
+
+## Zehirli Okçu
+Yüksek yerleri sever, mesafe tutar. Oklar siyah uçlu.
+
+### okcu 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; short, a short horn-and-sinew bow in the left hand, a fur quiver at the hip full of arrows with black-tipped heads, the lower half of the face covered with a dirty cloth, hair in a single braid. The character is about 68% of the height of the man in the reference (about a third shorter), wiry.
+Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
+```
+
+### okcu 1. bekleme: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; short, a short horn-and-sinew bow in the left hand, a fur quiver at the hip full of arrows with black-tipped heads, the lower half of the face covered with a dirty cloth, hair in a single braid.
+4 frames of a subtle menacing IDLE loop in a low wary stance with the weapon held: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### okcu 2. koşu: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; short, a short horn-and-sinew bow in the left hand, a fur quiver at the hip full of arrows with black-tipped heads, the lower half of the face covered with a dirty cloth, hair in a single braid.
+8 frames of a FAST RUNNING cycle, loopable, low and predatory, evenly spaced phases of the stride, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### okcu 3. ok atma: 5 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; short, a short horn-and-sinew bow in the left hand, a fur quiver at the hip full of arrows with black-tipped heads, the lower half of the face covered with a dirty cloth, hair in a single braid.
+5 frames of SHOOTING THE BOW STRAIGHT with a black-tipped arrow: 1 nocking an arrow, 2 raising and drawing, 3 full draw aiming straight forward, 4 release, 5 lowering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### okcu 4. yukarı atış: 5 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; short, a short horn-and-sinew bow in the left hand, a fur quiver at the hip full of arrows with black-tipped heads, the lower half of the face covered with a dirty cloth, hair in a single braid.
+5 frames of SHOOTING THE BOW HIGH INTO THE SKY (arrow volley): 1 nocking, 2 raising the bow steeply upward, 3 full draw aiming 60 degrees up, 4 release, 5 lowering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### okcu 5. geri sıçrama: 3 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; short, a short horn-and-sinew bow in the left hand, a fur quiver at the hip full of arrows with black-tipped heads, the lower half of the face covered with a dirty cloth, hair in a single braid.
+3 frames of a QUICK BACKWARD HOP while facing right, bow in hand: 1 pushing off, 2 in the air hopping back, 3 landing in a crouch, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### okcu 6. darbe alma: 3 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; short, a short horn-and-sinew bow in the left hand, a fur quiver at the hip full of arrows with black-tipped heads, the lower half of the face covered with a dirty cloth, hair in a single braid.
+3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### okcu 7. ölüm: 5 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; short, a short horn-and-sinew bow in the left hand, a fur quiver at the hip full of arrows with black-tipped heads, the lower half of the face covered with a dirty cloth, hair in a single braid.
+5 frames of a DEATH: 1 struck and staggering, 2 dropping to the knees, 3 weapon slipping from the hand, 4 falling forward, 5 lying face down on the ground, limp. Not gory, no blood, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+---
+
+## Pusucu (üstüne atlayan goblin)
+Arka plandaki pusu noktasında (dal, çıkıntı, kiriş) bekler, gözü parlayınca atlar. Pusuda beklemenin 4. karesi göz parlaması uyarısıdır. Düz arka planda dal/kaya ÇİZDİRME, yalnız goblin.
+
+### pusucu 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a dark cloak of fur and moss, the face painted with ash and black, a short curved dagger in EACH hand, a very predatory build: long arms, hunched, teeth bared. The character is about 68% of the height of the man in the reference (about a third shorter), wiry.
+Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
+```
+
+### pusucu 1. pusuda bekleme (4. kare: göz parlaması uyarısı): 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a dark cloak of fur and moss, the face painted with ash and black, a short curved dagger in EACH hand, a very predatory build: long arms, hunched, teeth bared.
+4 frames of an AMBUSH WAIT, crouched on a high branch or ledge in the dark, waiting motionless (draw ONLY the goblin, in a deep squat as if perched on a thin branch, NO branch, NO rock, NO tree in the image): 1 deep squat, long arms hanging between the knees, head low and watching, 2 barely breathing, cloak stirring slightly, 3 head turning slowly to follow prey below, 4 the WARNING FRAME: eyes flare bright glowing yellow-red in the dark, teeth bared, body tensed and coiled ready to spring. Only frame 4 has glowing eyes, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### pusucu 2. atlayış: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a dark cloak of fur and moss, the face painted with ash and black, a short curved dagger in EACH hand, a very predatory build: long arms, hunched, teeth bared.
+6 frames of a POUNCING LEAP from above onto the enemy below: 1 eyes glowing bright yellow-red, coiling on the perch, 2 launching himself off, 3 flying through the air, daggers drawn back, 4 diving, 5 both daggers thrust down-forward, 6 striking with both daggers, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### pusucu 3. yere çakılma: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a dark cloak of fur and moss, the face painted with ash and black, a short curved dagger in EACH hand, a very predatory build: long arms, hunched, teeth bared.
+4 frames of CRASHING TO THE GROUND after a missed pounce, left vulnerable for a moment: 1 hitting the ground hard, 2 sprawled and stunned, 3 shaking the head, 4 starting to rise, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### pusucu 4. bekleme: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a dark cloak of fur and moss, the face painted with ash and black, a short curved dagger in EACH hand, a very predatory build: long arms, hunched, teeth bared.
+4 frames of a subtle menacing IDLE loop on the ground in a predatory crouch, a dagger in each hand: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### pusucu 5. koşu: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a dark cloak of fur and moss, the face painted with ash and black, a short curved dagger in EACH hand, a very predatory build: long arms, hunched, teeth bared.
+8 frames of a FAST RUNNING cycle, loopable, low and predatory, evenly spaced phases of the stride, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### pusucu 6. hançer kombosu: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a dark cloak of fur and moss, the face painted with ash and black, a short curved dagger in EACH hand, a very predatory build: long arms, hunched, teeth bared.
+8 frames of a 3-HIT DAGGER COMBO with two curved daggers: 1 wind-up, 2 first slash with a white motion smear, 3 follow-through, 4 second slash with the other dagger and a smear, 5 follow-through, 6 third crossing slash with both daggers and a smear, 7-8 quick recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### pusucu 7. darbe alma: 3 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a dark cloak of fur and moss, the face painted with ash and black, a short curved dagger in EACH hand, a very predatory build: long arms, hunched, teeth bared.
+3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### pusucu 8. ölüm: 5 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a dark cloak of fur and moss, the face painted with ash and black, a short curved dagger in EACH hand, a very predatory build: long arms, hunched, teeth bared.
+5 frames of a DEATH: 1 struck and staggering, 2 dropping to the knees, 3 weapon slipping from the hand, 4 falling forward, 5 lying face down on the ground, limp. Not gory, no blood, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+---
+
+## Kalkanlı Mızrakçı (goblin)
+İkili sıra kurar; kalkanıyla önden gelen hafif vuruşları keser.
+
+### kalkanli 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; thick-skinned and stocky, a big round shield of bone and stretched animal hide on the left arm, a long spear with a bone-inlaid tip in the right hand, fur over the shoulders, a horned leather cap. The character is about 68% of the height of the man in the reference (about a third shorter), wiry.
+Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
+```
+
+### kalkanli 1. bekleme: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; thick-skinned and stocky, a big round shield of bone and stretched animal hide on the left arm, a long spear with a bone-inlaid tip in the right hand, fur over the shoulders, a horned leather cap.
+4 frames of a subtle menacing IDLE loop in a low wary stance with the weapon held: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kalkanli 2. yürüme: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; thick-skinned and stocky, a big round shield of bone and stretched animal hide on the left arm, a long spear with a bone-inlaid tip in the right hand, fur over the shoulders, a horned leather cap.
+8 frames of a stalking WALKING cycle, loopable, evenly spaced phases of the step, weapon held ready, hunched and wary, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kalkanli 3. dürtüş: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; thick-skinned and stocky, a big round shield of bone and stretched animal hide on the left arm, a long spear with a bone-inlaid tip in the right hand, fur over the shoulders, a horned leather cap.
+6 frames of a LONG SPEAR THRUST from behind the raised shield: 1-2 pulling the spear back, 3 thrusting far forward, 4 hold, 5-6 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kalkanli 4. kalkanla itme: 5 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; thick-skinned and stocky, a big round shield of bone and stretched animal hide on the left arm, a long spear with a bone-inlaid tip in the right hand, fur over the shoulders, a horned leather cap.
+5 frames of a SHIELD BASH: 1 bracing, 2 stepping in, 3 slamming the shield forward, 4 hold, 5 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kalkanli 5. blok: 2 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; thick-skinned and stocky, a big round shield of bone and stretched animal hide on the left arm, a long spear with a bone-inlaid tip in the right hand, fur over the shoulders, a horned leather cap.
+2 frames of a SHIELD BLOCK: 1 raising the shield in front of the body, 2 braced behind the shield with knees bent, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kalkanli 6. darbe alma: 3 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; thick-skinned and stocky, a big round shield of bone and stretched animal hide on the left arm, a long spear with a bone-inlaid tip in the right hand, fur over the shoulders, a horned leather cap.
+3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kalkanli 7. ölüm: 5 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; thick-skinned and stocky, a big round shield of bone and stretched animal hide on the left arm, a long spear with a bone-inlaid tip in the right hand, fur over the shoulders, a horned leather cap.
+5 frames of a DEATH: 1 struck and staggering, 2 dropping to the knees, 3 weapon slipping from the hand, 4 falling forward, 5 lying face down on the ground, limp. Not gory, no blood, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+---
+
+## Ateş Çömlekçisi
+Sırtında yağ çömlekleri; ölünce çömlekler kırılıp tutuşur.
+
+### comlekci 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; clay pots full of flammable oil strapped to his back in a rope net, rags tied at the waist, hands and arms covered in old burn scars, a hard soot-blackened face; no gunpowder, only oil pots with cloth wicks. The character is about 68% of the height of the man in the reference (about a third shorter), wiry.
+Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
+```
+
+### comlekci 1. bekleme: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; clay pots full of flammable oil strapped to his back in a rope net, rags tied at the waist, hands and arms covered in old burn scars, a hard soot-blackened face; no gunpowder, only oil pots with cloth wicks.
+4 frames of a subtle menacing IDLE loop in a low wary stance with the weapon held: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### comlekci 2. yürüme: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; clay pots full of flammable oil strapped to his back in a rope net, rags tied at the waist, hands and arms covered in old burn scars, a hard soot-blackened face; no gunpowder, only oil pots with cloth wicks.
+8 frames of a stalking WALKING cycle, loopable, evenly spaced phases of the step, weapon held ready, hunched and wary, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### comlekci 3. çömlek fırlatma: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; clay pots full of flammable oil strapped to his back in a rope net, rags tied at the waist, hands and arms covered in old burn scars, a hard soot-blackened face; no gunpowder, only oil pots with cloth wicks.
+6 frames of THROWING A BURNING OIL POT in a high arc: 1 pulling a clay pot from the back, 2 lighting the rag in its mouth, 3 winding up, 4 hurling it forward, 5 follow-through, 6 recovering. Small flame on the rag only, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### comlekci 4. yakın vuruş: 5 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; clay pots full of flammable oil strapped to his back in a rope net, rags tied at the waist, hands and arms covered in old burn scars, a hard soot-blackened face; no gunpowder, only oil pots with cloth wicks.
+5 frames of a CLOSE POT SMASH: 1 raising a clay pot, 2 winding up, 3 smashing the pot forward, 4 shards flying and a brief small flame, 5 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### comlekci 5. darbe alma: 3 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; clay pots full of flammable oil strapped to his back in a rope net, rags tied at the waist, hands and arms covered in old burn scars, a hard soot-blackened face; no gunpowder, only oil pots with cloth wicks.
+3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### comlekci 6. ölüm (çömleklerin kırılıp tutuşması): 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; clay pots full of flammable oil strapped to his back in a rope net, rags tied at the waist, hands and arms covered in old burn scars, a hard soot-blackened face; no gunpowder, only oil pots with cloth wicks.
+6 frames of a DEATH where his own pots burst: 1 struck and staggering, 2 dropping to the knees, 3 the clay pots on his back cracking, 4 the pots breaking and bursting into flames, 5 falling forward, 6 lying face down with a fire burning around the broken pots. Not gory, no blood, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+---
+
+## Kaba (dev goblin)
+Yavaş ama durmadan ilerler; hafif vuruşla sendelemez.
+
+### kaba 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hulking hunched brute, twice as broad as an ordinary goblin, back covered in scars and tattoos, a huge cleaver chained to his forearm, chains looted from burned villages hanging around his neck. The character is about the same height as the man in the reference but TWICE as broad, hunched forward, heavy and frightening.
+Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
+```
+
+### kaba 1. bekleme: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hulking hunched brute, twice as broad as an ordinary goblin, back covered in scars and tattoos, a huge cleaver chained to his forearm, chains looted from burned villages hanging around his neck.
+4 frames of a subtle menacing IDLE loop in a low wary stance with the weapon held: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kaba 2. yürüme: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hulking hunched brute, twice as broad as an ordinary goblin, back covered in scars and tattoos, a huge cleaver chained to his forearm, chains looted from burned villages hanging around his neck.
+8 frames of a heavy, lumbering WALKING cycle, loopable, hunched, the chained cleaver dragging, evenly spaced phases of the step, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kaba 3. ağır iniş: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hulking hunched brute, twice as broad as an ordinary goblin, back covered in scars and tattoos, a huge cleaver chained to his forearm, chains looted from burned villages hanging around his neck.
+8 frames of a HEAVY CLEAVER CHOP: 1-3 raising the huge cleaver high with both hands, 4 chopping down with all his weight, 5 cleaver slamming into the ground, 6-8 slow recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kaba 4. zincir savuruşu: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hulking hunched brute, twice as broad as an ordinary goblin, back covered in scars and tattoos, a huge cleaver chained to his forearm, chains looted from burned villages hanging around his neck.
+8 frames of a WIDE CHAINED CLEAVER SWING: 1-3 winding up, the cleaver swinging on its chain, 4-5 huge wide horizontal arc with a motion smear, 6 follow-through, 7-8 slow recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kaba 5. yakalayıp çarpma: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hulking hunched brute, twice as broad as an ordinary goblin, back covered in scars and tattoos, a huge cleaver chained to his forearm, chains looted from burned villages hanging around his neck.
+8 frames of a GRAB AND SLAM: 1 a lumbering step forward, 2 both arms reaching, 3 grabbing, 4 lifting an invisible enemy overhead, 5-6 slamming down hard, 7-8 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kaba 6. darbe alma: 3 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hulking hunched brute, twice as broad as an ordinary goblin, back covered in scars and tattoos, a huge cleaver chained to his forearm, chains looted from burned villages hanging around his neck.
+3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kaba 7. ölüm: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hulking hunched brute, twice as broad as an ordinary goblin, back covered in scars and tattoos, a huge cleaver chained to his forearm, chains looted from burned villages hanging around his neck.
+6 frames of a DEATH: 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the cleaver sliding from the hand, 5 toppling forward, 6 lying still face down on the ground. Not gory, no blood, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+---
+
+## Kan Şamanı Kırçıl (yarı-boss)
+Mesafe tutar, büyü yapar; kan bağıyla yakındaki goblinleri iyileştirir. Efektler bu bölümün sonunda.
+
+### kircil 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: the blood shaman Kircil of the Cracked Rock goblins (dark fantasy, serious and frightening, NOT comic): old, tall and gaunt, ash-grey skin with a pale greenish tint (NOT bright green), pointed ears with bone ear rings, a carved bone mask on the face, a grey wolf pelt on the back, strings of bones and charms around the neck, a twisted staff topped with an animal skull in the hand, arms covered in old ritual scars, red-black tattoos, looted cloth scraps; no guns, no machines. The character is about 90% of the height of the man in the reference, tall, thin and old.
+Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
+```
+
+### kircil 1. bekleme: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the blood shaman Kircil of the Cracked Rock goblins (dark fantasy, serious and frightening, NOT comic): old, tall and gaunt, ash-grey skin with a pale greenish tint (NOT bright green), pointed ears with bone ear rings, a carved bone mask on the face, a grey wolf pelt on the back, strings of bones and charms around the neck, a twisted staff topped with an animal skull in the hand, arms covered in old ritual scars, red-black tattoos, looted cloth scraps; no guns, no machines.
+4 frames of a subtle IDLE loop leaning on the staff: 1 base pose, 2 chest rises slightly, 3 skull staff swaying a little, 4 almost back to the start (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kircil 2. yürüme: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the blood shaman Kircil of the Cracked Rock goblins (dark fantasy, serious and frightening, NOT comic): old, tall and gaunt, ash-grey skin with a pale greenish tint (NOT bright green), pointed ears with bone ear rings, a carved bone mask on the face, a grey wolf pelt on the back, strings of bones and charms around the neck, a twisted staff topped with an animal skull in the hand, arms covered in old ritual scars, red-black tattoos, looted cloth scraps; no guns, no machines.
+8 frames of a slow stalking WALKING cycle, loopable, the staff planted with each step, evenly spaced phases, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kircil 3. asa kombosu: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the blood shaman Kircil of the Cracked Rock goblins (dark fantasy, serious and frightening, NOT comic): old, tall and gaunt, ash-grey skin with a pale greenish tint (NOT bright green), pointed ears with bone ear rings, a carved bone mask on the face, a grey wolf pelt on the back, strings of bones and charms around the neck, a twisted staff topped with an animal skull in the hand, arms covered in old ritual scars, red-black tattoos, looted cloth scraps; no guns, no machines.
+8 frames of a 2-HIT STAFF COMBO: 1-2 wind-up, 3 first staff swing with a smear, 4 follow-through, 5 second swing the other way with a smear, 6 hold, 7-8 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kircil 4. lanet büyüsü: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the blood shaman Kircil of the Cracked Rock goblins (dark fantasy, serious and frightening, NOT comic): old, tall and gaunt, ash-grey skin with a pale greenish tint (NOT bright green), pointed ears with bone ear rings, a carved bone mask on the face, a grey wolf pelt on the back, strings of bones and charms around the neck, a twisted staff topped with an animal skull in the hand, arms covered in old ritual scars, red-black tattoos, looted cloth scraps; no guns, no machines.
+6 frames of casting a BLACK CURSE: 1-2 raising the skull staff, 3 slamming the staff end to the ground, dark energy gathering, 4 holding, mask eyes glowing faint red, 5-6 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kircil 5. kurt çağırma: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the blood shaman Kircil of the Cracked Rock goblins (dark fantasy, serious and frightening, NOT comic): old, tall and gaunt, ash-grey skin with a pale greenish tint (NOT bright green), pointed ears with bone ear rings, a carved bone mask on the face, a grey wolf pelt on the back, strings of bones and charms around the neck, a twisted staff topped with an animal skull in the hand, arms covered in old ritual scars, red-black tattoos, looted cloth scraps; no guns, no machines.
+6 frames of SUMMONING SPIRIT WOLVES: 1 raising both arms, 2 throwing the head back, 3 dark wisps swirling around him, 4 pointing the staff forward, 5-6 recovering. Draw ONLY the shaman, no wolves, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kircil 6. iyileştirme: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the blood shaman Kircil of the Cracked Rock goblins (dark fantasy, serious and frightening, NOT comic): old, tall and gaunt, ash-grey skin with a pale greenish tint (NOT bright green), pointed ears with bone ear rings, a carved bone mask on the face, a grey wolf pelt on the back, strings of bones and charms around the neck, a twisted staff topped with an animal skull in the hand, arms covered in old ritual scars, red-black tattoos, looted cloth scraps; no guns, no machines.
+6 frames of a BLOOD-BOND HEALING RITUAL: 1 raising the staff, 2 lifting the free hand, 3-4 holding both hands out, faint red light pulsing around the hands, 5 lowering, 6 ready. Not gory, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kircil 7. ışınlanma: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the blood shaman Kircil of the Cracked Rock goblins (dark fantasy, serious and frightening, NOT comic): old, tall and gaunt, ash-grey skin with a pale greenish tint (NOT bright green), pointed ears with bone ear rings, a carved bone mask on the face, a grey wolf pelt on the back, strings of bones and charms around the neck, a twisted staff topped with an animal skull in the hand, arms covered in old ritual scars, red-black tattoos, looted cloth scraps; no guns, no machines.
+6 frames of TELEPORTING in a bone-white mist: 1 wrapping himself in the wolf pelt, 2 dissolving into pale mist, 3 only mist left, 4 mist gathering, 5 re-forming, 6 standing ready, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kircil 8. kan ritüeli (evre geçişi): 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the blood shaman Kircil of the Cracked Rock goblins (dark fantasy, serious and frightening, NOT comic): old, tall and gaunt, ash-grey skin with a pale greenish tint (NOT bright green), pointed ears with bone ear rings, a carved bone mask on the face, a grey wolf pelt on the back, strings of bones and charms around the neck, a twisted staff topped with an animal skull in the hand, arms covered in old ritual scars, red-black tattoos, looted cloth scraps; no guns, no machines.
+6 frames of a PHASE-CHANGE BLOOD RITUAL: 1 raising a short bone knife, 2 drawing the knife across his own forearm (only a thin dark red line, a few drops, NO gore), 3 raising the arm, 4 a red halo glow forming around him, 5 roaring, 6 ready, glowing red. Not gory, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kircil 9. darbe alma: 3 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the blood shaman Kircil of the Cracked Rock goblins (dark fantasy, serious and frightening, NOT comic): old, tall and gaunt, ash-grey skin with a pale greenish tint (NOT bright green), pointed ears with bone ear rings, a carved bone mask on the face, a grey wolf pelt on the back, strings of bones and charms around the neck, a twisted staff topped with an animal skull in the hand, arms covered in old ritual scars, red-black tattoos, looted cloth scraps; no guns, no machines.
+3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kircil 10. ölüm: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the blood shaman Kircil of the Cracked Rock goblins (dark fantasy, serious and frightening, NOT comic): old, tall and gaunt, ash-grey skin with a pale greenish tint (NOT bright green), pointed ears with bone ear rings, a carved bone mask on the face, a grey wolf pelt on the back, strings of bones and charms around the neck, a twisted staff topped with an animal skull in the hand, arms covered in old ritual scars, red-black tattoos, looted cloth scraps; no guns, no machines.
+6 frames of a DEATH: 1 struck, 2 dropping the skull staff, 3 falling to his knees, 4 the bone mask cracking, 5 collapsing forward, 6 lying still, the mask and staff beside him. Not gory, no blood, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+---
+
+## Kırçıl efektleri
+Ana poz gerekmez; Karamani profilini stil örneği olarak ekle.
+
+### efekt 1. diken halkası efekti: 4 kare
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style). 4 frames of BLACK THORNS ERUPTING FROM THE GROUND in a line (the cross-section of a curse ring, seen from the side): 1 cracks and dark glow on the ground, 2 sharp black thorns shooting up, 3 full height row of tall black thorns, 4 thorns crumbling away, pixel art effect. Frames in ONE horizontal row, evenly spaced, identical scale, flat solid background color #47304C, no text, no grid.
+```
+
+### efekt 2. ruh kurdu efekti: 6 kare
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style). 6 frames of a SEMI-TRANSPARENT SPIRIT WOLF, black and smoky with pale glowing eyes, in a fast RUNNING cycle in strict side profile facing right, loopable, wisps trailing behind, pixel art effect. Frames in ONE horizontal row, evenly spaced, identical scale, flat solid background color #47304C, no text, no grid.
+```
+
+---
+
+## Domuz Binicisi Çatal: binekli (birinci evre)
+Çatal kocaman mağara domuzunun üstünde. Ana poz, binekli hâli gösterir. İkinci evre için sonraki iki bölüme bak.
+
+### catal 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, riding a HUGE tusked cave boar armoured with bone plates (no iron), the boar has great curved tusks and a bristled mane. The character is about 15% TALLER than the man in the reference in total (the huge boar and the goblin rider together), the boar long and massive.
+Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
+```
+
+### catal 1. bekleme: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, riding a HUGE tusked cave boar armoured with bone plates (no iron), the boar has great curved tusks and a bristled mane.
+4 frames of a subtle IDLE loop of the mounted rider: 1 base pose, 2 the boar breathes heavily and the rider sits steady, 3 the boar paws the ground once, 4 almost back to the start (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal 2. koşu: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, riding a HUGE tusked cave boar armoured with bone plates (no iron), the boar has great curved tusks and a bristled mane.
+8 frames of a GALLOPING cycle of the boar with the rider, loopable, low and fast, the spear held forward, evenly spaced phases of the gallop, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal 3. hücum: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, riding a HUGE tusked cave boar armoured with bone plates (no iron), the boar has great curved tusks and a bristled mane.
+6 frames of a CHARGE: 1 the boar lowering its head and tusks, the rider levelling the spear, 2 pawing and launching, 3-4 full charge with the head down and a trail of dust, 5 full speed, 6 skidding to a stop, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal 4. mızrak: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, riding a HUGE tusked cave boar armoured with bone plates (no iron), the boar has great curved tusks and a bristled mane.
+6 frames of a LONG SPEAR THRUST from the saddle: 1-2 the rider pulling the spear back, 3 thrusting far forward, 4 hold, 5-6 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal 5. şahlanma: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, riding a HUGE tusked cave boar armoured with bone plates (no iron), the boar has great curved tusks and a bristled mane.
+6 frames of the boar REARING UP and slamming down: 1-2 the boar coiling and lifting, 3 rearing high on its hind legs with the rider hanging on, 4 slamming the front hooves down, 5 a dusty shock ring bursting around the hooves, 6 settling, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+---
+
+## Domuz Binicisi Çatal: yaya (ikinci evre)
+Domuz yaralanıp kaçtı; Çatal yere düştü, mızrakla hızlı bir yaya dövüşçü. Kendi ana pozu var.
+
+### catal_yaya 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, on foot. The character is about 68% of the height of the man in the reference (about a third shorter), wiry.
+Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
+```
+
+### catal_yaya 1. bekleme: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, on foot.
+4 frames of a subtle menacing IDLE loop in a low stance with the forked spear held across the body: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal_yaya 2. koşu: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, on foot.
+8 frames of a FAST RUNNING cycle, loopable, low and predatory, evenly spaced phases of the stride, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal_yaya 3. mızrak kombosu: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, on foot.
+8 frames of a FAST 3-HIT SPEAR COMBO: 1 wind-up, 2 first quick thrust, 3 pulling back, 4 diagonal slash with the spear shaft and a smear, 5 follow-through, 6 powerful final thrust, 7-8 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal_yaya 4. binekten düşüş: 5 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, on foot.
+5 frames of BEING THROWN OFF THE BOAR when it is hurt (draw ONLY the goblin, NO boar, the space under him empty): 1 jolted in the saddle, 2 thrown out backward, spear flying wide, 3 airborne, 4 hitting the ground, 5 rolling up to a crouch with the spear, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal_yaya 5. darbe alma: 3 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, on foot.
+3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal_yaya 6. ölüm: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, on foot.
+6 frames of a DEATH: 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the spear falling from the hands, 5 collapsing forward, 6 lying still face down on the ground, the horsetail banner beside him. Not gory, no blood, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+---
+
+## Domuz Binicisi Çatal: domuz tek başına
+Canı bitince yaralanıp kaçan domuz. Kendi ana pozu var.
+
+### catal_domuz 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: a HUGE tusked cave boar (dark fantasy), armoured with bone plates instead of iron, great curved tusks, bristled mane, small red-rimmed eyes, scarred hide; NO rider, no machines. The character is about 70% of the height of the man at its shoulder hump and much longer than he is tall (it is huge); wounded, a cracked bone plate and a dark scrape on the flank, no gore.
+Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
+```
+
+### catal_domuz 1. kaçış: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a HUGE tusked cave boar (dark fantasy), armoured with bone plates instead of iron, great curved tusks, bristled mane, small red-rimmed eyes, scarred hide; NO rider, no machines.
+6 frames of a WOUNDED BOAR FLEEING at a limping gallop, loopable, head low, evenly spaced phases of the gallop, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+---
+
+## Oymak Beyi Kara Diş (boss)
+Yaşlı, yapılı, çift palalı düellocu. En son. Efektler bu bölümün sonunda.
+
+### karadis 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines. The character is about 10% TALLER than the man in the reference, broad-shouldered.
+Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
+```
+
+### karadis 1. bekleme: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+4 frames of a subtle menacing IDLE loop with a pala in each hand held low: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 2. koşu: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+8 frames of a FAST RUNNING cycle, loopable, low and predatory, both palas trailing behind, evenly spaced phases of the stride, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 3. çift pala kombosu: 12 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+12 frames of a 4-HIT DUAL PALA COMBO: 1-2 wind-up, 3 first diagonal slash with the right pala and a white smear, 4 follow-through, 5 second slash crossing with the left pala and a smear, 6 follow-through, 7 third slash with the right pala and a smear, 8 follow-through, 9 fourth slash with both palas and a big smear, 10 impact hold, 11-12 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 4. yatay dönüş kesiği: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+8 frames of a HORIZONTAL SPINNING SLASH that keeps enemies away: 1-2 a short crouch as the warning, 3 both palas swung wide to the sides, 4-5 spinning a full turn with a wide circular motion smear, 6 still spinning, 7-8 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 5. X atılışı: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+6 frames of an X-SLASH DASH: 1 crossing both palas over the chest, 2 coiling, 3 lunging forward in a blur, 4 slashing through with both palas in an X shape and a smear, 5 skidding to a stop, 6 standing ready, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 6. yükselen kesik: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+6 frames of a RISING SLASH against an airborne enemy: 1 crouching, 2 leaping upward, 3 both palas slashing upward with a smear, 4 apex of the jump, 5 landing, 6 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 7. üçgen hava saldırısı: 12 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+12 frames of a TRIANGLE AIR ATTACK drawing a triangle in the air: 1 crouching, 2 leaping up and backward, 3 apex, 4 hanging in the air with both palas glowing, 5 diving diagonally and slashing, 6 bouncing off the ground, 7 springing high again, 8 apex of the second corner, hovering with palas glowing, 9 diving straight down, 10 slamming into the ground with a small shock ring, 11-12 staying low and recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 8. geri ışınlanma: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+6 frames of a SHORT BACKWARD TELEPORT in red ember dust: 1 crouching, 2 dissolving into red embers, 3 only glowing embers left, 4 embers gathering, 5 re-forming, 6 standing ready, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 9. kaya sekmesi: 5 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+5 frames of a LEDGE REBOUND (draw ONLY the chieftain, NO rock, NO beam): 1 crouched with feet gripping an invisible ledge, 2 pushing off, 3 airborne with the palas drawn back, 4 diving forward with the palas forward, 5 landing in a crouch, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 10. çekme büyüsü: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+6 frames of casting a PULL SPELL: 1 raising one empty hand, 2 arm extended, palm open, eyes and chest tattoo glowing red, 3 holding for a moment, 4 clenching the hand and pulling it back, 5 the other pala drawn back ready to slash, 6 ready. Draw no chain, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 11. gök ateşi büyüsü: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+6 frames of casting a SKY FIRE SPELL: 1 lowering into a stance, 2 raising both palas to the sky, 3 eyes and chest tattoo glowing red, 4 hold, 5 hold with the glow pulsing, 6 lowering the palas. Draw no fireballs, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 12. pala fırtınası: 12 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+12 frames of a 6-HIT PALA STORM, slashes getting faster: 1-2 wind-up, 3 slash one, 4 slash two, 5 slash three, 6 slash four, 7 slash five, each with a smear, 8-9 raising both palas overhead, 10 a heavy final downward chop with both palas, 11-12 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 13. evre geçişi (kükreme): 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+6 frames of a PHASE-CHANGE ROAR: 1 faltering, 2 dropping to one knee, 3 head bowed, the chest tattoo igniting, 4 throwing the head back and roaring, eyes and tattoo blazing red, 5 rising, 6 ready, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 14. nefeslenme: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+4 frames of a TIRED BREATHER, both palas planted point-down in the ground, leaning on them: 1 chest heaving, 2 head low, 3 chest heaving, 4 almost back to the start (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 15. darbe alma: 3 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karadis 16. ölüm: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: the goblin chieftain Kara Dis of the Cracked Rock clan (dark fantasy boss, serious and frightening, NOT comic): old but sinewy and broad-shouldered, ash-grey skin with a pale greenish tint (NOT bright green), long dirty grey hair and braided beard, pointed ears with bone ear rings, a hollow sharp face, yellow-red eyes, sharp teeth with the FRONT TEETH CAPPED IN BLACK IRON, bare tattooed arms, a red ritual tattoo on the chest, a wolf pelt over the waist and shoulders, bone charms on the belt, a heavy curved black-edged pala sword in EACH hand; no guns, no machines.
+6 frames of a DEATH: 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the weapon falling from the hands, 5 collapsing forward, 6 lying still face down on the ground. Not gory, no blood, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+---
+
+## Kara Diş efektleri
+Ana poz gerekmez; Karamani profilini stil örneği olarak ekle.
+
+### efekt 1. ateş topu efekti (düşerken): 4 kare
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style). 4 frames of a FALLING FIREBALL dropping from the sky (it falls straight down, the tail of flame trailing UP), pulsing, loopable, pixel art effect. Frames in ONE horizontal row, evenly spaced, identical scale, flat solid background color #47304C, no text, no grid.
+```
+
+### efekt 2. ateş topu yere çarpma: 5 kare
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style). 5 frames of a FIREBALL IMPACT on the ground: 1 touching down, 2 bursting, 3 largest fireball flash, 4 flames spreading low and fading, 5 embers and smoke, pixel art effect. Frames in ONE horizontal row, evenly spaced, identical scale, flat solid background color #47304C, no text, no grid.
+```
+
+### efekt 3. yer halkası efekti: 3 kare
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style). 3 frames of a thin flat RED RING of glowing embers on the ground, seen edge-on as a flat glowing ellipse, pulsing brighter, a warning marker, pixel art effect. Frames in ONE horizontal row, evenly spaced, identical scale, flat solid background color #47304C, no text, no grid.
+```
+
+### efekt 4. kara zincir efekti (çekme): 4 kare
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style). 4 frames of a BLACK CHAIN OF DARK ENERGY with a faint red glow, stretched horizontally and pulling toward the left, links shifting, loopable, pixel art effect. Frames in ONE horizontal row, evenly spaced, identical scale, flat solid background color #47304C, no text, no grid.
+```
+
+### efekt 5. kor tozu efekti (ışınlanma): 4 kare
+```
+Use the attached image ONLY as a STYLE reference (same pixel-art style). 4 frames of a PUFF OF RED EMBER DUST (teleport smoke): 1 sparks bursting, 2 cloud of red embers, 3 embers drifting up, 4 fading away, pixel art effect. Frames in ONE horizontal row, evenly spaced, identical scale, flat solid background color #47304C, no text, no grid.
+```
+
