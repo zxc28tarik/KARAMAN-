@@ -233,17 +233,22 @@ GOBLINS = [
         ('hücum', 6, "a CHARGE: 1 the boar lowering its head and tusks, the rider levelling the spear, 2 pawing and launching, 3-4 full charge with the head down and a trail of dust, 5 full speed, 6 skidding to a stop"),
         ('mızrak', 6, "a LONG SPEAR THRUST from the saddle: 1-2 the rider pulling the spear back, 3 thrusting far forward, 4 hold, 5-6 recovering"),
         ('şahlanma', 6, "the boar REARING UP and slamming down: 1-2 the boar coiling and lifting, 3 rearing high on its hind legs with the rider hanging on, 4 slamming the front hooves down, 5 a dusty shock ring bursting around the hooves, 6 settling")]),
-    ('catal_yaya', 'Domuz Binicisi Çatal: yaya (ikinci evre)', 'Domuz yaralanıp kaçtı; Çatal yere düştü, mızrakla hızlı bir yaya dövüşçü. Kendi ana pozu var.',
+    ('catal_yaya', 'Domuz Binicisi Çatal: yaya (ikinci evre)', 'Çatal canı yarıya inince domuzdan atlar; mızrakla hızlı bir yaya dövüşçü. Domuz da ayrıca saldırmaya devam eder. Kendi ana pozu var.',
      CATAL_FOOT, GOB_SIZE, [
         ('bekleme', 4, "a subtle menacing IDLE loop in a low stance with the forked spear held across the body: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable)"),
         GOB_RUN,
         ('mızrak kombosu', 8, "a FAST 3-HIT SPEAR COMBO: 1 wind-up, 2 first quick thrust, 3 pulling back, 4 diagonal slash with the spear shaft and a smear, 5 follow-through, 6 powerful final thrust, 7-8 recovering"),
-        ('binekten düşüş', 5, "BEING THROWN OFF THE BOAR when it is hurt (draw ONLY the goblin, NO boar, the space under him empty): 1 jolted in the saddle, 2 thrown out backward, spear flying wide, 3 airborne, 4 hitting the ground, 5 rolling up to a crouch with the spear"),
+        ('binekten atlama', 5, "LEAPING OFF THE BOAR on purpose to fight on foot (draw ONLY the goblin, NO boar, the space under him empty): 1 crouching in the saddle, 2 springing up and off, spear held high, 3 airborne, 4 landing in a crouch, 5 rising into a ready stance with the spear"),
         HURT,
         ('ölüm', 6, "a DEATH: 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the spear falling from the hands, 5 collapsing forward, 6 lying still face down on the ground, the horsetail banner beside him. Not gory, no blood")]),
-    ('catal_domuz', 'Domuz Binicisi Çatal: domuz tek başına', 'Canı bitince yaralanıp kaçan domuz. Kendi ana pozu var.',
-     CATAL_BOAR, 'about 70% of the height of the man at its shoulder hump and much longer than he is tall (it is huge); wounded, a cracked bone plate and a dark scrape on the flank, no gore', [
-        ('kaçış', 6, "a WOUNDED BOAR FLEEING at a limping gallop, loopable, head low, evenly spaced phases of the gallop")]),
+    ('catal_domuz', 'Domuz Binicisi Çatal: domuz tek başına', 'Çatal atlayınca binicisiz domuz da saldırır; öldürülebilir, kolay bir düşman. Kendi ana pozu var.',
+     CATAL_BOAR, 'about 70% of the height of the man at its shoulder hump and much longer than he is tall (it is huge); riderless, an empty bone saddle on its back', [
+        ('bekleme', 4, "a subtle IDLE loop of the riderless boar: 1 base pose, 2 snorting, head lifting slightly, 3 pawing the ground once, 4 almost back to the start (loopable)"),
+        ('koşu', 8, "a GALLOPING cycle of the riderless boar, loopable, low and fast, evenly spaced phases of the gallop"),
+        ('hücum', 6, "a CHARGE: 1 lowering the head and tusks, 2 pawing and launching, 3-4 full charge with the head down and a trail of dust, 5 full speed, 6 skidding to a stop"),
+        ('diş savuruşu', 6, "a TUSK GORE: 1 lowering the head, 2 stepping in, 3 hooking the tusks upward hard with a white smear, 4 hold, 5-6 recovering"),
+        ('darbe alma', 3, "a HURT reaction: 1 flinching from a hit to the flank, 2 stumbling sideways a step, 3 regaining footing"),
+        ('ölüm', 5, "a DEATH: 1 struck hard, 2 staggering, 3 front legs buckling, 4 rolling onto its side, 5 lying still. Not gory, no blood")]),
 ]
 KARADIS_MOVES = [
     ('bekleme', 4, "a subtle menacing IDLE loop with a pala in each hand held low: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable)"),

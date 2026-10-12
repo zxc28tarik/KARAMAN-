@@ -136,16 +136,16 @@ Değerler başlangıç değeridir. Karamani'nin hafif vuruşu 20, ağır vuruşu
 
 ### 4.2 Domuz Binicisi Çatal
 - **Görünüş:** demirle değil kemik plakalarla zırhlanmış, kocaman dişli bir mağara yaban domuzuna binmiş, tek kulağı kesik, sert yüzlü bir goblin savaşçı. Elinde uzun çatal mızrak, sırtında oymağın kuyruk sancağı.
-- **Değerler:** binekliyken can 160, denge 80; binici yalnız 90.
+- **Değerler:** Çatal can 180, denge 80. Domuz (binicisiz) can 45, denge 20: kolay bir düşman.
 - **Birinci evre (binekli):**
   - 🔴 arenayı boydan boya geçen hücum; dönüşte bir kez daha. Kaçışla ya da zıplayarak atlatılır.
   - ⚪ binekten mızrak dürtüşü (uzun erim)
   - 🔴 domuz şahlanıp ön ayaklarıyla yere vurur, çevresinde şok çıkar
-- **İkinci evre:** domuzun canı biterse domuz yaralanıp kaçar. Binici yere düşer ve mızrakla hızlı bir yaya dövüşçüye dönüşür.
+- **İkinci evre (kullanıcı, 2026-10-12):** Çatal'ın canı yarıya inince domuzu bırakır, sırtından atlar ve mızrakla hızlı bir yaya dövüşçüye dönüşür. **Domuz da ayrı bir düşman olarak saldırmaya devam eder:** 🔴 hücum (hasar 16) ve ⚪ dişle savurma (hasar 10). Öldürülebilir ve kolaydır (can 45, ağır vuruşla yere serilir).
 - **Kareler:**
   - binekli: bekleme 4, koşu 8, hücum 6, mızrak 6, şahlanma 6
-  - yaya: ana poz, bekleme 4, koşu 8, mızrak kombosu 8, binekten düşüş 5, darbe 3, ölüm 6
-  - domuz tek başına: kaçış 6
+  - yaya: ana poz, bekleme 4, koşu 8, mızrak kombosu 8, binekten atlama 5, darbe 3, ölüm 6
+  - domuz tek başına: ana poz, bekleme 4, koşu 8, hücum 6, diş savuruşu 6, darbe 3, ölüm 5
 
 ## 5. Boss: Oymak Beyi Kara Diş
 **Kullanıcı isteği (2026-10-12):**

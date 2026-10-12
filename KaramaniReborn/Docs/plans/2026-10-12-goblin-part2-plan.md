@@ -184,30 +184,34 @@ Commit "Goblinler: Pusucu, Ateş Çömlekçisi, sürü cesareti".
 
 Commit "Goblinler: Kan Şamanı Kırçıl".
 
-### Task 5: Half-boss: Domuz Binicisi Çatal
-**Spec:** §4.2. Ruling: the mounted size is 1.15 (the boar makes him taller than Karamani); on foot he is 0.72.
+### Task 5: Half-boss: Domuz Binicisi Çatal and his boar
+**Spec:** §4.2. **User decision (2026-10-12):** at half health Çatal leaves the boar, and the boar keeps attacking as a separate, easy, killable enemy. Ruling: the mounted size is 1.15 (the boar makes him taller than Karamani); on foot he is 0.72; the riderless boar is a new role `Domuz` with size 0.8 and bulk 1.6.
 
 **Requirements:**
-1. **Two health pools:**
-   - mounted: the boar has health 160 and guard 80
-   - when the boar's health is spent, the boar **flees** (a new short-lived actor running off-screen, untargetable, then removed)
-   - Çatal falls (`fall` clip, 1 s, invulnerable) and continues on foot with health 90 and his own guard 50
-   - the half-boss bar shows the current pool
-2. **Mounted attacks:**
-   - 🔴 `charge` across the arena: dash to 1 u past the player's position, clamped to standable ground, then a turn and one return charge, damage 24, push 6
-   - ⚪ `lance`: long thrust, reach 2.8, damage 16
-   - 🔴 `rear`: the boar rears and stomps, a shock with radius 2, damage 20
-   - Mounted, he has poise and is not staggered by light hits.
-3. **On foot:** speed 2.4. ⚪ `spearcombo`: 3 hits, gap 0.45, damage 10. Backstep.
-4. **Placement:** he guards the middle of zone 6 (home around x 30, on ground), not the exit.
-5. **Tests (marker `KARAMANI_GOBLIN_CATAL_PASS`):**
-   - charge goes and returns, never into a pit
-   - mounted damage reduces the boar pool only
-   - at 0, the boar actor flees and is removed, and Çatal is on foot with 90 health
-   - the foot combo works
-   - zone 6's gate is unaffected by his death (only Kara Diş opens it)
+1. **Çatal:** health 180, guard 80. While mounted he has poise (light hits do not stagger him).
+2. **Mounted attacks (phase 1):**
+   - 🔴 `charge` across the arena: dashes to 1 u past the player's position, clamped to standable ground, then turns and makes one return charge. Damage 24, push 6.
+   - ⚪ `lance`: long thrust, reach 2.8, damage 16.
+   - 🔴 `rear`: the boar rears and stomps, a shock with radius 2, damage 20.
+3. **Dismount (phaseShift at 50% health):**
+   - Çatal leaps off (`dismount` clip, 1 s, invulnerable) and lands on standable ground 1.5 u from the boar.
+   - From then on he fights on foot: speed 2.4, no poise, ⚪ `spearcombo` (3 hits, gap 0.45, damage 10), backstep.
+4. **The boar:**
+   - The boar spawns (spawn queue) as a separate enemy at Çatal's position: role `Domuz`, health 45, guard 20, speed 2.6, goblin flag.
+   - It is easy: a player heavy hit knocks it down (1.5 s), and it has no poise.
+   - Attacks: 🔴 `charge` (dash 5, damage 16, push 5, cooldown 3) and ⚪ `gore` (reach 1.3, damage 10).
+   - It is not a pack leader and is not healed by Kırçıl's blood bond.
+   - It can be killed. The boss bar keeps showing Çatal.
+5. **Placement:** he guards the middle of zone 6 (home around x 30, on ground), not the exit.
+6. **Tests (marker `KARAMANI_GOBLIN_CATAL_PASS`):**
+   - the charge goes and returns, and never ends in a pit
+   - poise while mounted
+   - at ≤ 50% health he dismounts: invulnerable for 1 s, then on foot, the spear combo works
+   - exactly one boar spawns, on standable ground, and attacks (both its attacks deal their damage)
+   - the boar dies in 3 player light hits or fewer (45 health vs 20 per hit) and a heavy hit knocks it down
+   - zone 6's gate is unaffected by the deaths of Çatal and the boar (only Kara Diş opens it)
 
-Commit "Goblinler: Domuz Binicisi Çatal".
+Commit "Goblinler: Domuz Binicisi Çatal ve domuzu".
 
 ### Task 6: Boss: Oymak Beyi Kara Diş, phase 1
 **Spec:** §5.1 (attacks 1–4), §5.2, §5.3, §5.4 phase 1. The spec's user list is binding.

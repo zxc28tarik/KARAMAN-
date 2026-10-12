@@ -1274,7 +1274,7 @@ STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full 
 ---
 
 ## Domuz Binicisi Çatal: yaya (ikinci evre)
-Domuz yaralanıp kaçtı; Çatal yere düştü, mızrakla hızlı bir yaya dövüşçü. Kendi ana pozu var.
+Çatal canı yarıya inince domuzdan atlar; mızrakla hızlı bir yaya dövüşçü. Domuz da ayrıca saldırmaya devam eder. Kendi ana pozu var.
 
 ### catal_yaya 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
 ```
@@ -1303,10 +1303,10 @@ Pixel art sprite sheet of the SAME character as the attached reference image: a 
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### catal_yaya 4. binekten düşüş: 5 kare (ana pozu ekle)
+### catal_yaya 4. binekten atlama: 5 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: a savage goblin raider of the Cracked Rock clan (dark fantasy, 1566 period, serious and frightening, NOT comic, NOT cute, no goofy expression): ash-grey skin with a pale greenish tint (clearly NOT bright green), pointed ears with bone ear rings, hollow cheeks, yellow or reddish eyes, sharp teeth, a cruel hostile face, red-black war tattoos on the face and arms, crude leather, fur and bone armour, scraps of looted cloth worn as trophies; no guns, no machines, only period weapons; a hard-faced warrior with ONE EAR CUT OFF, light bone-plate armour (no iron), a long forked spear (two-pronged tip) in the hands, the clan's horsetail banner on his back, on foot.
-5 frames of BEING THROWN OFF THE BOAR when it is hurt (draw ONLY the goblin, NO boar, the space under him empty): 1 jolted in the saddle, 2 thrown out backward, spear flying wide, 3 airborne, 4 hitting the ground, 5 rolling up to a crouch with the spear, in ONE horizontal row.
+5 frames of LEAPING OFF THE BOAR on purpose to fight on foot (draw ONLY the goblin, NO boar, the space under him empty): 1 crouching in the saddle, 2 springing up and off, spear held high, 3 airborne, 4 landing in a crouch, 5 rising into a ready stance with the spear, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
@@ -1327,18 +1327,53 @@ STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full 
 ---
 
 ## Domuz Binicisi Çatal: domuz tek başına
-Canı bitince yaralanıp kaçan domuz. Kendi ana pozu var.
+Çatal atlayınca binicisiz domuz da saldırır; öldürülebilir, kolay bir düşman. Kendi ana pozu var.
 
 ### catal_domuz 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
 ```
-Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: a HUGE tusked cave boar (dark fantasy), armoured with bone plates instead of iron, great curved tusks, bristled mane, small red-rimmed eyes, scarred hide; NO rider, no machines. The character is about 70% of the height of the man at its shoulder hump and much longer than he is tall (it is huge); wounded, a cracked bone plate and a dark scrape on the flank, no gore.
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: a HUGE tusked cave boar (dark fantasy), armoured with bone plates instead of iron, great curved tusks, bristled mane, small red-rimmed eyes, scarred hide; NO rider, no machines. The character is about 70% of the height of the man at its shoulder hump and much longer than he is tall (it is huge); riderless, an empty bone saddle on its back.
 Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
 ```
 
-### catal_domuz 1. kaçış: 6 kare (ana pozu ekle)
+### catal_domuz 1. bekleme: 4 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: a HUGE tusked cave boar (dark fantasy), armoured with bone plates instead of iron, great curved tusks, bristled mane, small red-rimmed eyes, scarred hide; NO rider, no machines.
-6 frames of a WOUNDED BOAR FLEEING at a limping gallop, loopable, head low, evenly spaced phases of the gallop, in ONE horizontal row.
+4 frames of a subtle IDLE loop of the riderless boar: 1 base pose, 2 snorting, head lifting slightly, 3 pawing the ground once, 4 almost back to the start (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal_domuz 2. koşu: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a HUGE tusked cave boar (dark fantasy), armoured with bone plates instead of iron, great curved tusks, bristled mane, small red-rimmed eyes, scarred hide; NO rider, no machines.
+8 frames of a GALLOPING cycle of the riderless boar, loopable, low and fast, evenly spaced phases of the gallop, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal_domuz 3. hücum: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a HUGE tusked cave boar (dark fantasy), armoured with bone plates instead of iron, great curved tusks, bristled mane, small red-rimmed eyes, scarred hide; NO rider, no machines.
+6 frames of a CHARGE: 1 lowering the head and tusks, 2 pawing and launching, 3-4 full charge with the head down and a trail of dust, 5 full speed, 6 skidding to a stop, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal_domuz 4. diş savuruşu: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a HUGE tusked cave boar (dark fantasy), armoured with bone plates instead of iron, great curved tusks, bristled mane, small red-rimmed eyes, scarred hide; NO rider, no machines.
+6 frames of a TUSK GORE: 1 lowering the head, 2 stepping in, 3 hooking the tusks upward hard with a white smear, 4 hold, 5-6 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal_domuz 5. darbe alma: 3 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a HUGE tusked cave boar (dark fantasy), armoured with bone plates instead of iron, great curved tusks, bristled mane, small red-rimmed eyes, scarred hide; NO rider, no machines.
+3 frames of a HURT reaction: 1 flinching from a hit to the flank, 2 stumbling sideways a step, 3 regaining footing, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### catal_domuz 6. ölüm: 5 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: a HUGE tusked cave boar (dark fantasy), armoured with bone plates instead of iron, great curved tusks, bristled mane, small red-rimmed eyes, scarred hide; NO rider, no machines.
+5 frames of a DEATH: 1 struck hard, 2 staggering, 3 front legs buckling, 4 rolling onto its side, 5 lying still. Not gory, no blood, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
