@@ -98,7 +98,7 @@ All values are starting points; they are tuned in playtesting. The player's ligh
   - Effects: flame wave 4, curse orb 4.
 
 ## 4. Bosses (human aghas)
-Every boss is 12–25% taller than a regular janissary. A second phase starts at 50% health. Each uses the boss bar (`bossGroup`).
+Bosses are taller than Karamani (user-approved sizes: Arslan 1.15, Kör Demir 1.12, Kurtbaş 1.12; Kara Murad 1.6 — 60% taller — and twice as bulky, user 2026-10-12). A second phase starts at 50% health. Each uses the boss bar (`bossGroup`).
 
 ### 4.1 Kızıl Surlar: Standard-bearer Arslan
 - **Who:** a giant standard-bearer. A torn crimson standard on his back, chained trophies.
@@ -130,7 +130,7 @@ Every boss is 12–25% taller than a regular janissary. A second phase starts at
 - **Tests:** parry rhythm. This is the fastest fight.
 
 ### 4.4 Karanlık Kale: Janissary Agha Kara Murad
-- **Who:** a giant, muscular, tall fighter. About 25% taller than Karamani, with shoulders nearly twice as wide; bare muscular arms and an open vest over mail. Fully human: no magic, no elixir, no pistol, no summons.
+- **Who:** a giant, muscular, tall fighter. 60% taller than Karamani and twice as bulky (user, 2026-10-12); bare muscular arms and an open vest over mail. Fully human: no magic, no elixir, no pistol, no summons.
 - **Weapon:** a giant two-handed pala.
 - **Phase 1 (pala):**
   - ⚪ 3-hit heavy pala combo with a slow, fast, slow rhythm.

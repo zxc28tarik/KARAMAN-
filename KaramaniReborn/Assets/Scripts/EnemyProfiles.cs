@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace KaramaniReborn
 {
-    public enum AttackKind { Melee, Slam, Bullet, Arrow, Volley, FlameWave, Orbs, Reload, Backstep, Teleport }
+    public enum AttackKind { Melee, Slam, Bullet, Arrow, Volley, FlameWave, Orbs, Reload, Backstep, Teleport, Summon, Rage, Grenade, ArenaFire, Pull, LeapOver, LeapSlam }
 
     // Bir düşman saldırısı. Süreler saniye, mesafeler dünya birimi; oyun dengesi yalnız buradan ayarlanır.
     // Kırmızı (red) saldırı blok ve savuşturmayla durmaz: yalnız kaçışın dokunulmazlığı ya da zıplama kurtarır.
@@ -13,6 +13,16 @@ namespace KaramaniReborn
         public float windup, active, recovery, minRange, reach, damage, dash, push, cooldown = .8f, hitGap;
         // Kalkanla itme: blok ya da savuşturma da olsa oyuncuyu pushBack birim geri iter, dayanıklılığından staminaDrain düşer
         public float pushBack, staminaDrain;
+        // Boss alanları: yalnız bu evrede (0 = iki evre); yakalama (oyuncu saldırmıyor ve dokunulmaz değilken);
+        // eşit aralık yerine vuruş anları; çağrı (tür, sayı); arkasında bıraktığı ateş (genişlik, süre, vuruş başı hasar);
+        // sıçrayıp çakılmanın etki yarıçapı
+        public int phase;
+        public bool grab;
+        public float[] hitTimes;
+        public EnemyRole summon; public int summonCount;
+        public float patchWidth, patchLife, patchDamage = 6, radius;
+        // Vuruş mesafesi: seçim mesafesinden (reach) farklıysa (uzaktan başlayan hücum yalnız temas edince vurur)
+        public float hitReach;
         public int hits = 1;
         public bool red, heavy, punish, first;
         public string then;   // bitince hemen başlayan saldırı (tüfekte doldurma)
@@ -31,6 +41,12 @@ namespace KaramaniReborn
         public bool poise;
         // Savuşturulunca sendeleme süresi (denge kırılınca her zaman .9 sn)
         public float parryStagger = .9f;
+        // Evre geçişi: canı phaseAt'e inince oynayan saldırı (dokunulmaz); ikinci evrede hız ve alınan hasar çarpanı,
+        // sendelemezlik (çılgınlık)
+        public string phaseShift;
+        public float phase2Speed = 1, phase2Taken = 1;
+        public bool phase2Unstoppable;
+        public float bulk;   // vurulma kutusu genişlik çarpanı (0 = size)
         public EnemyAttack[] attacks;
 
         public EnemyAttack Find(string name) { foreach (var a in attacks) if (a.name == name) return a; return null; }
@@ -112,6 +128,61 @@ namespace KaramaniReborn
                 {
                     new EnemyAttack { name = "slash", clip = "light1", windup = .3f, active = .3f, recovery = .35f, reach = 1.7f, damage = 19, punish = true },
                     new EnemyAttack { name = "heavy", windup = .5f, active = .25f, recovery = .5f, reach = 1.9f, damage = 25, heavy = true, cooldown = 2 },
+                }
+            },
+            [EnemyRole.Arslan] = new EnemyProfile
+            {
+                role = EnemyRole.Arslan, title = "Bayraktar Arslan", sheet = "captain", health = 260, guard = 110, speed = 1.4f, keepMin = 1.6f, keepMax = 2.6f, size = 1.15f,
+                poise = true, phaseAt = .5f, phaseShift = "ignite",
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "thrust", windup = .45f, active = .15f, recovery = .5f, reach = 2.7f, damage = 18, punish = true },
+                    new EnemyAttack { name = "sweep", windup = .6f, active = .25f, recovery = .8f, reach = 3f, damage = 22, red = true, cooldown = 2, phase = 1 },
+                    new EnemyAttack { name = "burnsweep", windup = .6f, active = .25f, recovery = .8f, reach = 3f, damage = 24, red = true, cooldown = 2, phase = 2, patchWidth = 2.6f, patchLife = 1.5f },
+                    new EnemyAttack { name = "plant", kind = AttackKind.Summon, windup = .8f, active = .05f, recovery = .6f, reach = 7, summon = EnemyRole.Nefer, summonCount = 2, cooldown = 999 },
+                    new EnemyAttack { name = "ignite", kind = AttackKind.Rage, windup = 1f, active = .05f, recovery = .3f },
+                }
+            },
+            [EnemyRole.KorDemir] = new EnemyProfile
+            {
+                role = EnemyRole.KorDemir, title = "Humbaracıbaşı Kör Demir", sheet = "captain", health = 280, guard = 100, speed = 1.2f, keepMin = 3, keepMax = 6.5f, size = 1.12f,
+                poise = true, phaseAt = .5f, phaseShift = "ignite",
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "axe", windup = .45f, active = .15f, recovery = .6f, reach = 1.8f, damage = 20, heavy = true, punish = true },
+                    new EnemyAttack { name = "hook", kind = AttackKind.Pull, windup = .4f, active = .15f, recovery = .6f, minRange = 2, reach = 4.5f, damage = 8, cooldown = 3 },
+                    new EnemyAttack { name = "grenade", kind = AttackKind.Grenade, windup = .5f, active = .05f, recovery = .5f, minRange = 2, reach = 9, damage = 18, red = true, patchWidth = 1.6f, patchLife = 4, cooldown = 2.5f },
+                    new EnemyAttack { name = "oil", kind = AttackKind.Grenade, windup = .7f, active = .05f, recovery = .6f, minRange = 3, reach = 9, damage = 10, red = true, patchWidth = 4.5f, patchLife = 5, cooldown = 6 },
+                    new EnemyAttack { name = "ignite", kind = AttackKind.ArenaFire, windup = 1f, active = .05f, recovery = .3f },
+                }
+            },
+            [EnemyRole.Kurtbas] = new EnemyProfile
+            {
+                role = EnemyRole.Kurtbas, title = "Deli Kurtbaş", sheet = "captain", health = 300, guard = 90, speed = 2.6f, keepMin = 1, keepMax = 1.8f, size = 1.12f,
+                poise = true, phaseAt = .5f, phaseShift = "howl", phase2Taken = 1.25f, phase2Unstoppable = true,
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "storm", windup = .3f, active = 1.4f, hits = 4, hitGap = .42f, recovery = .5f, reach = 1.6f, damage = 10, punish = true },
+                    new EnemyAttack { name = "leapover", kind = AttackKind.LeapOver, active = .7f, recovery = .1f, reach = 2, cooldown = 3 },
+                    new EnemyAttack { name = "leapslam", kind = AttackKind.LeapSlam, windup = .4f, active = 1f, recovery = .6f, minRange = 3.5f, reach = 9, radius = 1.6f, damage = 24, red = true, cooldown = 4 },
+                    new EnemyAttack { name = "howl", kind = AttackKind.Rage, windup = 1f, active = .05f, recovery = .3f },
+                }
+            },
+            [EnemyRole.KaraMurad] = new EnemyProfile
+            {
+                role = EnemyRole.KaraMurad, title = "Yeniçeri Ağası Kara Murad", sheet = "captain", health = 380, guard = 140, speed = 1.5f, keepMin = 1, keepMax = 1.8f, size = 1.6f, bulk = 2f,
+                poise = true, phaseAt = .5f, phaseShift = "throwpala", phase2Speed = 1.3f,
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "combo", windup = .45f, active = 1.25f, hitTimes = new[] { 0f, .45f, 1.1f }, recovery = .6f, reach = 2.4f, damage = 18, punish = true, phase = 1 },
+                    new EnemyAttack { name = "charge", windup = .5f, active = .9f, recovery = .8f, minRange = 3, reach = 12, hitReach = 1.5f, dash = 8, damage = 26, red = true, push = 6, cooldown = 5, phase = 1 },
+                    new EnemyAttack { name = "grab", windup = .35f, active = .15f, recovery = .7f, reach = 1.5f, damage = 30, red = true, heavy = true, grab = true, cooldown = 3, phase = 1 },
+                    new EnemyAttack { name = "quake", kind = AttackKind.FlameWave, windup = .7f, active = .05f, recovery = .6f, minRange = 2.5f, reach = 10, damage = 20, red = true, cooldown = 4, phase = 1 },
+                    new EnemyAttack { name = "throwpala", kind = AttackKind.Rage, windup = 1f, active = .05f, recovery = .2f },
+                    new EnemyAttack { name = "fists", windup = .25f, active = 1f, hitTimes = new[] { 0f, .42f, .84f }, recovery = .4f, reach = 1.65f, damage = 14, punish = true, phase = 2 },
+                    new EnemyAttack { name = "charge2", clip = "charge", windup = .4f, active = .9f, recovery = .3f, minRange = 3, reach = 12, hitReach = 1.5f, dash = 8, damage = 26, red = true, push = 6, cooldown = 4, then = "recharge", phase = 2 },
+                    new EnemyAttack { name = "recharge", clip = "charge", windup = .35f, active = .9f, recovery = .8f, hitReach = 1.5f, dash = 8, damage = 26, red = true, push = 6, phase = 2 },
+                    new EnemyAttack { name = "grab2", clip = "grab", windup = .3f, active = .15f, recovery = .6f, reach = 1.5f, damage = 30, red = true, heavy = true, grab = true, cooldown = 1.5f, phase = 2 },
                 }
             },
         };
