@@ -10,8 +10,11 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'Docs', 'references', 'enemy-sheets.md')
 
-JAN = ("an Ottoman-style Janissary soldier (dark fantasy): tall off-white felt bork hat with a long cloth flap hanging down the back of the neck "
-       "and a small brass ornament at the front; thick dark moustache, fair skin, almond eyes, stern grim face; dark crimson long coat tucked up "
+# Kullanıcının fenotip kuralı (Türkler / Osmanlılar): açık ten, badem göz, kumral saç, bıyık ve sakal; asla siyah / koyu saç, esmer değil
+LOOK = "fair skin, almond eyes, chestnut (light brown) hair"
+NOT_DARK = "never black or dark hair, not swarthy"
+JAN = ("an Ottoman-style Janissary soldier (dark fantasy): tall off-white felt bork hat with a small brass ornament at the front; "
+       f"{LOOK}, a thick chestnut moustache and a short chestnut beard ({NOT_DARK}), stern grim face; dark crimson long coat tucked up "
        "at the front over a weathered steel mail shirt; brown leather lamellar belt armor with bronze rivets; wide burgundy sash; baggy dark "
        "trousers; brown leather boots")
 TAIL = ("STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, "
@@ -70,18 +73,28 @@ EFFECTS = [
     ('alev dalgası efekti', 4, "4 frames of a BLACK-PURPLE GROUND FLAME WAVE travelling to the right, a low wall of dark fire about knee high, loopable, pixel art effect, transparent-looking edges"),
     ('lanet küresi efekti', 4, "4 frames of a GLOWING PURPLE CURSE ORB with a small dark core and wisps, pulsing, loopable, pixel art effect"),
 ]
+# Kara Murad: silahsız gövde tanımı; ikinci evre istemleri palasız tanımı kullanır (ChatGPT'ye çelişkili "pala" + "kılıçsız" gitmesin)
+KARA_MURAD = ("Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, shoulders nearly twice as wide as a normal man, "
+              "bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, "
+              f"{LOOK}, a thick chestnut moustache and beard ({NOT_DARK})")
+KARA_MURAD_BARE = KARA_MURAD + "; bare-handed, his pala thrown away: NO sword or weapon anywhere, empty hands"
+KARA_MURAD_THROW = KARA_MURAD + "; he holds his giant two-handed pala only in the first frames of this sheet and throws it away, ending bare-handed"
 BOSSES = [
     ('arslan', 'Bayraktar Arslan (Kızıl Surlar)', 'Dev sancaktar; ikinci evrede sancağı ateşe verir.',
-     "Standard-bearer Arslan, a giant janissary standard-bearer (dark fantasy boss): huge broad-shouldered man, tall off-white bork with a red band, thick black beard, "
+     "Standard-bearer Arslan, a giant janissary standard-bearer (dark fantasy boss): huge broad-shouldered man, tall off-white bork with a red band, "
+     f"{LOOK}, a thick chestnut moustache and beard ({NOT_DARK}), "
      "battle scars, heavy mail with bronze plates, crimson coat, chained trophies on his belt, a long war-standard pole with a torn crimson banner used as a spear, a yatagan in the sash",
      'about 15% TALLER and much broader than the man in the reference', [IDLE, WALK,
         ('direkle dürtüş', 6, "a LONG THRUST with the standard pole: 1-2 pulling back, 3 thrusting far forward, 4 hold, 5-6 recovering"),
         ('direkle savuruş', 8, "a WIDE ARC SWEEP with the standard pole: 1-3 big wind-up, 4 huge sweeping arc with a smear, 5 follow-through, 6-8 recovering"),
         ('sancağı dikme', 6, "PLANTING THE STANDARD and roaring a command: 1 lifting the pole, 2 stabbing it into the ground, 3-4 roaring with an arm raised, 5-6 pulling it out"),
         ('yanan sancakla savuruş', 8, "a SWEEP WITH THE BURNING STANDARD (the banner is on fire): 1-3 wind-up, 4 sweeping arc trailing flames, 5 follow-through, 6-8 recovering"),
+        ('sancağı tutuşturma', 6, "SETTING THE STANDARD ALIGHT (phase change): 1 tearing the standard out of the ground, 2 holding it up, 3 touching the banner to a brazier flame, 4 the banner catching fire, 5 roaring, 6 ready with the burning standard"),
+        ('yanan sancakla bekleme', 4, "a subtle IDLE loop holding the BURNING standard, flames flickering (loopable)"),
         HURT, BOSS_DEATH]),
     ('kordemir', 'Humbaracıbaşı Kör Demir (Yanmış Mahalle)', 'Mahalleyi yakan adam: humbara, kanca, yağ küpü.',
-     "Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, "
+     "Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, "
+     f"{LOOK} on the unburned side, a chestnut moustache and beard ({NOT_DARK}), shaved head with a scorched cap, "
      "leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe",
      'about 12% TALLER and broader than the man in the reference', [IDLE, WALK,
         ('humbara atma', 6, "THROWING A CLAY FIRE-GRENADE in a high arc: 1 lighting the fuse, 2 winding up, 3 throwing, 4 follow-through, 5-6 recovering"),
@@ -91,7 +104,7 @@ BOSSES = [
         HURT, BOSS_DEATH]),
     ('kurtbas', 'Deli Kurtbaş (Kurt Geçidi)', 'Kurt postlu vahşi delibaş; doğaüstü değil.',
      "Deli Kurtbas, a wild delibas warrior (dark fantasy boss, human): lean muscular man, a grey wolf pelt cloak with the wolf head worn as a hood, "
-     "wild dark hair and beard, leather and fur armor, bare scarred arms, an axe in each hand",
+     f"fair skin, almond eyes, wild chestnut hair and beard ({NOT_DARK}), leather and fur armor, bare scarred arms, an axe in each hand",
      'about 12% TALLER than the man in the reference', [IDLE, WALK,
         ('koşu', 8, "a FAST RUNNING cycle, loopable, low and aggressive, axes held out"),
         ('balta fırtınası', 10, "a 4-HIT AXE STORM: 1 wind-up, 2-3 first slash, 4-5 second slash, 6-7 third slash, 8-9 fourth slash, each with a smear, 10 recovering"),
@@ -100,17 +113,16 @@ BOSSES = [
         ('uluma', 5, "a HOWL into frenzy: 1 hunching, 2-3 throwing the head back howling, 4 shaking with rage, 5 ready, eyes wild"),
         HURT, BOSS_DEATH]),
     ('karamurad', 'Yeniçeri Ağası Kara Murad (Karanlık Kale)', 'Dev, kaslı dövüşçü; ikinci evrede çıplak elle.',
-     "Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, shoulders nearly twice as wide as a normal man, "
-     "bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, black beard, a giant two-handed pala sword",
+     KARA_MURAD + ", a giant two-handed pala sword",
      'about 25% TALLER and nearly twice as broad as the man in the reference', [IDLE, WALK,
         ('pala kombosu', 10, "a 3-HIT HEAVY PALA COMBO with a slow-fast-slow rhythm: 1-2 wind-up, 3 first heavy slash, 4-5 quick second slash, 6-7 wind-up, 8 huge third slash with a wide smear, 9-10 recovering"),
         ('omuz hücumu', 6, "a SHOULDER CHARGE: 1 lowering the shoulder, 2-4 charging forward fast, 5 impact, 6 recovering"),
         ('yakalayıp fırlatma', 8, "a GRAB AND THROW: 1 reaching forward, 2 grabbing, 3 lifting an invisible enemy overhead, 4-5 slamming down hard, 6 impact, 7-8 recovering"),
         ('yere çakma', 7, "a GROUND SLAM with the pala: 1-3 raising it high with both hands, 4 slamming into the ground, 5 a shock wave bursting forward, 6-7 recovering"),
-        ('yumruk kombosu', 8, "a BARE-HANDED FIST COMBO (no sword): 1 guard up, 2-3 heavy straight punch, 4-5 hook, 6-7 uppercut, 8 recovering"),
-        ('palayı fırlatma', 5, "THROWING THE PALA AWAY in rage (phase change): 1 holding the pala, 2 raising it, 3 hurling it aside, 4 roaring with fists clenched, 5 bare-handed fighting stance"),
-        ('çıplak el bekleme', 4, "a subtle bare-handed IDLE loop in a boxer-wrestler stance, fists raised, NO sword: 1 base, 2 chest rises, 3 shift of weight, 4 almost back (loopable)"),
-        ('çıplak el yürüme', 8, "a bare-handed WALKING cycle, fists raised, NO sword, loopable, evenly spaced phases"),
+        ('yumruk kombosu', 8, "a BARE-HANDED FIST COMBO (no sword): 1 guard up, 2-3 heavy straight punch, 4-5 hook, 6-7 uppercut, 8 recovering", KARA_MURAD_BARE),
+        ('palayı fırlatma', 5, "THROWING THE PALA AWAY in rage (phase change): 1 holding the pala, 2 raising it, 3 hurling it aside, 4 roaring with fists clenched, 5 bare-handed fighting stance", KARA_MURAD_THROW),
+        ('çıplak el bekleme', 4, "a subtle bare-handed IDLE loop in a boxer-wrestler stance, fists raised, NO sword: 1 base, 2 chest rises, 3 shift of weight, 4 almost back (loopable)", KARA_MURAD_BARE),
+        ('çıplak el yürüme', 8, "a bare-handed WALKING cycle, fists raised, NO sword, loopable, evenly spaced phases", KARA_MURAD_BARE),
         HURT, BOSS_DEATH]),
 ]
 
@@ -129,8 +141,10 @@ def anim_prompt(desc, n, action):
 def section(out, key, title, note, desc, size, moves):
     out.append(f"---\n\n## {title}\n{note}\n\n")
     out.append(f"### {key} 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)\n```\n{base_prompt(desc, size)}\n```\n\n")
-    for i, (tr, n, action) in enumerate(moves, 1):
-        out.append(f"### {key} {i}. {tr}: {n} kare (ana pozu ekle)\n```\n{anim_prompt(desc, n, action)}\n```\n\n")
+    for i, move in enumerate(moves, 1):
+        tr, n, action = move[:3]
+        move_desc = move[3] if len(move) > 3 else desc   # hareketin kendi tanımı varsa (Kara Murad ikinci evre)
+        out.append(f"### {key} {i}. {tr}: {n} kare (ana pozu ekle)\n```\n{anim_prompt(move_desc, n, action)}\n```\n\n")
 
 
 def main():
