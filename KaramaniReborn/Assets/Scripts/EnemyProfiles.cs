@@ -37,6 +37,8 @@ namespace KaramaniReborn
         public string title, sheet;
         public float health, guard, speed, keepMin, keepMax, size = .98f, phaseAt, turnDelay;
         public bool halfBoss, shielded, ranged;
+        // Çatlak Kaya oymağının goblini: saldırı sırası insanlardan ayrı sayılır (en çok 3)
+        public bool goblin;
         // Duruş: kendi saldırısını yürütürken vurulunca durmaz (can ve denge yine düşer); yalnız denge kırılınca sendeler
         public bool poise;
         // Savuşturulunca sendeleme süresi (denge kırılınca her zaman .9 sn)
@@ -183,6 +185,87 @@ namespace KaramaniReborn
                     new EnemyAttack { name = "charge2", clip = "charge", windup = .4f, active = .9f, recovery = .3f, minRange = 3, reach = 12, hitReach = 1.5f, dash = 8, damage = 26, red = true, push = 6, cooldown = 4, then = "recharge", phase = 2 },
                     new EnemyAttack { name = "recharge", clip = "charge", windup = .35f, active = .9f, recovery = .8f, hitReach = 1.5f, dash = 8, damage = 26, red = true, push = 6, phase = 2 },
                     new EnemyAttack { name = "grab2", clip = "grab", windup = .3f, active = .15f, recovery = .6f, reach = 1.5f, damage = 30, red = true, heavy = true, grab = true, cooldown = 1.5f, phase = 2 },
+                }
+            },
+            // ---- 2. kısım: goblinler (Docs/specs/2026-10-12-goblin-part2-design.md §3-§5)
+            // Yer tutucu profiller: can / boy spec'ten, tek temel saldırı; asıl saldırı setleri sonraki görevlerde bunların yerine geçer.
+            // Boy (Karamani = 1): sıradan goblin .68, Kaba 1.0 (gövde 2 kat), Kırçıl .9, Çatal 1.15, Kara Diş 1.1. Çizim: mevcut sayfalar.
+            [EnemyRole.Bicakci] = new EnemyProfile
+            {
+                role = EnemyRole.Bicakci, title = "Bıçakçı", sheet = "duelist", goblin = true, health = 30, guard = 15, speed = 2.2f, keepMin = .8f, keepMax = 1f, size = .68f,
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "stab", windup = .3f, active = .6f, hitGap = .45f, hits = 2, recovery = .3f, reach = 1.1f, damage = 8, punish = true },
+                }
+            },
+            [EnemyRole.ZehirliOkcu] = new EnemyProfile
+            {
+                role = EnemyRole.ZehirliOkcu, title = "Zehirli Okçu", sheet = "archer", goblin = true, health = 30, guard = 10, speed = 1.8f, keepMin = 6, keepMax = 10, size = .68f, ranged = true,
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "dagger", windup = .25f, active = .12f, recovery = .35f, reach = 1.2f, damage = 8 },
+                    new EnemyAttack { name = "arrow", clip = "shoot", kind = AttackKind.Arrow, windup = .45f, active = .05f, recovery = .4f, minRange = 2, reach = 11, damage = 8, cooldown = 1.2f },
+                }
+            },
+            [EnemyRole.Pusucu] = new EnemyProfile
+            {
+                role = EnemyRole.Pusucu, title = "Pusucu", sheet = "duelist", goblin = true, health = 40, guard = 20, speed = 1.8f, keepMin = .8f, keepMax = 1.2f, size = .68f,
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "dagger", windup = .3f, active = .15f, recovery = .4f, reach = 1.3f, damage = 10, punish = true },
+                }
+            },
+            [EnemyRole.GoblinKalkanli] = new EnemyProfile
+            {
+                role = EnemyRole.GoblinKalkanli, title = "Kalkanlı Mızrakçı", sheet = "shield", goblin = true, health = 70, guard = 60, speed = 1.2f, keepMin = 1.2f, keepMax = 2f, size = .68f,
+                shielded = true, turnDelay = .6f, poise = true,
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "thrust", windup = .4f, active = .15f, recovery = .45f, reach = 2.2f, damage = 14 },
+                }
+            },
+            [EnemyRole.Comlekci] = new EnemyProfile
+            {
+                role = EnemyRole.Comlekci, title = "Ateş Çömlekçisi", sheet = "duelist", goblin = true, health = 35, guard = 15, speed = 1.6f, keepMin = .9f, keepMax = 1.4f, size = .68f,
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "pot", windup = .3f, active = .15f, recovery = .4f, reach = 1.3f, damage = 9 },
+                }
+            },
+            [EnemyRole.Kaba] = new EnemyProfile
+            {
+                role = EnemyRole.Kaba, title = "Kaba", sheet = "captain", goblin = true, health = 130, guard = 100, speed = 1f, keepMin = 1f, keepMax = 1.7f, size = 1f, bulk = 2f,
+                poise = true,
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "cleave", windup = .55f, active = .15f, recovery = .7f, reach = 1.9f, damage = 24, heavy = true, punish = true },
+                }
+            },
+            [EnemyRole.Kircil] = new EnemyProfile
+            {
+                role = EnemyRole.Kircil, title = "Kan Şamanı Kırçıl", sheet = "captain", goblin = true, health = 200, guard = 50, speed = 1.2f, keepMin = 1.2f, keepMax = 2f, size = .9f,
+                halfBoss = true,
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "staff", windup = .3f, active = .6f, hitGap = .45f, hits = 2, recovery = .4f, reach = 1.6f, damage = 12, punish = true },
+                }
+            },
+            [EnemyRole.Catal] = new EnemyProfile
+            {
+                role = EnemyRole.Catal, title = "Domuz Binicisi Çatal", sheet = "captain", goblin = true, health = 160, guard = 80, speed = 1.6f, keepMin = 1.6f, keepMax = 2.4f, size = 1.15f,
+                halfBoss = true,
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "spear", windup = .45f, active = .15f, recovery = .5f, reach = 2.6f, damage = 18, punish = true },
+                }
+            },
+            [EnemyRole.KaraDis] = new EnemyProfile
+            {
+                role = EnemyRole.KaraDis, title = "Oymak Beyi Kara Diş", sheet = "captain", goblin = true, health = 420, guard = 80, speed = 3.2f, keepMin = 1f, keepMax = 1.7f, size = 1.1f,
+                poise = true,
+                attacks = new[]
+                {
+                    new EnemyAttack { name = "slash", clip = "light1", windup = .35f, active = .3f, recovery = .4f, reach = 1.8f, damage = 18, punish = true },
                 }
             },
         };

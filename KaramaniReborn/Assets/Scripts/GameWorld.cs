@@ -11,8 +11,9 @@ namespace KaramaniReborn
         public readonly List<Projectile> projectiles = new();
         // Çağrılan düşmanlar döngü bittikten sonra doğar (liste dolaşılırken değiştirilmez)
         readonly List<(Vector2 at, EnemyRole role)> spawnQueue = new();
-        // Bölümlerin sonundaki ağalar (bölüm sırasıyla)
-        public static readonly EnemyRole[] ZoneBosses = { EnemyRole.Arslan, EnemyRole.KorDemir, EnemyRole.Kurtbas, EnemyRole.KaraMurad };
+        // Bölümlerin sonundaki kapı bekçileri (bölüm sırasıyla); null: kapı açık (Sisli Koru).
+        // 5'te yarı-boss Kırçıl, 6'da Kara Diş boss = true olarak doğar.
+        public static readonly EnemyRole?[] ZoneBosses = { EnemyRole.Arslan, EnemyRole.KorDemir, EnemyRole.Kurtbas, EnemyRole.KaraMurad, null, EnemyRole.Kircil, EnemyRole.KaraDis };
         public readonly ZoneDefinition zone;
         public readonly Effects effects;
         public readonly Transform actorsRoot;
@@ -43,21 +44,34 @@ namespace KaramaniReborn
             checkpoint = checkpointX;
             player = new Actor { id = 0, player = true, position = new Vector2(checkpointX, zone.floor), maxGuard = 100, guard = 100 };
             new PixelCharacter(player, actorsRoot);
-            foreach (var (x, y, role) in Layout(index)) Spawn(x, y, role);
-            Spawn(50.4f, zone.floor, ZoneBosses[index], true);
+            foreach (var (x, y, role, perch) in Layout(index)) Spawn(x, y, role).perch = perch;
+            if (ZoneBosses[index] is EnemyRole gate) Spawn(50.4f, zone.floor, gate, true);
         }
 
         // Bölge dizilişi (Docs/specs/2026-10-12-enemy-roster-design.md §5): önce insanlar, büyücü Kurt Geçidi'nde ilk kez.
         // Platformlar: 23.5-26.6 (y -0.75), 37.4-40.7 (y -0.85)
-        (float x, float y, EnemyRole role)[] Layout(int index)
+        // 2. kısım (docs/specs/2026-10-12-goblin-part2-design.md §6): perch, ZoneDefinition.perches sırası (-1 = bağlı değil).
+        // Pusucu şimdilik pusu noktasının hizasında, yerde doğar; noktaya çıkma davranışı ayrı görevde.
+        (float x, float y, EnemyRole role, int perch)[] Layout(int index)
         {
             float f = zone.floor;
+            (float, float, EnemyRole, int) E(float x, float y, EnemyRole role, int perch = -1) => (x, y, role, perch);
             return index switch
             {
-                0 => new[] { (10f, f, EnemyRole.Nefer), (18.1f, f, EnemyRole.Spearman), (25.5f, -.75f, EnemyRole.Archer), (35.1f, f, EnemyRole.Nefer), (42.3f, f, EnemyRole.Nefer) },
-                1 => new[] { (10f, f, EnemyRole.Nefer), (20f, f, EnemyRole.Musketeer), (35.1f, f, EnemyRole.Halberdier), (39f, -.85f, EnemyRole.Musketeer), (44f, f, EnemyRole.Nefer) },
-                2 => new[] { (10f, f, EnemyRole.Spearman), (20f, f, EnemyRole.Musketeer), (25.5f, -.75f, EnemyRole.Archer), (35.1f, f, EnemyRole.Halberdier), (39f, -.85f, EnemyRole.Archer), (44f, f, EnemyRole.Sorcerer) },
-                _ => new[] { (10f, f, EnemyRole.Nefer), (18.1f, f, EnemyRole.Spearman), (25.5f, -.75f, EnemyRole.Musketeer), (35.1f, f, EnemyRole.Halberdier), (39f, -.85f, EnemyRole.Archer), (44f, f, EnemyRole.Sorcerer) },
+                0 => new[] { E(10f, f, EnemyRole.Nefer), E(18.1f, f, EnemyRole.Spearman), E(25.5f, -.75f, EnemyRole.Archer), E(35.1f, f, EnemyRole.Nefer), E(42.3f, f, EnemyRole.Nefer) },
+                1 => new[] { E(10f, f, EnemyRole.Nefer), E(20f, f, EnemyRole.Musketeer), E(35.1f, f, EnemyRole.Halberdier), E(39f, -.85f, EnemyRole.Musketeer), E(44f, f, EnemyRole.Nefer) },
+                2 => new[] { E(10f, f, EnemyRole.Spearman), E(20f, f, EnemyRole.Musketeer), E(25.5f, -.75f, EnemyRole.Archer), E(35.1f, f, EnemyRole.Halberdier), E(39f, -.85f, EnemyRole.Archer), E(44f, f, EnemyRole.Sorcerer) },
+                // Sisli Koru: platformlar 6.5-9.8, 16.5-20.2, 22.4-25.8 (y -0.45), 33.6-37.2, 41.5-45.5 (y -0.5), 47.8-51; okçular platformda
+                4 => new[] { E(8.5f, f, EnemyRole.Bicakci), E(17.5f, f, EnemyRole.Bicakci), E(24f, -.45f, EnemyRole.ZehirliOkcu), E(31.6f, f, EnemyRole.Pusucu, 1),
+                             E(33f, f, EnemyRole.Bicakci), E(43.5f, -.5f, EnemyRole.ZehirliOkcu), E(46.5f, f, EnemyRole.Bicakci), E(53f, f, EnemyRole.Pusucu, 2) },
+                // Derin Mağaralar: yerdeki düşmanlar; Kırçıl 50.4'te kapıyı tutar
+                5 => new[] { E(8f, f, EnemyRole.Bicakci), E(9.6f, f, EnemyRole.Pusucu, 0), E(16f, f, EnemyRole.Bicakci), E(19f, f, EnemyRole.GoblinKalkanli),
+                             E(29f, f, EnemyRole.Pusucu, 2), E(33f, f, EnemyRole.GoblinKalkanli), E(35f, f, EnemyRole.Bicakci), E(38f, f, EnemyRole.Kaba), E(44.5f, f, EnemyRole.Comlekci) },
+                // Kemik Tahtı: okçu 36.8-40.2 platformunda (y -0.45); Çatal bölümün ortasında; Kara Diş 50.4'te
+                6 => new[] { E(9.5f, f, EnemyRole.Bicakci), E(16.5f, f, EnemyRole.Bicakci), E(20f, f, EnemyRole.GoblinKalkanli), E(24f, f, EnemyRole.Comlekci),
+                             E(29.5f, f, EnemyRole.Bicakci), E(31.5f, f, EnemyRole.Kaba), E(33f, f, EnemyRole.Comlekci), E(36f, f, EnemyRole.GoblinKalkanli),
+                             E(38.6f, -.45f, EnemyRole.ZehirliOkcu), E(41f, f, EnemyRole.Catal) },
+                _ => new[] { E(10f, f, EnemyRole.Nefer), E(18.1f, f, EnemyRole.Spearman), E(25.5f, -.75f, EnemyRole.Musketeer), E(35.1f, f, EnemyRole.Halberdier), E(39f, -.85f, EnemyRole.Archer), E(44f, f, EnemyRole.Sorcerer) },
             };
         }
 

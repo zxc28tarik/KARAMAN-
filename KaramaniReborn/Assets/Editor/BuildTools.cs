@@ -58,7 +58,7 @@ namespace KaramaniReborn.Editor
             root.menu = false; root.hud.SetMenu(false);
             VerifyInput(); VerifyLocomotion(root); VerifyJump(root); VerifyLedge(root); VerifyAgility(root); VerifyCombat(root); VerifyRanged(root); EnemyTests.Verify(root); VerifyJourney(root);
             CaptureBosses(root); CaptureChapters(root); CaptureAnimation(root);
-            File.WriteAllText("Review/verification.txt", "PASS: 4:3 presentation and uniform pixel projection on 4:3, 16:9, ultrawide and portrait windows\nPASS: menu, pause and gameplay HUD stay inside the 4:3 viewport\nPASS: idle hero occupies 20-26 percent of viewport height without source-art resizing\nPASS: Last Faith-style pixel pipeline: 360x270 world, every chapter limited to its palette, HUD on its own crisp layer\nPASS: ten source PNG dimensions match imported Unity textures exactly\nPASS: no power-of-two resizing / no texture compression\nPASS: single-piece frame characters: one sprite per actor, no separate limb parts, all 6 character sheets\nPASS: every action state has a drawn clip; the player never falls back to a substitute clip\nPASS: stride-locked planted feet (< 1 game pixel), unscaled frames on the game-pixel grid\nPASS: high-refresh and hit-stop input latch\nPASS: buffered three-hit combo and actual blade intersection\nPASS: timed parry and dodge invulnerability\nPASS: jump takeoff, apex and landing\nPASS: ledge grab, hang and climb onto the ledge\nPASS: double jump, backdash and bouncing downward strike\nPASS: pistol contact and elevated archer aim\nPASS: checkpoint interaction and respawn\nPASS: four chapter gate transitions and journey completion\nPASS: painted walkway / physical surface alignment (<0.001 units)\nPASS: four chapters rendered by Unity with native HUD\n");
+            File.WriteAllText("Review/verification.txt", "PASS: 4:3 presentation and uniform pixel projection on 4:3, 16:9, ultrawide and portrait windows\nPASS: menu, pause and gameplay HUD stay inside the 4:3 viewport\nPASS: idle hero occupies 20-26 percent of viewport height without source-art resizing\nPASS: Last Faith-style pixel pipeline: 360x270 world, every chapter limited to its palette, HUD on its own crisp layer\nPASS: ten source PNG dimensions match imported Unity textures exactly\nPASS: no power-of-two resizing / no texture compression\nPASS: single-piece frame characters: one sprite per actor, no separate limb parts, all 6 character sheets\nPASS: every action state has a drawn clip; the player never falls back to a substitute clip\nPASS: stride-locked planted feet (< 1 game pixel), unscaled frames on the game-pixel grid\nPASS: high-refresh and hit-stop input latch\nPASS: buffered three-hit combo and actual blade intersection\nPASS: timed parry and dodge invulnerability\nPASS: jump takeoff, apex and landing\nPASS: ledge grab, hang and climb onto the ledge\nPASS: double jump, backdash and bouncing downward strike\nPASS: pistol contact and elevated archer aim\nPASS: checkpoint interaction and respawn\nPASS: seven chapter gate transitions and journey completion\nPASS: painted walkway / physical surface alignment (<0.001 units)\nPASS: four chapters rendered by Unity with native HUD\n");
             Debug.Log("KARAMANI_VERIFY_SUCCESS");
         }
 
@@ -121,7 +121,7 @@ namespace KaramaniReborn.Editor
                 ArtValidation.Assert(t.gameObject.layer == PixelPipeline.UILayer, "HUD object outside the UI layer: " + t.name);
             Directory.CreateDirectory("Review/pixel");
             string counts = "";
-            for (int zone = 0; zone < 4; zone++)
+            for (int zone = 0; zone < ZoneDefinition.Count; zone++)
             {
                 root.LoadZone(zone, true); root.TickCamera(0, true); root.stage.Tick(0, 1, root.gameCamera.transform.position);
                 px.Render();
@@ -157,7 +157,9 @@ namespace KaramaniReborn.Editor
                     // TODO: Büyücü kendi HD sayfasını alınca kaldır
                     // Kara Murad da 1.6 boyunda; yer tutucu komutan çizimi bunu gösteremez (boy aralığı 1 boyutu için)
                     // TODO: Kara Murad'ın HD sayfası (Karamani'nin 1.6 katı boy) gelince kaldır
-                    if (role != EnemyRole.Sorcerer && role != EnemyRole.KaraMurad) foreach (bool player in role == EnemyRole.Nefer ? new[] { true, false } : new[] { false })
+                    // Goblinler yer tutucu insan çizimiyle gelir (boyları .68-1.15); piksel sayfa boyla ölçeklenmediğinden bu denetim onlara uygulanmaz
+                    // TODO: goblinlerin HD sayfaları gelince kaldır
+                    if (role != EnemyRole.Sorcerer && role != EnemyRole.KaraMurad && !EnemyProfile.For(role).goblin) foreach (bool player in role == EnemyRole.Nefer ? new[] { true, false } : new[] { false })
                     {
                         var a = new Actor { player = player, role = role, boss = role == EnemyRole.Captain, position = new Vector2(3, -2.25f), size = player ? 1 : EnemyProfile.For(role).size };
                         var view = new PixelCharacter(a, parent);
@@ -361,17 +363,17 @@ namespace KaramaniReborn.Editor
             w.Damage(w.player, 1000, 1, true, true); root.Respawn();
             ArtValidation.Assert(root.world.player.position.x == 21 && !root.world.player.Dead, "Checkpoint respawn failed");
             root.LoadZone(0, true);
-            for (int zone = 0; zone < 4; zone++)
+            for (int zone = 0; zone < ZoneDefinition.Count; zone++)
             {
                 w = root.world; ArtValidation.Assert(w.zone.index == zone, "Unexpected chapter in journey");
-                var boss = w.enemies.Find(a => a.boss); w.Damage(boss, 1000, 1, true, true);
+                var boss = w.enemies.Find(a => a.boss); if (boss != null) w.Damage(boss, 1000, 1, true, true);   // Sisli Koru'nun (4) kapısı açık: bekçi yok
                 w.player.position.x = 55; w.Simulate(1f / 120, new InputFrame { interact = true }, false);
                 ArtValidation.Assert(w.transitionRequested, "Defeated captain did not unlock the gate");
                 root.AdvanceIfRequested();
             }
-            ArtValidation.Assert(root.journeyComplete && !root.menu, "Fourth gate did not complete the journey");
+            ArtValidation.Assert(root.journeyComplete && !root.menu, "Seventh gate did not complete the journey");
             root.ReturnToMenu(); ArtValidation.Assert(root.menu && !root.journeyComplete, "Completion menu return failed");
-            Debug.Log("KARAMANI_JOURNEY_PASS · checkpoints, death/respawn, four gates, completion");
+            Debug.Log("KARAMANI_JOURNEY_PASS · checkpoints, death/respawn, seven gates, completion");
         }
 
         static void VerifyRanged(GameRoot root)

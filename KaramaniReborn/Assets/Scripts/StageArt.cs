@@ -28,15 +28,19 @@ namespace KaramaniReborn
             plane = zone.ambient * .78f; plane.a = 1;
             root = new GameObject(zone.title + " · Painted stage").transform; root.SetParent(parent, false);
             // Işıksız yerde: ilk bölümde batan güneşin sıcak ışığı sağdan, diğerlerinde soğuk ay ışığı üstten
+            // 2. kısım: 4 sisli koruda yeşilimsi dağınık ışık, 5 mağarada soğuk ve zayıf tavan ışığı, 6 galerilerde meşale sıcaklığı
             if (zone.index == 0) LightField.Reset(new Vector2(1, .35f), new Color(1, .6f, .3f), .42f);
+            else if (zone.index == 4) LightField.Reset(new Vector2(-.2f, 1), new Color(.6f, .8f, .68f), .30f);
+            else if (zone.index == 5) LightField.Reset(new Vector2(-.1f, 1), new Color(.5f, .65f, .9f), .26f);
+            else if (zone.index == 6) LightField.Reset(new Vector2(.6f, .5f), new Color(1, .68f, .32f), .40f);
             else LightField.Reset(new Vector2(-.35f, 1), new Color(.62f, .72f, 1f), .32f);
             // Arka plan önceden piksellenmiş halde, birebir ölçekle çizilir (her doku pikseli bir oyun pikseli)
-            background = ArtLibrary.Draw("Distant painted vista", ArtLibrary.PixelBackground(zone.index, ArtLibrary.BackgroundHeight), root, Vector2.zero, -100);
+            background = ArtLibrary.Draw("Distant painted vista", ArtLibrary.PixelBackground(zone.artIndex, ArtLibrary.BackgroundHeight), root, Vector2.zero, -100);
             // Uzaklık pusu: arka plan sisin rengine karışır, oynanan düzlem öne çıkar
-            Color hazeColor = zone.index switch { 0 => new Color(.42f, .28f, .38f), 1 => new Color(.27f, .24f, .25f), 2 => new Color(.22f, .30f, .37f), _ => new Color(.50f, .53f, .62f) };
-            Color mistColor = zone.index switch { 0 => new Color(.62f, .45f, .48f), 1 => new Color(.42f, .38f, .38f), 2 => new Color(.42f, .54f, .62f), _ => new Color(.7f, .74f, .84f) };
-            Color shade = zone.index switch { 0 => new Color(.05f, .035f, .055f), 1 => new Color(.03f, .028f, .03f), 2 => new Color(.02f, .035f, .045f), _ => new Color(.04f, .045f, .065f) };
-            Color shaft = zone.index switch { 0 => new Color(1, .72f, .5f, .05f), 1 => new Color(1, .6f, .36f, .04f), 2 => new Color(.62f, .8f, 1, .06f), _ => new Color(.85f, .9f, 1, .06f) };
+            Color hazeColor = zone.index switch { 0 => new Color(.42f, .28f, .38f), 1 => new Color(.27f, .24f, .25f), 2 => new Color(.22f, .30f, .37f), 4 => new Color(.27f, .38f, .33f), 5 => new Color(.13f, .18f, .27f), 6 => new Color(.40f, .28f, .15f), _ => new Color(.50f, .53f, .62f) };
+            Color mistColor = zone.index switch { 0 => new Color(.62f, .45f, .48f), 1 => new Color(.42f, .38f, .38f), 2 => new Color(.42f, .54f, .62f), 4 => new Color(.55f, .68f, .60f), 5 => new Color(.30f, .38f, .52f), 6 => new Color(.62f, .46f, .26f), _ => new Color(.7f, .74f, .84f) };
+            Color shade = zone.index switch { 0 => new Color(.05f, .035f, .055f), 1 => new Color(.03f, .028f, .03f), 2 => new Color(.02f, .035f, .045f), 4 => new Color(.015f, .03f, .022f), 5 => new Color(.012f, .018f, .03f), 6 => new Color(.04f, .028f, .015f), _ => new Color(.04f, .045f, .065f) };
+            Color shaft = zone.index switch { 0 => new Color(1, .72f, .5f, .05f), 1 => new Color(1, .6f, .36f, .04f), 2 => new Color(.62f, .8f, 1, .06f), 4 => new Color(.7f, .95f, .78f, .05f), 5 => new Color(.55f, .72f, 1, .03f), 6 => new Color(1, .74f, .38f, .05f), _ => new Color(.85f, .9f, 1, .06f) };
             haze = ArtLibrary.Draw("Distance haze", ArtLibrary.Haze, root, Vector2.zero, -96, new Color(hazeColor.r, hazeColor.g, hazeColor.b, zone.index == 1 ? .36f : .55f));
             haze.transform.localScale = new Vector3(56, 26, 1);
             horizon = ArtLibrary.Draw("Horizon mist", ArtLibrary.Fog, root, Vector2.zero, -95, new Color(mistColor.r, mistColor.g, mistColor.b, .3f));
@@ -85,6 +89,8 @@ namespace KaramaniReborn
                 glow.transform.localScale = new Vector3(2, 2, 1);
             }
             foreach (float x in new[] { 8.8f, 25f, 39f, 45.3f }) Prop(props[5], "Ladder", x, zone.floor, 1.48f, 61);
+            // Pusu noktaları: yarı karanlıkta koyu bir dal / çıkıntı siluet; oyuncu "orası tehlikeli" diye öğrenir
+            for (int i = 0; i < zone.perches.Length; i++) PerchMarker(props[6], zone.perches[i], shade);
             Prop(props[4], "Inner gate banner", zone.length - .8f, zone.floor, 3.9f, 62);
             Prop(props[3], "Gate lantern", zone.length - .8f, zone.floor + 2.85f, .70f, 65);
             // Katmanlı sis: yerde sürünen bantlar, bir kısmı karakterlerin önünden geçer
@@ -100,10 +106,12 @@ namespace KaramaniReborn
             {
                 Vector2 at = new Vector2(Rand(-8, 64), Rand(-3, 5.5f));
                 bool ash = zone.index == 1 && i % 2 == 0;
-                Color color = zone.snow ? new Color(.86f, .92f, 1f, Rand(.55f, 1f)) : ash ? new Color(.55f, .52f, .5f, Rand(.5f, .9f)) : new Color(1, Rand(.45f, .8f), .2f, Rand(.7f, 1f));
+                // 4: soluk yeşil sporlar, 5: soğuk mavi damlacık tozu, diğerleri: kor
+                Color color = zone.snow ? new Color(.86f, .92f, 1f, Rand(.55f, 1f)) : ash ? new Color(.55f, .52f, .5f, Rand(.5f, .9f))
+                    : zone.index == 4 ? new Color(.72f, .92f, .62f, Rand(.4f, .8f)) : zone.index == 5 ? new Color(.62f, .78f, .95f, Rand(.35f, .7f)) : new Color(1, Rand(.45f, .8f), .2f, Rand(.7f, 1f));
                 var p = ArtLibrary.Draw(zone.snow ? "Falling snow" : ash ? "Falling ash" : "Floating ember", ArtLibrary.White, root, at, 158, color);
                 float size = PixelPipeline.PixelSize * (zone.snow && Rand(0, 1) > .72f ? 2 : 1); p.transform.localScale = new Vector3(size, size, 1);
-                Vector2 velocity = zone.snow ? new Vector2(Rand(-.25f, .05f), Rand(-.75f, -.35f)) : ash ? new Vector2(Rand(-.1f, .15f), Rand(-.35f, -.12f)) : new Vector2(Rand(-.13f, .13f), Rand(.15f, .45f));
+                Vector2 velocity = zone.snow ? new Vector2(Rand(-.25f, .05f), Rand(-.75f, -.35f)) : ash || zone.index == 5 ? new Vector2(Rand(-.1f, .15f), Rand(-.35f, -.12f)) : new Vector2(Rand(-.13f, .13f), Rand(.15f, .45f));
                 particles.Add(new Weather { transform = p.transform, position = at, velocity = velocity, phase = Rand(0, 8) });
             }
             // Ön plan siluetleri: oyun düzleminin önünde, kameradan hızlı kayar; neredeyse siyah
@@ -175,6 +183,16 @@ namespace KaramaniReborn
             }
         }
 
+        // Pusu noktası işareti: koyu karanlık bir cep (yumuşak gölge) ve üstünde dal / kiriş silueti (mevcut ahşap prop, koyu tonlu).
+        // Platformdan geniş ve ince çizilir; yürünebilir ahşaptan renk ve sürekli koyuluğuyla ayrılır.
+        void PerchMarker(Sprite beam, Vector2 at, Color shade)
+        {
+            var pocket = ArtLibrary.Draw("Perch shadow", ArtLibrary.Glow, root, at + Vector2.down * .25f, 63, new Color(.0f, .005f, .01f, .55f));
+            pocket.transform.localScale = new Vector3(3.2f, 1.9f, 1);
+            var branch = ArtLibrary.Draw("Ambush perch", beam, root, at + Vector2.down * .2f, 64, new Color(shade.r * 2.2f + .03f, shade.g * 2.2f + .035f, shade.b * 2.2f + .04f, 1));
+            float scale = 2.6f / beam.bounds.size.x; branch.transform.localScale = new Vector3(scale, scale, 1);
+        }
+
         bool GroundAt(float x)
         { foreach (var s in zone.surfaces) if (!s.oneWay && x > s.left + .45f && x < s.right - .45f) return true; return false; }
 
@@ -216,7 +234,7 @@ namespace KaramaniReborn
             float lift = camera.y - GameView.GroundCameraY;
             foreach (var l in foreground)
                 l.transform.position = PixelPipeline.Snap(new Vector2(camera.x + (l.home.x - camera.x) * l.parallax, l.home.y - lift * (l.parallax - 1)));
-            float shaftAlpha = zone.index == 0 ? .05f : zone.index == 1 ? .04f : .06f;
+            float shaftAlpha = zone.index == 0 || zone.index == 4 || zone.index == 6 ? .05f : zone.index == 1 ? .04f : zone.index == 5 ? .03f : .06f;
             for (int i = 0; i < shafts.Count; i++)
             { var c = shafts[i].color; c.a = shaftAlpha * (.7f + .3f * Mathf.Sin(clock * .35f + i * 1.7f)); shafts[i].color = c; }
             foreach (var l in lights)

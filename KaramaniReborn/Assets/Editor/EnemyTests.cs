@@ -22,6 +22,7 @@ namespace KaramaniReborn.Editor
             Kurtbas(root);
             KaraMurad(root);
             BossFixes(root);
+            GoblinTests.Verify(root);   // 2. kısım temeli (bölge 4-6, roller, saldırı sırası, pusu noktaları)
         }
 
         // Son düzeltme dalgası (ağalar): ateş, humbara hedefi, sıçrayış, kanca / itme, yakalama
@@ -33,7 +34,7 @@ namespace KaramaniReborn.Editor
             Debug.Log("KARAMANI_BOSS_FIXES_PASS · boss fire dies with the boss, arena fire spares the exit, grenade lands on the ground, leap slam avoids pits + stops on landing, no walking into fire, grab chosen + 30, hook / push only on a real hit, fire burns without hitstun");
         }
 
-        static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
+        internal static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
 
         // Deneme alanı: 0. bölüm, oyuncu x=4'te sağa bakar; bölümün kendi düşmanları uzağa alınır,
         // denenen düşman oyuncunun gap birim önüne konur. intentTime=99: kendiliğinden saldırmaz.
@@ -47,7 +48,7 @@ namespace KaramaniReborn.Editor
         }
 
         // 120 Hz simülasyon; input kare sırasını alır
-        static void Run(GameWorld w, float seconds, Func<int, InputFrame> input = null)
+        internal static void Run(GameWorld w, float seconds, Func<int, InputFrame> input = null)
         {
             int steps = Mathf.RoundToInt(seconds * 120);
             for (int i = 0; i < steps; i++) w.Simulate(1f / 120, input?.Invoke(i) ?? new InputFrame(), true);

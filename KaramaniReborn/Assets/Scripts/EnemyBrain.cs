@@ -5,10 +5,19 @@ namespace KaramaniReborn
     // Düşman davranışı: mesafe, saldırı seçimi ve saldırının yürütülmesi. Değerler EnemyProfiles.cs'te.
     public sealed partial class GameWorld
     {
-        public const int MaxAttackers = 2;
+        // Aynı anda saldıran en çok düşman: insanlarda 2, goblinlerde (zayıf oldukları için) 3; iki taraf ayrı sayılır
+        public const int MaxAttackers = 2, MaxGoblinAttackers = 3;
 
-        // Şu anda saldırı yürüten (hazırlık dahil) düşman sayısı
+        // Şu anda saldırı yürüten (hazırlık dahil) düşman sayısı (tüm düşmanlar)
         public int Attackers { get { int n = 0; foreach (var e in enemies) if (!e.Dead && e.attack != null && e.state == ActionState.Light) n++; return n; } }
+
+        // Aynı tarafın (goblin ya da insan) saldıran sayısı
+        public int AttackersOf(bool goblin)
+        {
+            int n = 0;
+            foreach (var e in enemies) if (!e.Dead && e.attack != null && e.state == ActionState.Light && EnemyProfile.For(e.role).goblin == goblin) n++;
+            return n;
+        }
 
         // Oyuncuya dönüş; kalkanlı yavaş döner (arkasına geçmek fırsattır)
         static void Face(Actor a, EnemyProfile p, float dx, float dt)
@@ -82,7 +91,7 @@ namespace KaramaniReborn
                 var choice = facing && (a.intentTime <= 0 || opening) ? Choose(a, p, dist, height) : null;
                 if (choice != null && a.intentTime > 0 && !choice.punish) choice = null;   // niyet dolmadan yalnız cezalandırma saldırıları açılır
                 bool ready = a.cooldown <= 0 || opening && choice != null && choice.punish;
-                bool slot = choice != null && (choice.kind is AttackKind.Backstep or AttackKind.Teleport or AttackKind.LeapOver || Attackers < MaxAttackers);
+                bool slot = choice != null && (choice.kind is AttackKind.Backstep or AttackKind.Teleport or AttackKind.LeapOver || AttackersOf(p.goblin) < (p.goblin ? MaxGoblinAttackers : MaxAttackers));
                 if (choice != null && ready && slot && attackDirector <= 0) { Begin(a, choice); attackDirector = .26f; a.cooldown = .8f; }
                 else if (a.state == ActionState.Block) { }   // kalkan klibi (~.2 sn): yerinde siper alır; saldırı yine başlayabilir
                 else if (dist > p.keepMax) { vx = a.face * speed; a.state = ActionState.Move; }

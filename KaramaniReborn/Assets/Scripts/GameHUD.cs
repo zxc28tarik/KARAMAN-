@@ -102,12 +102,13 @@ namespace KaramaniReborn
             ButtonAt(m, "TAM EKRAN / PENCERE", 121, 620, 382, 48, () => Screen.fullScreen = !Screen.fullScreen);
             ButtonAt(m, "ÇIKIŞ", 121, 685, 382, 48, () => Application.Quit());
             Label(m, "BİR BÖLGE SEÇ", 996, 398, 710, 28, 19, gold);
-            for (int i = 0; i < 4; i++)
+            // 7 bölge: 3 sütun x 3 satır, kartlar 202x108 (resim 190x68); 996-1651 yatay, 427-841 dikey
+            for (int i = 0; i < ZoneDefinition.Count; i++)
             {
-                int index = i; float x = 996 + i % 2 * 328, y = 449 + i / 2 * 188;
-                ButtonAt(m, "", x, y, 303, 160, () => game.PreviewZone(index));
-                ImageAt(m, "Region painting", x + 7, y + 7, 289, 104, Color.white, ArtLibrary.MenuPainting(i)).preserveAspect = true;
-                Label(m, ZoneDefinition.Create(i).title, x + 12, y + 118, 279, 30, 16, ivory, TextAnchor.MiddleCenter);
+                int index = i; float x = 996 + i % 3 * 218, y = 427 + i / 3 * 140;
+                ButtonAt(m, "", x, y, 202, 124, () => game.PreviewZone(index));
+                ImageAt(m, "Region painting", x + 5, y + 5, 192, 68, Color.white, ArtLibrary.MenuPainting(ZoneDefinition.ArtIndexFor(i))).preserveAspect = true;
+                Label(m, ZoneDefinition.Create(i).title, x + 6, y + 82, 190, 36, 13, ivory, TextAnchor.MiddleCenter);
             }
             selectedName = Label(m, "", 996, 854, 641, 30, 18, gold, TextAnchor.MiddleCenter);
             Label(m, "J / Sol tık saldırı · F ağır darbe · K / Sağ tık blok\nBloğu tam zamanında aç: savuşturma, ardından saldırı: infaz\nBoşluk zıpla (havada tekrar) · Havada S + J dalış · W kenara tırman\nShift + yön kaçış, yalnız Shift geri adım · Q kurt · R tabanca · H iksir", 121, 806, 733, 112, 17, muted);
@@ -119,7 +120,7 @@ namespace KaramaniReborn
             deathUI = CenterPanel("KARAMANİ DÜŞTÜ", "Yol taşı seni hatırlar.", out var deathParent);
             ButtonAt(deathParent, "YOL TAŞINDA YENİDEN DOĞ", 690, 575, 540, 55, game.Respawn);
             ButtonAt(deathParent, "ANA MENÜ", 690, 650, 540, 52, game.ReturnToMenu);
-            completeUI = CenterPanel("SINIRDAKİ SİS DAĞILDI", "Dört kapı aşıldı. Yolculuk tamamlandı.", out var completeParent);
+            completeUI = CenterPanel("SINIRDAKİ SİS DAĞILDI", "Yedi kapı aşıldı. Yolculuk tamamlandı.", out var completeParent);
             ButtonAt(completeParent, "ANA MENÜ", 690, 575, 540, 55, game.ReturnToMenu);
             SetPause(false); deathUI.SetActive(false); completeUI.SetActive(false); Follow(game.gameCamera);
         }

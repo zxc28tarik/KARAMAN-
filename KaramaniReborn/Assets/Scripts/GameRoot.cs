@@ -49,7 +49,7 @@ namespace KaramaniReborn
             GameView.Fit(gameCamera, review ? GameView.RenderWidth : Screen.width, review ? GameView.RenderHeight : Screen.height);
             if (!review) { cameraObject.AddComponent<AudioListener>(); audioGame = new GameAudio(transform); }
             var events = new GameObject("UI Event System", typeof(EventSystem), typeof(StandaloneInputModule)); events.transform.SetParent(transform, false);
-            save = ReadSave(); selectedZone = Mathf.Clamp(save.zone, 0, 3);
+            save = ReadSave(); selectedZone = Mathf.Clamp(save.zone, 0, ZoneDefinition.Count - 1);
             LoadZone(selectedZone, false);
             hud = new GameHUD(this); hud.Bind(world); hud.SetMenu(true);
             Debug.Log("KARAMANI_REBORN_READY · Single-piece pixel characters, world and native UI initialized");
@@ -59,10 +59,12 @@ namespace KaramaniReborn
         {
             if (worldRoot) { if (Application.isPlaying) Destroy(worldRoot.gameObject); else DestroyImmediate(worldRoot.gameObject); }
             worldRoot = new GameObject("Chapter " + (zone + 1)).transform; worldRoot.SetParent(transform, false);
-            world = new GameWorld(zone, worldRoot, checkpoint); stage = new StageArt(world.zone, worldRoot); pixels?.SetLook(zone);
+            world = new GameWorld(zone, worldRoot, checkpoint); stage = new StageArt(world.zone, worldRoot); pixels?.SetLook(world.zone.artIndex);
             world.sound = s => audioGame?.Play(s); world.checkpointSaved = SaveCheckpoint;
             selectedZone = zone; menu = !playing; paused = false; photoMode = false; journeyComplete = false; accumulator = 0; cameraVelocity = 0; chapterTime = playing ? 3.2f : 0;
             pendingInput = default;
+            // Kısım başlığı (2. kısım): bölüme oynarken girince gösterilir
+            if (playing && !string.IsNullOrEmpty(world.zone.banner)) world.Notify(world.zone.banner);
             gameCamera.transform.position = new Vector3(Mathf.Clamp(checkpoint + 2, 4, 49), GameView.GroundCameraY, -10);
             stage.Tick(0, 1, gameCamera.transform.position);
             if (hud != null) { hud.Bind(world); hud.SetMenu(!playing); hud.SetPause(false); }
@@ -70,7 +72,7 @@ namespace KaramaniReborn
 
         public void PreviewZone(int zone) => LoadZone(zone, false);
         public void PlaySelected() { LoadZone(selectedZone, true); SaveCheckpoint(); }
-        public void ContinueJourney() => LoadZone(Mathf.Clamp(save.zone, 0, 3), true, Mathf.Clamp(save.checkpoint, 1.7f, 39));
+        public void ContinueJourney() => LoadZone(Mathf.Clamp(save.zone, 0, ZoneDefinition.Count - 1), true, Mathf.Clamp(save.checkpoint, 1.7f, 39));
         public void Respawn() => LoadZone(world.zone.index, true, world.checkpoint);
         public void ReturnToMenu() { menu = true; paused = false; journeyComplete = false; pendingInput = default; hud.SetMenu(true); hud.SetPause(false); }
         public void TogglePause() { if (menu || world.player.Dead || journeyComplete) return; paused = !paused; pendingInput = default; hud.SetPause(paused); }
@@ -112,7 +114,7 @@ namespace KaramaniReborn
         public void AdvanceIfRequested()
         {
             if (!world.transitionRequested || journeyComplete) return;
-            if (world.zone.index < 3) { LoadZone(world.zone.index + 1, true); SaveCheckpoint(); }
+            if (world.zone.index < ZoneDefinition.Count - 1) { LoadZone(world.zone.index + 1, true); SaveCheckpoint(); }
             else { journeyComplete = true; hud.ShowComplete(); }
         }
 
