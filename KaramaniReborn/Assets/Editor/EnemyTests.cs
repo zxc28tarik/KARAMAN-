@@ -14,6 +14,7 @@ namespace KaramaniReborn.Editor
             Behaviour(root);
             Ranged(root);
             Sorcerer(root);
+            Layouts(root);
         }
 
         static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
@@ -86,6 +87,27 @@ namespace KaramaniReborn.Editor
             Debug.Log("KARAMANI_ENEMY_RANGED_PASS · musket pierce + reload + dodge, interrupted chain, volley mark, backstep, platform edge");
         }
 
+        static void Layouts(GameRoot root)
+        {
+            // Bölge dizilişi (spec §5): insanlar önce, büyücü Kurt Geçidi'nde ilk kez; her bölümde bir boss
+            var expect = new[]
+            {
+                new[] { EnemyRole.Nefer, EnemyRole.Spearman, EnemyRole.Archer, EnemyRole.Nefer, EnemyRole.Nefer, EnemyRole.Captain },
+                new[] { EnemyRole.Nefer, EnemyRole.Musketeer, EnemyRole.Halberdier, EnemyRole.Musketeer, EnemyRole.Nefer, EnemyRole.Captain },
+                new[] { EnemyRole.Spearman, EnemyRole.Musketeer, EnemyRole.Archer, EnemyRole.Halberdier, EnemyRole.Archer, EnemyRole.Sorcerer, EnemyRole.Captain },
+                new[] { EnemyRole.Nefer, EnemyRole.Spearman, EnemyRole.Musketeer, EnemyRole.Halberdier, EnemyRole.Archer, EnemyRole.Sorcerer, EnemyRole.Captain },
+            };
+            for (int zone = 0; zone < 4; zone++)
+            {
+                root.LoadZone(zone, true); var w = root.world;
+                Assert(w.enemies.Count == expect[zone].Length, "Zone " + zone + " enemy count " + w.enemies.Count);
+                for (int i = 0; i < expect[zone].Length; i++) Assert(w.enemies[i].role == expect[zone][i], "Zone " + zone + " enemy " + i + " is " + w.enemies[i].role);
+                Assert(w.enemies.FindAll(a => a.boss).Count == 1 && w.enemies[^1].boss, "Zone " + zone + " must end with one boss");
+                Assert(!w.enemies.Exists(a => EnemyProfile.For(a.role).halfBoss) || zone >= 2, "Sorcerer before Kurt Geçidi");
+            }
+            Debug.Log("KARAMANI_ENEMY_LAYOUT_PASS · four zones per spec §5");
+        }
+
         static void Sorcerer(GameRoot root)
         {
             var flame = EnemyProfile.For(EnemyRole.Sorcerer).Find("flame");
@@ -124,6 +146,7 @@ namespace KaramaniReborn.Editor
             w.player.position = new Vector2(16.4f, w.zone.floor); w.player.face = 1; e.position.x = 17.6f;
             Run(w, .9f);
             Assert(e.grounded && Mathf.Abs(e.position.y - w.zone.floor) < .01f && !(e.position.x > 13.5f && e.position.x < 15.7f), "Sorcerer teleported into a pit: x " + e.position.x);
+            Assert(Mathf.Abs(e.position.x - 17.6f) > 1f, "Sorcerer did not teleport at all: x " + e.position.x);
 
             // İkinci evre: canı yarının altına inince alev dalgaları ikişer gelir
             w = Arena(root, EnemyRole.Sorcerer, 6, out e);

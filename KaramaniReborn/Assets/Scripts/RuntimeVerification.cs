@@ -94,7 +94,7 @@ namespace KaramaniReborn
                     if (frame == 214 + zone * 8) { game.LoadZone(zone, true); game.chapterTime = 0; }
                     if (frame == 218 + zone * 8)
                     {
-                        Check(game.world.zone.index == zone && game.world.enemies.Count == 6, "Chapter initialization failed");
+                        Check(game.world.zone.index == zone && game.world.enemies.Count == (zone >= 2 ? 7 : 6), "Chapter initialization failed");
                         Check(game.stage.MaxWalkEdgeError < .001f, "Painted walkway shifted from the physical ground");
                         game.hud.Tick(.1f); game.hud.Follow(game.gameCamera);
                         Capture("player-chapter-" + (zone + 1) + ".png");

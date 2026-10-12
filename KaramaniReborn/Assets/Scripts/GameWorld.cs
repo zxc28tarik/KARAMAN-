@@ -38,12 +38,22 @@ namespace KaramaniReborn
             checkpoint = checkpointX;
             player = new Actor { id = 0, player = true, position = new Vector2(checkpointX, zone.floor), maxGuard = 100, guard = 100 };
             new PixelCharacter(player, actorsRoot);
-            Spawn(10.0f, zone.floor, EnemyRole.Nefer);
-            Spawn(18.1f, zone.floor, EnemyRole.Spearman);
-            Spawn(25.5f, -.75f, EnemyRole.Archer);
-            Spawn(35.1f, zone.floor, EnemyRole.Nefer);
-            Spawn(42.3f, zone.floor, EnemyRole.Spearman);
+            foreach (var (x, y, role) in Layout(index)) Spawn(x, y, role);
             Spawn(50.4f, zone.floor, EnemyRole.Captain, true);
+        }
+
+        // Bölge dizilişi (Docs/specs/2026-10-12-enemy-roster-design.md §5): önce insanlar, büyücü Kurt Geçidi'nde ilk kez.
+        // Platformlar: 23.5-26.6 (y -0.75), 37.4-40.7 (y -0.85)
+        (float x, float y, EnemyRole role)[] Layout(int index)
+        {
+            float f = zone.floor;
+            return index switch
+            {
+                0 => new[] { (10f, f, EnemyRole.Nefer), (18.1f, f, EnemyRole.Spearman), (25.5f, -.75f, EnemyRole.Archer), (35.1f, f, EnemyRole.Nefer), (42.3f, f, EnemyRole.Nefer) },
+                1 => new[] { (10f, f, EnemyRole.Nefer), (20f, f, EnemyRole.Musketeer), (35.1f, f, EnemyRole.Halberdier), (39f, -.85f, EnemyRole.Musketeer), (44f, f, EnemyRole.Nefer) },
+                2 => new[] { (10f, f, EnemyRole.Spearman), (20f, f, EnemyRole.Musketeer), (25.5f, -.75f, EnemyRole.Archer), (35.1f, f, EnemyRole.Halberdier), (39f, -.85f, EnemyRole.Archer), (44f, f, EnemyRole.Sorcerer) },
+                _ => new[] { (10f, f, EnemyRole.Nefer), (18.1f, f, EnemyRole.Spearman), (25.5f, -.75f, EnemyRole.Musketeer), (35.1f, f, EnemyRole.Halberdier), (39f, -.85f, EnemyRole.Archer), (44f, f, EnemyRole.Sorcerer) },
+            };
         }
 
         public Actor Spawn(float x, float y, EnemyRole role, bool boss = false)
