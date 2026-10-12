@@ -469,17 +469,31 @@ Pixel art sprite sheet of the SAME character as the attached reference image: St
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### arslan 9. darbe alma: 3 kare (ana pozu ekle)
+### arslan 9. yanan sancakla yürüme: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: Standard-bearer Arslan, a giant janissary standard-bearer (dark fantasy boss): huge broad-shouldered man, tall off-white bork with a red band, fair skin, almond eyes, chestnut (light brown) hair, a thick chestnut moustache and beard (never black or dark hair, not swarthy), battle scars, heavy mail with bronze plates, crimson coat, chained trophies on his belt, a long war-standard pole with a torn crimson banner used as a spear, a yatagan in the sash.
+8 frames of a WALKING cycle holding the BURNING standard ready, flames trailing from the banner, loopable, evenly spaced phases, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### arslan 10. darbe alma: 3 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Standard-bearer Arslan, a giant janissary standard-bearer (dark fantasy boss): huge broad-shouldered man, tall off-white bork with a red band, fair skin, almond eyes, chestnut (light brown) hair, a thick chestnut moustache and beard (never black or dark hair, not swarthy), battle scars, heavy mail with bronze plates, crimson coat, chained trophies on his belt, a long war-standard pole with a torn crimson banner used as a spear, a yatagan in the sash.
 3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### arslan 10. ölüm: 6 kare (ana pozu ekle)
+### arslan 11. yanan sancakla darbe alma: 3 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Standard-bearer Arslan, a giant janissary standard-bearer (dark fantasy boss): huge broad-shouldered man, tall off-white bork with a red band, fair skin, almond eyes, chestnut (light brown) hair, a thick chestnut moustache and beard (never black or dark hair, not swarthy), battle scars, heavy mail with bronze plates, crimson coat, chained trophies on his belt, a long war-standard pole with a torn crimson banner used as a spear, a yatagan in the sash.
-6 frames of a DEATH: 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the weapon falling from the hands, 5 collapsing forward, 6 lying still face down on the ground. Not gory, in ONE horizontal row.
+3 frames of a HURT reaction while holding the BURNING standard: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, flames swaying, 3 regaining balance, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### arslan 12. ölüm: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: Standard-bearer Arslan, a giant janissary standard-bearer (dark fantasy boss): huge broad-shouldered man, tall off-white bork with a red band, fair skin, almond eyes, chestnut (light brown) hair, a thick chestnut moustache and beard (never black or dark hair, not swarthy), battle scars, heavy mail with bronze plates, crimson coat, chained trophies on his belt, a long war-standard pole with a torn crimson banner used as a spear, a yatagan in the sash.
+6 frames of a DEATH (he always dies in phase 2, with the BURNING standard): 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the burning standard falling from his hands, 5 collapsing forward, 6 lying still face down, the fallen banner still smouldering beside him. Not gory, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
@@ -536,14 +550,21 @@ Pixel art sprite sheet of the SAME character as the attached reference image: Ch
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### kordemir 7. darbe alma: 3 kare (ana pozu ekle)
+### kordemir 7. arenayı ateşe verme: 7 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, fair skin, almond eyes, chestnut (light brown) hair on the unburned side, a chestnut moustache and beard (never black or dark hair, not swarthy), shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
+7 frames of SETTING THE GROUND ABLAZE (phase change): 1 tearing two clay grenades from his belt, 2 lighting both fuses, 3-4 hurling them down hard on both sides, 5 a burst of flame at his feet spreading along the ground, 6 laughing with arms spread among the flames, 7 ready, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kordemir 8. darbe alma: 3 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, fair skin, almond eyes, chestnut (light brown) hair on the unburned side, a chestnut moustache and beard (never black or dark hair, not swarthy), shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
 3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### kordemir 8. ölüm: 6 kare (ana pozu ekle)
+### kordemir 9. ölüm: 6 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, fair skin, almond eyes, chestnut (light brown) hair on the unburned side, a chestnut moustache and beard (never black or dark hair, not swarthy), shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
 6 frames of a DEATH: 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the weapon falling from the hands, 5 collapsing forward, 6 lying still face down on the ground. Not gory, in ONE horizontal row.
@@ -705,17 +726,38 @@ Pixel art sprite sheet of the SAME character as the attached reference image: Ja
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### karamurad 11. darbe alma: 3 kare (ana pozu ekle)
+### karamurad 11. çıplak el omuz hücumu: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, twice as broad as a normal man, bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, fair skin, almond eyes, chestnut (light brown) hair, a thick chestnut moustache and beard (never black or dark hair, not swarthy); bare-handed, his pala thrown away: NO sword or weapon anywhere, empty hands.
+6 frames of a bare-handed SHOULDER CHARGE (no sword): 1 lowering the shoulder, fists clenched, 2-4 charging forward fast, 5 impact, 6 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karamurad 12. çıplak el yakalayıp fırlatma: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, twice as broad as a normal man, bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, fair skin, almond eyes, chestnut (light brown) hair, a thick chestnut moustache and beard (never black or dark hair, not swarthy); bare-handed, his pala thrown away: NO sword or weapon anywhere, empty hands.
+8 frames of a bare-handed GRAB AND THROW (no sword): 1 reaching forward with both hands, 2 grabbing, 3 lifting an invisible enemy overhead, 4-5 slamming down hard, 6 impact, 7-8 recovering, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karamurad 13. darbe alma: 3 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, twice as broad as a normal man, bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, fair skin, almond eyes, chestnut (light brown) hair, a thick chestnut moustache and beard (never black or dark hair, not swarthy), a giant two-handed pala sword.
 3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### karamurad 12. ölüm: 6 kare (ana pozu ekle)
+### karamurad 14. çıplak el darbe alma: 3 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, twice as broad as a normal man, bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, fair skin, almond eyes, chestnut (light brown) hair, a thick chestnut moustache and beard (never black or dark hair, not swarthy), a giant two-handed pala sword.
-6 frames of a DEATH: 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the weapon falling from the hands, 5 collapsing forward, 6 lying still face down on the ground. Not gory, in ONE horizontal row.
+Pixel art sprite sheet of the SAME character as the attached reference image: Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, twice as broad as a normal man, bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, fair skin, almond eyes, chestnut (light brown) hair, a thick chestnut moustache and beard (never black or dark hair, not swarthy); bare-handed, his pala thrown away: NO sword or weapon anywhere, empty hands.
+3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karamurad 15. ölüm: 6 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, twice as broad as a normal man, bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, fair skin, almond eyes, chestnut (light brown) hair, a thick chestnut moustache and beard (never black or dark hair, not swarthy); bare-handed, his pala thrown away: NO sword or weapon anywhere, empty hands.
+6 frames of a DEATH (he always dies bare-handed, in phase 2): 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 one fist still planted on the ground, 5 collapsing forward, 6 lying still face down on the ground. Not gory, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 

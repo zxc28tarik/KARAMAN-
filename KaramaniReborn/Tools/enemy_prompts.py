@@ -92,7 +92,10 @@ BOSSES = [
         ('yanan sancakla savuruş', 8, "a SWEEP WITH THE BURNING STANDARD (the banner is on fire): 1-3 wind-up, 4 sweeping arc trailing flames, 5 follow-through, 6-8 recovering"),
         ('sancağı tutuşturma', 6, "SETTING THE STANDARD ALIGHT (phase change): 1 tearing the standard out of the ground, 2 holding it up, 3 touching the banner to a brazier flame, 4 the banner catching fire, 5 roaring, 6 ready with the burning standard"),
         ('yanan sancakla bekleme', 4, "a subtle IDLE loop holding the BURNING standard, flames flickering (loopable)"),
-        HURT, BOSS_DEATH]),
+        ('yanan sancakla yürüme', 8, "a WALKING cycle holding the BURNING standard ready, flames trailing from the banner, loopable, evenly spaced phases"),
+        HURT,
+        ('yanan sancakla darbe alma', 3, "a HURT reaction while holding the BURNING standard: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, flames swaying, 3 regaining balance"),
+        ('ölüm', 6, "a DEATH (he always dies in phase 2, with the BURNING standard): 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the burning standard falling from his hands, 5 collapsing forward, 6 lying still face down, the fallen banner still smouldering beside him. Not gory")]),
     ('kordemir', 'Humbaracıbaşı Kör Demir (Yanmış Mahalle)', 'Mahalleyi yakan adam: humbara, kanca, yağ küpü.',
      "Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, "
      f"{LOOK} on the unburned side, a chestnut moustache and beard ({NOT_DARK}), shaved head with a scorched cap, "
@@ -102,6 +105,7 @@ BOSSES = [
         ('kancayla çekme', 7, "a HOOK PULL: 1-2 swinging the hooked axe forward, 3 hooking, 4-5 yanking it back hard toward himself, 6-7 recovering"),
         ('yağ küpü', 6, "THROWING AN OIL POT: 1 lifting a clay pot over his head, 2-3 winding up, 4 hurling it forward, 5-6 recovering"),
         ('balta inişi', 8, "a HEAVY AXE CHOP: 1-3 raising the axe high, 4 chopping down hard, 5 axe in the ground, 6-8 recovering"),
+        ('arenayı ateşe verme', 7, "SETTING THE GROUND ABLAZE (phase change): 1 tearing two clay grenades from his belt, 2 lighting both fuses, 3-4 hurling them down hard on both sides, 5 a burst of flame at his feet spreading along the ground, 6 laughing with arms spread among the flames, 7 ready"),
         HURT, BOSS_DEATH]),
     ('kurtbas', 'Deli Kurtbaş (Kurt Geçidi)', 'Kurt postlu vahşi delibaş; doğaüstü değil.',
      "Deli Kurtbas, a wild delibas warrior (dark fantasy boss, human): lean muscular man, a grey wolf pelt cloak with the wolf head worn as a hood, "
@@ -124,7 +128,11 @@ BOSSES = [
         ('palayı fırlatma', 5, "THROWING THE PALA AWAY in rage (phase change): 1 holding the pala, 2 raising it, 3 hurling it aside, 4 roaring with fists clenched, 5 bare-handed fighting stance", KARA_MURAD_THROW),
         ('çıplak el bekleme', 4, "a subtle bare-handed IDLE loop in a boxer-wrestler stance, fists raised, NO sword: 1 base, 2 chest rises, 3 shift of weight, 4 almost back (loopable)", KARA_MURAD_BARE),
         ('çıplak el yürüme', 8, "a bare-handed WALKING cycle, fists raised, NO sword, loopable, evenly spaced phases", KARA_MURAD_BARE),
-        HURT, BOSS_DEATH]),
+        ('çıplak el omuz hücumu', 6, "a bare-handed SHOULDER CHARGE (no sword): 1 lowering the shoulder, fists clenched, 2-4 charging forward fast, 5 impact, 6 recovering", KARA_MURAD_BARE),
+        ('çıplak el yakalayıp fırlatma', 8, "a bare-handed GRAB AND THROW (no sword): 1 reaching forward with both hands, 2 grabbing, 3 lifting an invisible enemy overhead, 4-5 slamming down hard, 6 impact, 7-8 recovering", KARA_MURAD_BARE),
+        HURT,
+        ('çıplak el darbe alma', 3, HURT[2], KARA_MURAD_BARE),
+        ('ölüm', 6, "a DEATH (he always dies bare-handed, in phase 2): 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 one fist still planted on the ground, 5 collapsing forward, 6 lying still face down on the ground. Not gory", KARA_MURAD_BARE)]),
 ]
 
 
