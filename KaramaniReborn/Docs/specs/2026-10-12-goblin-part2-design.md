@@ -285,7 +285,9 @@ Kullanıcı isteği:
   - Dikey kuyulara çift zıplama ve kenara tutunup tırmanmayla çıkılır.
   - Uçurumların üstünden zıplanarak geçilir.
   - Goblinlerin **ip merdivenleri** tırmanılır: yukarı ve aşağı hareket, iptan zıplayıp ayrılma.
-  - **Ufalanan kaya çıkıntıları:** üstüne basılınca 0,6 saniye titrer ve düşer, 3 saniye sonra yerine gelir.
+  - **Ufalanan kaya çıkıntıları:** üstüne basılınca 0,6 saniye titrer ve düşer.
+    - **Bir daha yerine gelmez** (kullanıcı, 2026-10-12). Düşmüş olması kayda geçer; ölüp yol taşından dönünce de düşmüş kalır.
+    - Bu yüzden ufalanan kayalı her geçidin, kayalar düştükten sonra da geçilebilen ikinci bir yolu vardır: alttan dolanan bir yol, bir ip ya da çift zıplama mesafesi. Harita hiçbir zaman kilitlenmez.
   - Ahşap iskelelerden aşağı inilebilir.
   - Mağarada uçuruma düşmek öldürmez: 25 hasar alınır ve son sağlam zemine dönülür. Açık alan bölümlerindeki çukurlar eskisi gibi öldürür.
 - **Yetenek kilidi yok:** yeni yetenekle açılan kapı yoktur, kullanıcı istemedi. Harita ana yol ve birkaç yan oda (yol taşı, ganimet) olarak çizilir; geri dönmek mümkündür.

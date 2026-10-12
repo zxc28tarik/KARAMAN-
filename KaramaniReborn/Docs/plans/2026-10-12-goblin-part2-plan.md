@@ -192,7 +192,9 @@ Commit "Goblinler: Pusucu, Ateş Çömlekçisi, sürü cesareti".
    - Add a map view in the pause menu showing all visited rooms.
 8. **Platforming (user decision, spec §8.2):**
    - **Ropes:** a vertical rope (x, yBottom, yTop). Pressing up near it grabs it (new state `Rope`). Up/down climb at 2.2 u/s. Jump leaves the rope with a normal jump. It uses the `climb` clip as a placeholder.
-   - **Crumbling ledges:** a one-way surface flag `crumble`. Standing on it starts a 0.6 s shake, then it is gone (no collision) for 3 s, then it returns.
+   - **Crumbling ledges:** a one-way surface flag `crumble`. Standing on it starts a 0.6 s shake, then it falls (no collision).
+     - **User decision:** it never returns.
+     - Fallen ledges are recorded per surface id and persisted in the save, like kills; they stay gone after the player's death and respawn.
    - **Abyss in rooms:** falling below the room's bottom where there is no down exit costs 25 health (via `Damage` with no knockback) and returns the player to the last ground position they stood on safely for at least 0.3 s. Linear zones keep the old pit death.
    - Every platform layout must be clearable with the real moves: single jump peak 1.89, double jump, ledge hang/climb, drop-through.
 9. **Test map:** a small built-in test RoomMap (4 rooms: 1×1 start, 2×1 corridor, 1×2 shaft going up, 1×1 keeper room), used only by tests.
@@ -204,7 +206,7 @@ Commit "Goblinler: Pusucu, Ateş Çömlekçisi, sürü cesareti".
    - leaving and re-entering a room: killed enemies (ordinary and keeper) stay dead, and a damaged survivor keeps its health
    - kills persist through save/load and through the player's death
    - rope grab, climb up and down, jump off
-   - a crumbling ledge falls after 0.6 s and returns after 3 s
+   - a crumbling ledge falls after 0.6 s, never returns, and stays fallen after leaving the room, after save/load and after the player's death
    - abyss fall costs 25 health and returns to the last safe ground
    - keeper room exits are sealed until the keeper dies
    - shrine save and respawn land in the shrine room
@@ -253,6 +255,7 @@ Commit "Odalar: SotN tarzı oda sistemi (kamera, geçiş, bekçi odası, harita,
    - every exit has a matching return exit
    - every room's arrival points are standable
    - every platforming route is clearable: an automated check that each required jump is within single or double jump reach and each rope connects two standable points
+   - **never locked:** with every crumbling ledge removed, every room is still reachable from the region 0 entry and every region exit is still reachable (the alternative route: a path below, a rope, or a double-jump gap)
    - region gates open only after their keeper dies
    - enemy counts per region match §8.3
    - cards 6–8 load the right entry rooms
