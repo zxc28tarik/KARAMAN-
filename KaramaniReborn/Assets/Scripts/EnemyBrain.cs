@@ -38,10 +38,11 @@ namespace KaramaniReborn
             if (k.kind == AttackKind.Teleport) a.invincible = k.Duration;
             if (k.kind == AttackKind.LeapOver)
             {
-                // Oyuncunun üstünden arkasına; arkası sağlam değilse önüne iner
+                // Oyuncunun üstünden arkasına; arkası sağlam değilse önüne iner; ikisi de sağlam değilse yerinde kalır
                 float side = Mathf.Sign(player.position.x - a.position.x);
                 float behind = player.position.x + side * 1.6f, front = player.position.x - side * 1.6f;
-                Leap(a, Standable(behind, out _) ? behind : front, k.active);
+                if (Standable(behind, out _)) Leap(a, behind, k.active);
+                else if (Standable(front, out _)) Leap(a, front, k.active);
             }
             if (state == ActionState.Light && !k.Ranged) sound?.Invoke(k.heavy || k.red ? "heavy" : "swing");
         }
@@ -93,6 +94,8 @@ namespace KaramaniReborn
                     if (!p.ranged && Mathf.Sign(vx) == a.face && dist > 2) { a.velocity.y = 8.4f; a.grounded = false; a.view.ResetContacts(); }
                     else { vx = 0; a.state = ActionState.Idle; }
                 }
+                // Yanan ateş de kenar gibidir: ne yaklaşırken ne geri çekilirken içine yürünür
+                if (vx != 0 && a.grounded && FireAhead(a, Mathf.Sign(vx) * .34f)) { vx = 0; a.state = ActionState.Idle; }
             }
             else a.turnTimer = 0;   // kilitliyken ya da uykudayken yarım kalan dönüş sayılmaz
             k = a.attack;
@@ -105,13 +108,36 @@ namespace KaramaniReborn
             // Sıçrayışta yatay hız korunur (havada yön değiştirmez)
             bool leaping = k != null && (k.kind is AttackKind.LeapOver or AttackKind.LeapSlam) && !a.grounded;
             if (!leaping) a.velocity.x = Mathf.MoveTowards(a.velocity.x, vx, dt * (k != null && k.dash != 0 ? 80 : 24));
+            bool airborne = !a.grounded;
             KinematicMotor.Step(a, zone, dt);
+            // Sıçrayıştan inişte kaymaz: yere değdiği ilk karede yatay hız sıfırlanır
+            if (airborne && a.grounded && k != null && k.kind is AttackKind.LeapOver or AttackKind.LeapSlam) a.velocity.x = 0;
         }
 
         // Sıçrayış: time sn'de targetX'e aynı yüksekliğe iner (yerçekimi 20: dikey hız 10 x time)
         void Leap(Actor a, float targetX, float time)
         {
             a.velocity = new Vector2((targetX - a.position.x) / time, 10 * time); a.grounded = false; a.view.ResetContacts();
+        }
+
+        // Sıçrayışın ineceği yer: x sağlam değilse bosa doğru 1.5 birim içindeki en yakın sağlam nokta; yoksa NaN (sıçramaz)
+        float LandingSpot(Actor a, float x)
+        {
+            float toward = Mathf.Sign(a.position.x - x);
+            for (int i = 0; i <= 30; i++) { float at = x + toward * i * .05f; if (Standable(at, out _)) return at; }
+            return float.NaN;
+        }
+
+        // Önünde (offset kadar ilerde, aynı zeminde) etkin bir ateş var mı; zaten ateşin içindeyse çıkışı engellenmez
+        bool FireAhead(Actor a, float offset)
+        {
+            foreach (var s in projectiles)
+            {
+                if (s.kind != ShotKind.Fire || s.delay > 0 || s.life <= 0 || Mathf.Abs(s.position.y - a.position.y) > .6f) continue;
+                float half = s.width * .5f;
+                if (Mathf.Abs(a.position.x + offset - s.position.x) < half && Mathf.Abs(a.position.x - s.position.x) >= half) return true;
+            }
+            return false;
         }
 
         // Mesafeye ve yüksekliğe uyan, beklemesi dolmuş saldırılardan biri; 'first' işaretli olan önceliklidir
@@ -163,16 +189,24 @@ namespace KaramaniReborn
                     // Yere vurma halkası: arkadaki oyuncu da dışa (kendi tarafına) itilir
                     int dir = k.kind == AttackKind.Slam ? (int)Mathf.Sign(player.position.x - a.position.x) : a.face;
                     bool avoided = player.invincible > 0;   // kaçışın dokunulmazlığı itmeyi de önler
+                    float before = player.health;
                     Damage(player, k.damage, dir, k.heavy, false, a, -1, k.red);
-                    if (k.push > 0 && player.state == ActionState.Hurt) player.knockback = dir * k.push;
+                    // Savrulma yalnız gerçek isabette (can düştüyse): blok, savuşturma ya da dokunulmazlık savurmaz
+                    if (k.push > 0 && player.health < before && player.state == ActionState.Hurt) player.knockback = dir * k.push;
                     // Kalkanla itme: blok ya da savuşturma da olsa geri iter ve dayanıklılığı düşürür
                     if (!avoided && !player.Dead && k.pushBack > 0) { player.pushTime = .2f; player.pushSpeed = dir * k.pushBack / .2f; }
                     if (!avoided && !player.Dead && k.staminaDrain > 0) { player.stamina = Mathf.Max(0, player.stamina - k.staminaDrain); player.staminaDelay = .7f; }
                     return;
                 case AttackKind.LeapSlam:
-                    // Hazırlık bitince oyuncunun bulunduğu yere sıçrar; yere değdiği an çevresine kırmızı çakılma
+                    // Hazırlık bitince oyuncunun bulunduğu yere (sağlam değilse bosa doğru en yakın sağlam yere) sıçrar;
+                    // iniş yeri yoksa yerinde çakılır. Yere değdiği an çevresine kırmızı çakılma
                     if (a.state != ActionState.Light) return;
-                    if (!a.attackConnected && a.stateTime >= k.windup) { a.attackConnected = true; Leap(a, player.position.x, .8f); return; }
+                    if (!a.attackConnected && a.stateTime >= k.windup)
+                    {
+                        a.attackConnected = true; float spot = LandingSpot(a, player.position.x);
+                        if (!float.IsNaN(spot)) Leap(a, spot, .8f);
+                        return;
+                    }
                     if (a.attackConnected && a.strike < 0 && a.grounded && a.stateTime > k.windup + .1f)
                     {
                         a.strike = 0; effects.cameraShake = Mathf.Max(effects.cameraShake, .12f);
@@ -189,9 +223,10 @@ namespace KaramaniReborn
                     float d = (player.position.x - a.position.x) * a.face;
                     if (d < -.2f || d > k.reach || Mathf.Abs(player.position.y - a.position.y) > 1.2f) return;
                     a.hitTargets.Add(player.id);
+                    float hpBefore = player.health;
                     Damage(player, k.damage, a.face, false, false, a, -1, k.red);
-                    // Kanca tuttuysa (blok, savuşturma ya da kaçış değilse) oyuncu ayağının dibine çekilir
-                    if (player.state == ActionState.Hurt && !player.Dead) { player.pushTime = .25f; player.pushSpeed = -a.face * Mathf.Max(0, d - 1.1f) / .25f; }
+                    // Kanca yalnız gerçekten tuttuysa (can düştüyse; blok, savuşturma ya da dokunulmazlık değilse) ayağının dibine çeker
+                    if (player.health < hpBefore && !player.Dead) { player.pushTime = .25f; player.pushSpeed = -a.face * Mathf.Max(0, d - 1.1f) / .25f; }
                     return;
                 }
                 case AttackKind.Teleport:
@@ -254,9 +289,10 @@ namespace KaramaniReborn
                     break;
                 case AttackKind.Grenade:
                 {
-                    // Kavisli atış: .9 sn'de oyuncunun bulunduğu yere düşer; düşeceği yer önceden kızıl işaretli
+                    // Kavisli atış: .9 sn'de oyuncunun altındaki zemine düşer (zıplayan oyuncunun havadaki yerine değil);
+                    // düşeceği yer önceden kızıl işaretli; işaret, patlama ve ateş bu yeri kullanır
                     const float flight = .9f;
-                    Vector2 target = new Vector2(player.position.x, player.position.y);
+                    Vector2 target = new Vector2(player.position.x, GroundBelow(player.position));
                     var mark = AddShot(ShotKind.VolleyMark, target + Vector2.up * .05f, Vector2.zero, flight, k, a);
                     mark.renderer.transform.localScale = new Vector3(Mathf.Max(1.6f, k.patchWidth), .35f, 1);
                     var v = new Vector2((target.x - hand.x) / flight, (target.y - hand.y) / flight + 10 * flight);
@@ -266,10 +302,12 @@ namespace KaramaniReborn
                 case AttackKind.ArenaFire:
                 {
                     // Arenanın yarısı tutuşur: boss'un arkası (home+1.5 … +7) ve giriş yanı (home-8 … -5); ortada dar alan kalır.
-                    // Ateş .8 sn önce kızıl işaretle belli olur
+                    // Ateş .8 sn önce kızıl işaretle belli olur. Çıkış (x > zone.length - 3) hiç tutuşmaz: şerit zone.length - 3.5'te biter
                     (float from, float to)[] spans = { (a.home + 1.5f, a.home + 7), (a.home - 8, a.home - 5) };
-                    foreach (var (from, to) in spans)
+                    foreach (var (from, end) in spans)
                     {
+                        float to = Mathf.Min(end, zone.length - 3.5f);
+                        if (to <= from) continue;
                         var at = new Vector2((from + to) * .5f, zone.floor); float width = to - from;
                         var mark = AddShot(ShotKind.VolleyMark, at + Vector2.up * .05f, Vector2.zero, .8f, k, a);
                         mark.renderer.transform.localScale = new Vector3(width, .35f, 1);
@@ -297,6 +335,14 @@ namespace KaramaniReborn
         {
             foreach (var s in zone.surfaces) if (!s.oneWay && x >= s.left + .3f && x <= s.right - .3f) { y = s.y; return true; }
             y = 0; return false;
+        }
+
+        // Bir noktanın altındaki zemin: o x'te, noktanın hizasında ya da altındaki en yüksek yüzey (tek yönlü platform da); yoksa bölüm zemini
+        float GroundBelow(Vector2 at)
+        {
+            float best = float.NegativeInfinity;
+            foreach (var s in zone.surfaces) if (at.x >= s.left && at.x <= s.right && s.y <= at.y + .05f && s.y > best) best = s.y;
+            return float.IsNegativeInfinity(best) ? zone.floor : best;
         }
 
         // Arayüzün can çubuğu: yakındaki boss ya da yarı-boss

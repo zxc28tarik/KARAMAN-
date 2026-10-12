@@ -21,6 +21,16 @@ namespace KaramaniReborn.Editor
             KorDemir(root);
             Kurtbas(root);
             KaraMurad(root);
+            BossFixes(root);
+        }
+
+        // Son düzeltme dalgası (ağalar): ateş, humbara hedefi, sıçrayış, kanca / itme, yakalama
+        static void BossFixes(GameRoot root)
+        {
+            FireDiesWithBoss(root); ArenaFireSparesExit(root); GrenadeSnapsToGround(root);
+            LeapSlamPit(root); NoWalkIntoFire(root); GrabPositive(root);
+            HookNeedsHit(root); PushNeedsHit(root); FireNoHitstun(root);
+            Debug.Log("KARAMANI_BOSS_FIXES_PASS · boss fire dies with the boss, arena fire spares the exit, grenade lands on the ground, leap slam avoids pits + stops on landing, no walking into fire, grab chosen + 30, hook / push only on a real hit, fire burns without hitstun");
         }
 
         static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
@@ -142,14 +152,14 @@ namespace KaramaniReborn.Editor
 
         static void Bosses(GameRoot root)
         {
-            // Her bölümün sonunda kendi ağası; değerler profilden, boy %12-25 büyük, ad çubukta
+            // Her bölümün sonunda kendi ağası; değerler profilden, boy kullanıcı kararı (Karamani'ye göre), ad çubukta
             EnemyRole[] expect = { EnemyRole.Arslan, EnemyRole.KorDemir, EnemyRole.Kurtbas, EnemyRole.KaraMurad };
             string[] names = { "Bayraktar Arslan", "Humbaracıbaşı Kör Demir", "Deli Kurtbaş", "Yeniçeri Ağası Kara Murad" };
             for (int zone = 0; zone < 4; zone++)
             {
                 root.LoadZone(zone, true); var w = root.world; var boss = w.enemies[^1]; var p = EnemyProfile.For(boss.role);
                 Assert(boss.boss && boss.role == expect[zone], "Zone " + zone + " boss is " + boss.role);
-                // Boy kullanıcı kararı: Karamani'ye göre %12-25 büyük; Kara Murad %60 uzun ve iki kat iri (vurulma kutusu bulk)
+                // Boy kullanıcı kararı (Karamani'ye göre): Arslan 1.15, Kör Demir 1.12, Kurtbaş 1.12, Kara Murad 1.6 ve iki kat iri (vurulma kutusu bulk 2)
                 float[] sizes = { 1.15f, 1.12f, 1.12f, 1.6f };
                 Assert(boss.maxHealth == p.health && boss.maxGuard == p.guard && Mathf.Approximately(boss.size, sizes[zone]) && p.size == sizes[zone], boss.role + " values from profile, size " + boss.size);
                 Assert(zone == 3 ? p.bulk == 2f : p.bulk == 0, boss.role + " bulk " + p.bulk);
@@ -253,7 +263,7 @@ namespace KaramaniReborn.Editor
             w.SpawnFireForTest(new Vector2(5.5f, w.zone.floor), 1.6f, 4);
             // Tam zıplama (tuş basılı): kısa sıçrayış (.33 sn) x≈6.45'te, yanma sınırının (5.5 + .8 + .2 = 6.5) içinde iner; tam zıplama ≈6.62'de
             Run(w, 1.2f, i => new InputFrame { move = 1, jump = i == 0, jumpHeld = true });
-            Assert(pl.health == pl.maxHealth || pl.position.x < 4.7f, "Jumping over a fire patch should not burn, health " + pl.health);
+            Assert(pl.health == pl.maxHealth && pl.position.x > 6.6f, "Jumping over a fire patch should cross it unburnt: health " + pl.health + ", x " + pl.position.x);
 
             // Yüksekteki oyuncuya humbara atar: humbara uzak saldırı yükseklik sınırını (3) kullanır, yakın dövüşün .8'ini değil
             // (oyuncu 23.5-26.6 platformunda, y -0.75: yerden 1.5 yukarıda)
@@ -281,11 +291,117 @@ namespace KaramaniReborn.Editor
             w = Arena(root, EnemyRole.KorDemir, 3, out e); pl = w.player; float home = e.home;
             e.health = e.maxHealth * .45f; Run(w, 2.2f);
             Assert(e.phase == 2, "Kör Demir did not enter phase 2");
+            // Geometri doğrudan: home + 3'ü bir ateş kaplar, home - 2'yi (oyuncunun yanma payı .2 dahil) hiçbiri kaplamaz
+            Assert(w.projectiles.Exists(s => Covers(s, home + 3)), "Arena fire must cover home + 3");
+            Assert(!w.projectiles.Exists(s => Covers(s, home - 2)), "The middle strip (home - 2) must stay free of fire");
             pl.position = new Vector2(home + 3, w.zone.floor); pl.invincible = 0; float hp = pl.health; Run(w, 1f);
             Assert(pl.health < hp, "Arena fire must burn beside the boss (home + 3)");
-            pl.position = new Vector2(home - 2, w.zone.floor); pl.invincible = 0; hp = pl.health; Run(w, 1f);
-            Assert(pl.health == hp || e.Attacking, "The middle strip (home - 2) must stay free of fire");
             Debug.Log("KARAMANI_BOSS_KORDEMIR_PASS · grenade blast + fire patch, dodge, jump over fire, throws up to a platform, hook pull / blocked, oil strip, arena fire");
+        }
+
+        // Etkin (gecikmesi dolmuş) bir ateş x'i kaplıyor mu: oyuncunun yanma payı (.2) dahil
+        static bool Covers(GameWorld.Projectile s, float x) => s.kind == GameWorld.ShotKind.Fire && s.delay <= 0 && s.life > 0 && Mathf.Abs(x - s.position.x) < s.width * .5f + .2f;
+
+        // 2. bölüm arenası (Kör Demir evinde, 50.4): ikinci evreye geçip arena ateşini yakar; oyuncu ortadaki dar alanda
+        static GameWorld KorDemirArenaFire(GameRoot root, out Actor e)
+        {
+            root.LoadZone(1, true); var w = root.world; var boss = w.enemies.Find(a => a.boss); e = boss;
+            foreach (var other in w.enemies) if (other != boss) other.position.x = -4;
+            var pl = w.player; pl.position = new Vector2(boss.home - 2, w.zone.floor); pl.face = 1; pl.view.ResetContacts(); pl.maxHealth = pl.health = 9999;
+            boss.intentTime = 99; boss.health = boss.maxHealth * .45f;
+            Run(w, 2.2f);
+            Assert(boss.phase == 2 && w.projectiles.Exists(s => s.kind == GameWorld.ShotKind.Fire && s.delay <= 0), "Setup: Kör Demir's arena fire should be burning");
+            return w;
+        }
+
+        // Boss ölünce kendi ateşi de söner; çıkışın önünde yanan ateş kalmaz
+        static void FireDiesWithBoss(GameRoot root)
+        {
+            var w = KorDemirArenaFire(root, out var e); var pl = w.player;
+            w.Damage(e, 5000, 1, true, true); w.Simulate(1f / 120, new InputFrame(), true);
+            int left = w.projectiles.FindAll(s => s.kind == GameWorld.ShotKind.Fire).Count;
+            Assert(e.Dead && left == 0, "Boss fire must die with the boss: " + left + " fire(s) left");
+            pl.position = new Vector2(w.zone.length - 2, w.zone.floor); pl.view.ResetContacts(); pl.invincible = 0; float hp = pl.health;
+            Run(w, 1f);
+            Assert(pl.health == hp, "The exit (zone.length - 2) must be safe after the boss dies, health " + hp + " -> " + pl.health);
+        }
+
+        // Arena ateşi çıkış tetiğine (x > zone.length - 3) uzanmaz: her şerit zone.length - 3.5'te biter
+        static void ArenaFireSparesExit(GameRoot root)
+        {
+            var w = KorDemirArenaFire(root, out _);
+            foreach (var s in w.projectiles.FindAll(s => s.kind == GameWorld.ShotKind.Fire))
+                Assert(s.position.x + s.width * .5f <= w.zone.length - 3.5f + .001f, "Arena fire reaches the exit: span ends at " + (s.position.x + s.width * .5f) + " > " + (w.zone.length - 3.5f));
+        }
+
+        // Humbara zıplayan oyuncunun havadaki yerine değil, altındaki zemine düşer (işaret, patlama, ateş)
+        static void GrenadeSnapsToGround(GameRoot root)
+        {
+            var w = Arena(root, EnemyRole.KorDemir, 6, out var e); var pl = w.player;
+            var g = EnemyProfile.For(EnemyRole.KorDemir).Find("grenade");
+            w.StartAttack(e, "grenade");
+            // Zıplama atıştan .24 sn önce: 8.7·.24 - 10·.24² ≈ 1.5 birim yukarıda
+            int jump = Mathf.RoundToInt((g.windup - .24f) * 120); float height = -1;
+            for (int i = 0; i < Mathf.RoundToInt((g.windup + .9f + .15f) * 120); i++)
+            {
+                w.Simulate(1f / 120, new InputFrame { jump = i == jump, jumpHeld = true }, true);
+                if (height < 0 && w.projectiles.Exists(s => s.kind == GameWorld.ShotKind.Grenade)) height = pl.grounded ? 0 : pl.position.y - w.zone.floor;
+            }
+            Assert(height > 1.2f, "Setup: the player should be airborne (~1.5) when the grenade is thrown, height " + height);
+            var fire = w.projectiles.Find(s => s.kind == GameWorld.ShotKind.Fire);
+            Assert(fire != null && Mathf.Abs(fire.position.y - w.zone.floor) < .01f, "Grenade fire must lie on the ground below the jumping player, y " + (fire != null ? fire.position.y : float.NaN) + " floor " + w.zone.floor);
+        }
+
+        // Ateş yürüyüşe engel: Kör Demir geri çekilirken kendi arena ateşine girmez.
+        // Oyuncu home - .5'te (ortadaki dar alan): keepMin 3 yüzünden boss home + 2.5'e çekilmek ister, ateş home + 1.5'te başlar
+        static void NoWalkIntoFire(GameRoot root)
+        {
+            var w = Arena(root, EnemyRole.KorDemir, 3, out var e); var pl = w.player; float home = e.home;
+            pl.position = new Vector2(home - .5f, w.zone.floor); pl.view.ResetContacts(); pl.maxHealth = pl.health = 9999;
+            e.health = e.maxHealth * .45f;
+            float worst = float.NaN;
+            Run(w, 1.4f + 3f, i =>
+            {
+                foreach (var s in w.projectiles)
+                    if (s.kind == GameWorld.ShotKind.Fire && s.delay <= 0 && s.life > 0 && Mathf.Abs(e.position.x - s.position.x) < s.width * .5f && float.IsNaN(worst)) worst = e.position.x;
+                return new InputFrame();
+            });
+            Assert(e.phase == 2, "Setup: Kör Demir should be in phase 2");
+            Assert(float.IsNaN(worst), "Kör Demir walked into an active fire at x " + worst + " (fire starts at " + (home + 1.5f) + "), now at " + e.position.x);
+        }
+
+        // Kanca yalnız gerçekten vurduysa çeker: sendelemedeyken dokunulmaz olan oyuncu çekilmez
+        static void HookNeedsHit(GameRoot root)
+        {
+            var w = Arena(root, EnemyRole.KorDemir, 3.5f, out var e); var pl = w.player;
+            var hook = EnemyProfile.For(EnemyRole.KorDemir).Find("hook");
+            w.StartAttack(e, "hook"); pl.Enter(ActionState.Hurt, 1f); pl.invincible = 1;
+            Run(w, hook.windup + .5f);
+            Assert(pl.health == pl.maxHealth && Mathf.Abs(e.position.x - pl.position.x) > 3f, "A hook that did not damage must not pull: health " + pl.health + ", gap " + Mathf.Abs(e.position.x - pl.position.x));
+        }
+
+        // Geri itme (push) de yalnız gerçek isabette: sendelemedeyken dokunulmaz olan oyuncu savrulmaz
+        static void PushNeedsHit(GameRoot root)
+        {
+            var w = Arena(root, EnemyRole.Halberdier, 1f, out var e); var pl = w.player;
+            var shove = EnemyProfile.For(EnemyRole.Halberdier).Find("shove");
+            w.StartAttack(e, "shove"); pl.Enter(ActionState.Hurt, 1f); pl.invincible = 1;
+            Run(w, shove.windup + .2f);
+            Assert(pl.health == pl.maxHealth && pl.knockback == 0, "A shove that did not damage must not push: health " + pl.health + ", knockback " + pl.knockback);
+        }
+
+        // Ateş yakar ama sendeletmez: içinden yürüyen oyuncu can kaybeder, Hurt'e girmez; canı biterse ölür
+        static void FireNoHitstun(GameRoot root)
+        {
+            var w = Arena(root, EnemyRole.KorDemir, 6, out _); var pl = w.player;
+            w.SpawnFireForTest(new Vector2(5.5f, w.zone.floor), 3, 4);
+            bool hurt = false;
+            Run(w, 1f, i => { hurt |= pl.state == ActionState.Hurt; return new InputFrame { move = 1 }; });
+            Assert(pl.health < pl.maxHealth && !hurt, "Fire must burn without hitstun: health " + pl.health + ", entered Hurt " + hurt);
+            w = Arena(root, EnemyRole.KorDemir, 6, out _); pl = w.player; pl.health = 4;
+            w.SpawnFireForTest(new Vector2(4, w.zone.floor), 2, 4);
+            Run(w, .1f);
+            Assert(pl.Dead && pl.state == ActionState.Dead, "Fire must kill at 0 health: " + pl.state + " hp " + pl.health);
         }
 
         static void Kurtbas(GameRoot root)
@@ -326,6 +442,26 @@ namespace KaramaniReborn.Editor
             Debug.Log("KARAMANI_BOSS_KURTBAS_PASS · 4-hit storm, leap-over behind + pit fallback, red leap slam + dodge, frenzy");
         }
 
+        // Çakılma çukura inmez, inişte kaymaz: oyuncu 29.5-31.5 çukurunun üstündeki platformda (x 30.5, y -0.45), boss 27'de.
+        // Hedef sağlam değil; bosa doğru 1.5 birim içindeki en yakın sağlam nokta 29.2 (zeminin ucu 29.5 - .3)
+        static void LeapSlamPit(GameRoot root)
+        {
+            var w = Arena(root, EnemyRole.Kurtbas, 6, out var e); var pl = w.player;
+            pl.position = new Vector2(30.5f, -.45f); pl.view.ResetContacts();
+            e.position = new Vector2(27, w.zone.floor); e.face = 1; e.view.ResetContacts();
+            w.StartAttack(e, "leapslam");
+            float lowest = e.position.y, landVx = float.NaN; bool air = false;
+            for (int i = 0; i < 240; i++)
+            {
+                w.Simulate(1f / 120, new InputFrame(), true);
+                lowest = Mathf.Min(lowest, e.position.y);
+                if (air && e.grounded && float.IsNaN(landVx)) landVx = e.velocity.x;
+                air = !e.grounded;
+            }
+            Assert(lowest > -6 && e.grounded && !(e.position.x > 29.5f && e.position.x < 31.5f), "Leap slam must not land in the pit: x " + e.position.x + ", lowest y " + lowest + ", grounded " + e.grounded);
+            Assert(landVx == 0, "Leap must stop on its first grounded frame, vx " + landVx);
+        }
+
         static void KaraMurad(GameRoot root)
         {
             // Omuz hücumu: arenayı boydan boya, kırmızı (blok işe yaramaz) 26
@@ -363,6 +499,20 @@ namespace KaramaniReborn.Editor
             e.Enter(ActionState.Idle); e.intentTime = 99; float x0 = e.position.x; Run(w, 1f);
             Assert(x0 - e.position.x > 1f * EnemyProfile.For(EnemyRole.KaraMurad).speed * 1.15f, "Phase 2 must move faster (x1.3)");
             Debug.Log("KARAMANI_BOSS_KARAMURAD_PASS · red charge, grab only on idle player, quake wave, bare-handed phase 2 chain + speed");
+        }
+
+        // Yakalama gerçekten seçilir: 1 birimdeki boşta oyuncuya (1 birimi kapsayan tek diğer saldırı, pala kombosu, beklemede)
+        // Kara Murad .6 sn içinde yakalamayı başlatır ve oyuncu 30 can kaybeder
+        static void GrabPositive(GameRoot root)
+        {
+            var w = Arena(root, EnemyRole.KaraMurad, 1, out var e); var pl = w.player;
+            var grab = EnemyProfile.For(EnemyRole.KaraMurad).Find("grab");
+            e.intentTime = 0; e.cooldown = 0; e.attackReady["combo"] = 999;
+            string first = null;
+            for (int i = 0; i < 72 && first == null; i++) { w.Simulate(1f / 120, new InputFrame(), true); first = e.attack?.name; }
+            Assert(first == "grab", "Kara Murad should grab an idle player in reach within .6 s, started " + (first ?? "nothing"));
+            Run(w, grab.Duration);
+            Assert(pl.health == pl.maxHealth - 30, "The grab should take 30, health " + pl.health);
         }
 
         static void Sorcerer(GameRoot root)

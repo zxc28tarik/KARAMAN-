@@ -426,6 +426,21 @@ namespace KaramaniReborn
             else if (heavy && !target.player && !target.boss && !held && direction != 0) Launch(target, direction * 1.2f, 3.4f);
             if (target.Dead && !target.player)
             { kills++; player.stamina = Mathf.Min(100, player.stamina + 14); if (target.boss) { Notify(zone.bossName + " yenildi. İç kapı açıldı."); player.ammo += 4; } }
+            if (target.Dead) Extinguish(target);
+        }
+
+        // Ölenin yaktığı ateşler onunla söner (boss ölünce arena ve çıkış serbest kalır)
+        void Extinguish(Actor source)
+        { foreach (var s in projectiles) if (s.kind == ShotKind.Fire && s.source == source) s.life = 0; }
+
+        // Ateş yakar ama sendeletmez: can, parlama ve hasar sayısı; Hurt yok, geri itme yok, duraksama yok.
+        // Dokunulmazlık (kaçış) korur; can biterse ölür
+        void Burn(Actor target, float damage)
+        {
+            if (target.Dead || target.invincible > 0) return;
+            target.health = Mathf.Max(0, target.health - damage); target.hitFlash = .14f;
+            damageEvents.Add(new DamageEvent { position = target.position + Vector2.up * (2.55f * target.size), amount = Mathf.Max(1, Mathf.RoundToInt(damage)), toPlayer = target.player });
+            if (target.health <= 0) { target.knockback = 0; target.Enter(ActionState.Dead, .6f); }
         }
 
         // Uzun sendeleme: denge dolar, geri itme yok; oyuncu sendeletmişse infaz fırsatı açılır
@@ -467,7 +482,7 @@ namespace KaramaniReborn
                 {
                     p.tick -= dt;
                     bool inside = Mathf.Abs(player.position.x - p.position.x) < p.width * .5f + .2f && player.position.y - p.position.y < .6f && player.position.y >= p.position.y - .1f;
-                    if (inside && p.tick <= 0 && !player.Dead) { Damage(player, p.damage, 0, false, false, p.source, -1, true); p.tick = .5f; }
+                    if (inside && p.tick <= 0 && !player.Dead) { Burn(player, p.damage); p.tick = .5f; }
                     if (p.life <= 0) RemoveShot(i);
                     continue;
                 }
@@ -487,7 +502,7 @@ namespace KaramaniReborn
             }
         }
 
-        // Yerde yanan ateş: genişlik boyunca, yerden .6 yüksekliğe kadar; her .5 sn'de bir kırmızı hasar (zıplayan yanmaz)
+        // Yerde yanan ateş: genişlik boyunca, yerden .6 yüksekliğe kadar; her .5 sn'de bir yanık (sendeletmez; zıplayan yanmaz)
         Projectile SpawnFire(Vector2 ground, float width, float life, float damage, Actor source, float delay = 0)
         {
             var sr = ArtLibrary.Draw("Fire", ArtLibrary.Glow, actorsRoot, ground + Vector2.up * .35f, 172, new Color(1, .45f, .1f, .75f));
@@ -505,7 +520,8 @@ namespace KaramaniReborn
             var k = p.attack; effects.GlowBurst(p.target + Vector2.up * .4f, new Color(1, .5f, .15f));
             if (!player.Dead && Mathf.Abs(player.position.x - p.target.x) < 1.2f && Mathf.Abs(player.position.y - p.target.y) < 1.5f)
                 Damage(player, p.damage, (int)Mathf.Sign(player.position.x - p.target.x), false, false, p.source, -1, true);
-            if (k != null && k.patchLife > 0) SpawnFire(p.target, k.patchWidth, k.patchLife, k.patchDamage, p.source);
+            // Atan ölmüşse ateş tutuşmaz (ateşi onunla söner)
+            if (k != null && k.patchLife > 0 && (p.source == null || !p.source.Dead)) SpawnFire(p.target, k.patchWidth, k.patchLife, k.patchDamage, p.source);
         }
 
         bool HitsPlayer(Projectile p, Vector2 old)
