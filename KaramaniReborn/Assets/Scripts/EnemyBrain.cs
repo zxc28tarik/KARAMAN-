@@ -52,6 +52,7 @@ namespace KaramaniReborn
                 a.Enter(ActionState.Idle);
                 if (next != null) StartAttack(a, next); else a.cooldown = a.boss ? .46f : .7f;
             }
+            if (a.state == ActionState.Block && a.stateTime >= a.duration) a.Enter(ActionState.Idle);   // kalkan klibi bitti
             float dx = player.position.x - a.position.x, dist = Mathf.Abs(dx), height = Mathf.Abs(player.position.y - a.position.y);
             bool awake = !player.Dead && dist < (a.boss || p.halfBoss ? 10 : 8.6f) + (p.ranged ? 3 : 0);
             float vx = 0;
@@ -67,13 +68,14 @@ namespace KaramaniReborn
                 bool ready = a.cooldown <= 0 || opening && choice != null && choice.punish;
                 bool slot = choice != null && (choice.kind is AttackKind.Backstep or AttackKind.Teleport || Attackers < MaxAttackers);
                 if (choice != null && ready && slot && attackDirector <= 0) { Begin(a, choice); attackDirector = .26f; a.cooldown = .8f; }
+                else if (a.state == ActionState.Block) { }   // kalkan klibi (~.2 sn): yerinde siper alır; saldırı yine başlayabilir
                 else if (dist > p.keepMax) { vx = a.face * p.speed; a.state = ActionState.Move; }
                 else if (dist < p.keepMin) { vx = -a.face * p.speed * .8f; a.state = ActionState.Move; }   // yüzü oyuncuda, geri çekilir
                 else a.state = ActionState.Idle;
                 if (vx != 0 && a.grounded && !GroundAhead(a, Mathf.Sign(vx) * .34f))
                 {
-                    // Önde boşluk: oyuncuya doğruysa atla, değilse kenarda dur
-                    if (Mathf.Sign(vx) == a.face && dist > 2) { a.velocity.y = 8.4f; a.grounded = false; a.view.ResetContacts(); }
+                    // Önde boşluk: yakın dövüşçü oyuncuya doğruysa atlar; uzakçı yerini (platformunu) korur; değilse kenarda dur
+                    if (!p.ranged && Mathf.Sign(vx) == a.face && dist > 2) { a.velocity.y = 8.4f; a.grounded = false; a.view.ResetContacts(); }
                     else { vx = 0; a.state = ActionState.Idle; }
                 }
             }
@@ -123,8 +125,14 @@ namespace KaramaniReborn
                     if (strike != a.strike) { a.strike = strike; a.hitTargets.Clear(); }
                     if (a.hitTargets.Contains(player.id) || !MeleeReach(a, k)) return;
                     a.hitTargets.Add(player.id);
-                    Damage(player, k.damage, a.face, k.heavy, false, a, -1, k.red);
-                    if (k.push > 0 && player.state == ActionState.Hurt) player.knockback = a.face * k.push;
+                    // Yere vurma halkası: arkadaki oyuncu da dışa (kendi tarafına) itilir
+                    int dir = k.kind == AttackKind.Slam ? (int)Mathf.Sign(player.position.x - a.position.x) : a.face;
+                    bool avoided = player.invincible > 0;   // kaçışın dokunulmazlığı itmeyi de önler
+                    Damage(player, k.damage, dir, k.heavy, false, a, -1, k.red);
+                    if (k.push > 0 && player.state == ActionState.Hurt) player.knockback = dir * k.push;
+                    // Kalkanla itme: blok ya da savuşturma da olsa geri iter ve dayanıklılığı düşürür
+                    if (!avoided && !player.Dead && k.pushBack > 0) { player.pushTime = .2f; player.pushSpeed = dir * k.pushBack / .2f; }
+                    if (!avoided && !player.Dead && k.staminaDrain > 0) { player.stamina = Mathf.Max(0, player.stamina - k.staminaDrain); player.staminaDelay = .7f; }
                     return;
                 case AttackKind.Teleport:
                     if (a.stateTime >= k.windup && !a.attackConnected) { a.attackConnected = true; Teleport(a); }
@@ -149,6 +157,9 @@ namespace KaramaniReborn
                     Vector2 aim = chest - hand, velocity = aim.x * a.face > 0 ? aim.normalized * speed : Vector2.right * a.face * speed;
                     AddShot(k.kind == AttackKind.Bullet ? ShotKind.Bullet : ShotKind.Arrow, hand, velocity, 1.4f, k, a);
                     sound?.Invoke("shot"); effects.GlowBurst(hand, new Color(1, .62f, .25f, .65f));
+                    // Tüfek boş kalır: doldurma bölünse de atış + toparlanma + doldurma süresi dolmadan yeniden nişan alınmaz
+                    var reload = k.then != null ? EnemyProfile.For(a.role).Find(k.then) : null;
+                    if (k.kind == AttackKind.Bullet && reload != null) a.attackReady[k.name] = clock + k.active + k.recovery + reload.Duration;
                     break;
                 }
                 case AttackKind.Volley:
@@ -181,7 +192,7 @@ namespace KaramaniReborn
             float away = -Mathf.Sign(player.position.x - a.position.x);
             float[] options = { player.position.x - player.face * 2.2f, a.position.x + away * 5, player.position.x + player.face * 3 };
             foreach (float x in options)
-                if (Standable(x, out float y)) { a.position = new Vector2(x, y); a.velocity = Vector2.zero; break; }
+                if (Standable(x, out float y)) { a.position = new Vector2(x, y); a.velocity = Vector2.zero; a.view.ResetContacts(); break; }
             a.face = player.position.x > a.position.x ? 1 : -1;
             effects.GlowBurst(a.position + Vector2.up, smoke);
         }

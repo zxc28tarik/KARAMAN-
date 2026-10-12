@@ -49,6 +49,8 @@ namespace KaramaniReborn
         public float jumpBuffer, coyote, staminaDelay;
         public readonly System.Collections.Generic.HashSet<int> hitTargets = new();
         public float knockback, speed, size = 1;
+        // Kalkanla itme: kalan süre ve o süredeki yatay hız (blokta da uygulanır)
+        public float pushTime, pushSpeed;
         public PixelCharacter view;
         // Düşman saldırısı: yürüyen saldırının tanımı, kaçıncı vuruşta olduğu, evre ve türlere özel sayaçlar
         public EnemyAttack attack;

@@ -61,6 +61,8 @@ namespace KaramaniReborn
             var p = EnemyProfile.For(role);
             var a = new Actor { id = enemies.Count + 1, role = role, boss = boss, position = new Vector2(x, y), face = -1,
                 health = boss ? 210 + zone.index * 20 : p.health, maxGuard = boss ? 95 : p.guard, size = boss ? 1.09f : p.size, intentTime = .3f + enemies.Count * .11f };
+            // Karanlık Kale'de yarı-boss daha güçlü (spec §5): can x1.3, denge x1.2; profil aynı kalır
+            if (!boss && p.halfBoss && zone.index == 3) { a.health *= 1.3f; a.maxGuard *= 1.2f; }
             a.maxHealth = a.health; a.guard = a.maxGuard; new PixelCharacter(a, actorsRoot); enemies.Add(a);
             return a;
         }
@@ -104,7 +106,7 @@ namespace KaramaniReborn
 
         void TickTimers(Actor a, float dt)
         {
-            a.stateTime += dt; a.grabCooldown -= dt; a.airFlip -= dt; a.riposte -= dt; a.cooldown -= dt; a.invincible -= dt; a.parryWindow -= dt; a.hitFlash -= dt; a.dropTimer -= dt; a.skillCooldown -= dt; a.shotCooldown -= dt; a.staminaDelay -= dt;
+            a.stateTime += dt; a.grabCooldown -= dt; a.airFlip -= dt; a.riposte -= dt; a.cooldown -= dt; a.invincible -= dt; a.parryWindow -= dt; a.hitFlash -= dt; a.dropTimer -= dt; a.skillCooldown -= dt; a.shotCooldown -= dt; a.staminaDelay -= dt; a.pushTime -= dt;
             if (!a.Locked && a.staminaDelay <= 0) a.stamina = Mathf.MoveTowards(a.stamina, 100, dt * (a.state == ActionState.Block ? 6 : 24));
             if (!a.Attacking) a.guard = Mathf.MoveTowards(a.guard, a.maxGuard, dt * 7);
         }
@@ -183,6 +185,9 @@ namespace KaramaniReborn
             if (a.state == ActionState.Hurt) desired = a.knockback * (1 - a.Progress);
             if (a.skid > 0) desired = 0;
             a.velocity.x = Mathf.MoveTowards(a.velocity.x, desired, dt * (a.Locked ? 65 : a.skid > 0 ? 9 : a.grounded ? 25 : 12));
+            // Kalkanla itme: blokta bile kısa sürede sabit mesafe geri iter; bitince kayma kalmaz
+            if (a.pushTime > 0) a.velocity.x = a.pushSpeed;
+            else if (a.pushSpeed != 0) { a.velocity.x = 0; a.pushSpeed = 0; }
             // Dalış: kısa bir asılı kalıştan sonra hızla aşağı
             if (a.state == ActionState.Light && a.combo == 4 && a.stateTime > .06f) a.velocity.y = Mathf.Min(a.velocity.y, -11f);
             bool landed = !a.grounded; float fallSpeed = a.velocity.y;
@@ -297,18 +302,15 @@ namespace KaramaniReborn
 
         static bool Active(Actor a) => a.state == ActionState.Light && a.combo == 4 ? a.stateTime > .05f : a.state == ActionState.Spirit ? a.Progress > .15f && a.Progress < .85f : a.state == ActionState.Heavy ? a.Progress > .44f && a.Progress < .73f : a.Progress > .27f && a.Progress < .64f;
 
+        // Oyuncunun kılıcı. Düşmanlar yalnız PerformAttack (EnemyBrain.cs) üzerinden vurur.
         void ResolveBlade(Actor source)
         {
             if (!source.Attacking || !Active(source) || source.Dead) return;
-            if (source.player)
-            {
-                // Lanet küreleri kılıçla söndürülür
-                foreach (var shot in projectiles)
-                    if (shot.kind == ShotKind.Orb && shot.life > 0 && shot.delay <= 0 && SegmentHits(source.view.StrikeRoot, source.view.BladeTip, new Rect(shot.position.x - .3f, shot.position.y - .3f, .6f, .6f)))
-                    { shot.life = 0; effects.GlowBurst(shot.position, new Color(.55f, .1f, .8f)); }
-                foreach (var target in enemies) TryBlade(source, target);
-            }
-            else TryBlade(source, player);
+            // Lanet küreleri kılıçla söndürülür
+            foreach (var shot in projectiles)
+                if (shot.kind == ShotKind.Orb && shot.life > 0 && shot.delay <= 0 && SegmentHits(source.view.StrikeRoot, source.view.BladeTip, new Rect(shot.position.x - .3f, shot.position.y - .3f, .6f, .6f)))
+                { shot.life = 0; effects.GlowBurst(shot.position, new Color(.55f, .1f, .8f)); }
+            foreach (var target in enemies) TryBlade(source, target);
         }
 
         void TryBlade(Actor source, Actor target)
@@ -319,14 +321,14 @@ namespace KaramaniReborn
             bool hit = SegmentHits(source.view.StrikeRoot, source.view.BladeTip, box);
             if (source.state == ActionState.Spirit) hit |= Vector2.Distance(source.position, target.position) < 1.6f;
             // Dalış: kılıcın yanı sıra ayakların hemen altı da vurur
-            if (source.player && source.state == ActionState.Light && source.combo == 4)
+            if (source.state == ActionState.Light && source.combo == 4)
                 hit |= new Rect(source.position.x - .45f, source.position.y - .8f, .9f, 1.1f).Overlaps(box);
             if (!hit) return;
             source.hitTargets.Add(target.id);
-            float damage = source.player ? source.state == ActionState.Heavy ? 44 : source.state == ActionState.Spirit ? 46 : source.combo == 3 ? 29 : 20 : source.boss ? source.state == ActionState.Heavy ? 25 : 19 : 14;
-            bool dive = source.player && source.state == ActionState.Light && source.combo == 4;
+            float damage = source.state == ActionState.Heavy ? 44 : source.state == ActionState.Spirit ? 46 : source.combo == 3 ? 29 : 20;
+            bool dive = source.state == ActionState.Light && source.combo == 4;
             if (dive) damage = 26;
-            float stop = source.state is ActionState.Heavy or ActionState.Spirit ? .1f : source.player && source.combo == 3 ? .075f : .055f;
+            float stop = source.state is ActionState.Heavy or ActionState.Spirit ? .1f : source.combo == 3 ? .075f : .055f;
             // İnfaz: savuşturulup sersemleyen rakibe karşı darbe
             bool execute = source.riposting && target.id == source.riposteTarget;
             if (execute) { damage *= 2.6f; stop = .16f; }
@@ -354,28 +356,40 @@ namespace KaramaniReborn
             {
                 target.guard -= damage * 1.3f;
                 effects.Impact(target.position + Vector2.up * 1.35f, direction, true, false, float.NaN, .045f); sound?.Invoke("block");
-                if (target.guard > 0) return;
+                if (target.guard > 0)
+                {
+                    // Yalnız görüntü: saldırmıyorsa kısa bir an kalkan bloğu klibi
+                    if (!target.Locked) target.Enter(ActionState.Block, .2f);
+                    return;
+                }
                 Stagger(target, source); Notify("KALKAN KIRILDI"); return;
             }
             bool frontal = source == null || (source.position.x - target.position.x) * target.face >= 0;
-            if (!unblockable && !red && frontal && target.state == ActionState.Block)
+            // Blok yalnız oyuncuda; düşmanın Block durumu kalkan klibidir (ağır vuruş kalkanı yine geçer)
+            if (target.player && !unblockable && !red && frontal && target.state == ActionState.Block)
             {
-                if (target.player && target.parryWindow > 0)
+                if (target.parryWindow > 0)
                 {
                     target.Enter(ActionState.Parry, .15f); target.stamina = Mathf.Min(100, target.stamina + 12); effects.Impact(target.position + Vector2.up * 1.45f, -direction, true, true, float.NaN, .12f); Notify("SAVUŞTURMA"); sound?.Invoke("parry");
                     effects.slowMotion = .4f; effects.Glint(target.view.BladeTip, true);
-                    if (source != null) { source.Enter(ActionState.Hurt, .9f); source.guard = 0; source.knockback = -direction * 2; target.riposte = .8f; target.riposteTarget = source.id; }
+                    // Savuşturulan sendeler: denge dolar, geri itilmez (infaz menzilinde kalır), oyuncuya infaz açılır
+                    if (source != null) Stagger(source, target, EnemyProfile.For(source.role).parryStagger);
                     return;
                 }
                 float guardDamage = heavy ? 65 : damage * 1.3f;
-                if (target.player) target.stamina -= guardDamage; else target.guard -= guardDamage;
+                target.stamina -= guardDamage;
                 effects.Impact(target.position + Vector2.up * 1.35f, direction, true, heavy, float.NaN, heavy ? .07f : .045f); sound?.Invoke("block");
-                if ((target.player ? target.stamina : target.guard) > 0) return;
+                if (target.stamina > 0) return;
                 Notify("SAVUNMA KIRILDI"); damage *= .6f;
             }
             target.health = Mathf.Max(0, target.health - damage); target.hitFlash = .14f;
             damageEvents.Add(new DamageEvent { position = target.position + Vector2.up * (2.55f * target.size), amount = Mathf.Max(1, Mathf.RoundToInt(damage)), toPlayer = target.player, strong = heavy || damage >= 40 }); target.invincible = target.player ? .40f : .14f;
-            target.knockback = direction * (heavy ? 3.1f : 1.5f); target.Enter(target.health <= 0 ? ActionState.Dead : ActionState.Hurt, heavy ? .6f : .28f);
+            // Duruş: kendi saldırısını yürüten ağır düşman vurulunca durmaz (can ve denge yine düşer); denge kırılır ya da ölürse durur
+            bool poised = profile != null && profile.poise && target.attack != null && (target.state is ActionState.Light or ActionState.Shoot);
+            // Sendeleme kısalmaz: daha uzun sürecek bir sendelemenin içindeki sıradan vuruş onu (ve geri itmesini) değiştirmez
+            float hurt = heavy ? .6f : .28f;
+            bool longer = target.state == ActionState.Hurt && target.duration - target.stateTime > hurt;
+            if (target.health <= 0 || !poised && !longer) { target.knockback = direction * (heavy ? 3.1f : 1.5f); target.Enter(target.health <= 0 ? ActionState.Dead : ActionState.Hurt, hurt); }
             // Denge: her vuruş düşürür; sıfırlanınca uzun sendeleme ve infaz fırsatı
             // İnfaz vuruşu dengeyi düşürmez: savuşturmayla sıfırlanan denge yüzünden yeniden sendeletmez
             bool executed = source != null && source.riposting && target.id == source.riposteTarget;
@@ -385,18 +399,20 @@ namespace KaramaniReborn
                 target.guard -= damage * (profile.shielded ? (heavy || !front ? 2 : 1) : heavy ? 1.5f : 1);
                 if (target.guard <= 0) Stagger(target, source);
             }
+            bool held = poised && !target.Dead && target.state != ActionState.Hurt;   // saldırısı sürüyor: havaya kalkmaz
             effects.Impact(target.position + Vector2.up * 1.25f, direction, false, heavy, target.position.y, stop);
             effects.lastStruck = target; sound?.Invoke(heavy ? "heavyhit" : "hit");
             // Ölüm: geriye ve yukarı savrulur. Ağır darbe yaşayan sıradan düşmanı kısa süre havaya kaldırır.
             if (target.Dead && direction != 0) Launch(target, direction * (heavy ? 5.4f : 3.6f), heavy ? 5.6f : 4.2f);
-            else if (heavy && !target.player && !target.boss && direction != 0) Launch(target, direction * 1.2f, 3.4f);
+            else if (heavy && !target.player && !target.boss && !held && direction != 0) Launch(target, direction * 1.2f, 3.4f);
             if (target.Dead && !target.player)
             { kills++; player.stamina = Mathf.Min(100, player.stamina + 14); if (target.boss) { Notify(zone.bossName + " yenildi. İç kapı açıldı."); player.ammo += 4; } }
         }
 
-        void Stagger(Actor target, Actor source)
+        // Uzun sendeleme: denge dolar, geri itme yok; oyuncu sendeletmişse infaz fırsatı açılır
+        void Stagger(Actor target, Actor source, float seconds = .9f)
         {
-            target.Enter(ActionState.Hurt, .9f); target.guard = target.maxGuard; target.knockback = 0;
+            target.Enter(ActionState.Hurt, seconds); target.guard = target.maxGuard; target.knockback = 0;
             if (source != null && source.player) { source.riposte = .8f; source.riposteTarget = target.id; }
         }
 

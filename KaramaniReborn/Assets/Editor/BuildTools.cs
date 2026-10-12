@@ -154,6 +154,7 @@ namespace KaramaniReborn.Editor
             {
                 foreach (EnemyRole role in Enum.GetValues(typeof(EnemyRole)))
                     // Büyücü geçici olarak komutanın çizimini 1 boyutunda kullanır; boy aralığı o çizim için Captain'da (1.09) denetlenir
+                    // TODO: Büyücü kendi HD sayfasını alınca kaldır
                     if (role != EnemyRole.Sorcerer) foreach (bool player in role == EnemyRole.Nefer ? new[] { true, false } : new[] { false })
                     {
                         var a = new Actor { player = player, role = role, boss = role == EnemyRole.Captain, position = new Vector2(3, -2.25f), size = player ? 1 : EnemyProfile.For(role).size };
@@ -360,7 +361,7 @@ namespace KaramaniReborn.Editor
             w.StartAttack(archer, "arrow"); archer.view.ResetContacts();
             for (int i = 0; i < 160; i++) w.Simulate(1f / 120, new InputFrame(), true);
             ArtValidation.Assert(w.player.health < w.player.maxHealth, "Elevated archer did not aim at the ground-level player");
-            Debug.Log("KARAMANI_RANGED_PASS · held-weapon origin, pistol contact, elevated archer aim");
+            Debug.Log("KARAMANI_RANGED_PASS · enemy shot origin, pistol contact, elevated archer aim");
         }
 
         static void CaptureAnimation(GameRoot root)

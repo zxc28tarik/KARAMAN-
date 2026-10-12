@@ -11,6 +11,8 @@ namespace KaramaniReborn
         public string name, clip;
         public AttackKind kind = AttackKind.Melee;
         public float windup, active, recovery, minRange, reach, damage, dash, push, cooldown = .8f, hitGap;
+        // Kalkanla itme: blok ya da savuşturma da olsa oyuncuyu pushBack birim geri iter, dayanıklılığından staminaDrain düşer
+        public float pushBack, staminaDrain;
         public int hits = 1;
         public bool red, heavy, punish, first;
         public string then;   // bitince hemen başlayan saldırı (tüfekte doldurma)
@@ -25,6 +27,10 @@ namespace KaramaniReborn
         public string title, sheet;
         public float health, guard, speed, keepMin, keepMax, size = .98f, phaseAt, turnDelay;
         public bool halfBoss, shielded, ranged;
+        // Duruş: kendi saldırısını yürütürken vurulunca durmaz (can ve denge yine düşer); yalnız denge kırılınca sendeler
+        public bool poise;
+        // Savuşturulunca sendeleme süresi (denge kırılınca her zaman .9 sn)
+        public float parryStagger = .9f;
         public EnemyAttack[] attacks;
 
         public EnemyAttack Find(string name) { foreach (var a in attacks) if (a.name == name) return a; return null; }
@@ -47,19 +53,19 @@ namespace KaramaniReborn
             [EnemyRole.Spearman] = new EnemyProfile
             {
                 role = EnemyRole.Spearman, title = "Kalkanlı Mızrakçı", sheet = "shield", health = 95, guard = 75, speed = 1.1f, keepMin = 1.4f, keepMax = 2.2f,
-                shielded = true, turnDelay = .6f,
+                shielded = true, turnDelay = .6f, poise = true,
                 attacks = new[]
                 {
                     new EnemyAttack { name = "thrust", windup = .4f, active = .15f, recovery = .45f, reach = 2.4f, damage = 16 },
-                    new EnemyAttack { name = "bash", windup = .25f, active = .12f, recovery = .4f, reach = 1.2f, damage = 8, push = 5, punish = true, cooldown = 1.5f },
+                    new EnemyAttack { name = "bash", windup = .25f, active = .12f, recovery = .4f, reach = 1.2f, damage = 8, pushBack = 1.5f, staminaDrain = 20, punish = true, cooldown = 1.5f },
                 }
             },
             [EnemyRole.Halberdier] = new EnemyProfile
             {
-                role = EnemyRole.Halberdier, title = "Teberli", sheet = "duelist", health = 110, guard = 90, speed = 1f, keepMin = 1.8f, keepMax = 2.6f,
+                role = EnemyRole.Halberdier, title = "Teberli", sheet = "duelist", health = 110, guard = 90, speed = 1f, keepMin = 1.8f, keepMax = 2.6f, poise = true,
                 attacks = new[]
                 {
-                    new EnemyAttack { name = "shove", windup = .2f, active = .12f, recovery = .35f, reach = 1f, damage = 6, push = 6, punish = true, first = true, cooldown = 2 },
+                    new EnemyAttack { name = "shove", windup = .2f, active = .12f, recovery = .8f, reach = 1f, damage = 6, push = 6, punish = true, first = true, cooldown = 2 },
                     new EnemyAttack { name = "chop", windup = .55f, active = .15f, recovery = .8f, reach = 2.4f, damage = 20, heavy = true },
                     new EnemyAttack { name = "sweep", windup = .6f, active = .2f, recovery = .8f, reach = 2.8f, damage = 22, red = true, cooldown = 1.6f },
                 }
@@ -88,7 +94,7 @@ namespace KaramaniReborn
             [EnemyRole.Sorcerer] = new EnemyProfile
             {
                 role = EnemyRole.Sorcerer, title = "Paşanın Büyücüsü", sheet = "captain", health = 220, guard = 60, speed = 1f, keepMin = 4, keepMax = 8, size = 1,
-                halfBoss = true, ranged = true, phaseAt = .5f,
+                halfBoss = true, ranged = true, phaseAt = .5f, poise = true, parryStagger = 1.4f,
                 attacks = new[]
                 {
                     new EnemyAttack { name = "teleport", kind = AttackKind.Teleport, windup = .35f, active = .05f, recovery = .35f, reach = 1.8f, first = true, cooldown = 4 },
