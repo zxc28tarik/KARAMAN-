@@ -52,3 +52,10 @@ RESUME POINT (saved at the user's request before a usage limit):
 - Done: Task 1 (f576873), Task 2 (508408a), both reviewed clean.
 - In flight: Task 3 implementer (base 508408a; Pusucu, Çömlekçi, pack courage, BuildTools goblin skip narrowing). If it committed "Goblinler: Pusucu, Ateş Çömlekçisi, sürü cesareti", review it (range 508408a..that commit); if not, check git status and re-dispatch Task 3 from the brief with the report file as memory.
 - Next: Task 4 room engine (carry: flankstab reach 0 + hitReach 1.1; pair-line wait timeout ≤ 1.5 s; flank stab blockable when facing), Task 5 structure (map sketch first, show user), Tasks 6-9.
+Session resumed after usage limit: goblinler pushed to origin. Task 3 agent was cut mid-task (uncommitted edits in tree); resumed via SendMessage.
+Task 3: BLOCKED — Unity license exit 198; work uncommitted in tree (HEAD 91972cf); RegularsB tests written, Enemies not yet green (perch-2 arena change unrun). Waiting for user to sign in to Unity Hub, then resume the same agent.
+RESUME POINT (updated before moving to a new chat):
+- Done + reviewed: Task 1 (f576873), Task 2 (508408a). Branch goblinler pushed to origin.
+- Task 3: code written but UNCOMMITTED in the working tree (BuildTools.cs, GoblinTests.cs, Effects.cs, EnemyBrain.cs, EnemyProfiles.cs, GameHUD.cs, GameRoot.cs, GameTypes.cs, GameWorld.cs, PixelCharacter.cs). compile_check passes. Unity license dropped (exit 198) — user must sign in to Unity Hub. Then: revert Assets/Scenes/Karamani.unity, run -Job Enemies (first run failed at the pounce-landing assertion; test arena moved to perch 2, not yet run), tune until KARAMANI_GOBLIN_REGULARS_B_PASS, run -Job Verify, commit "Goblinler: Pusucu, Ateş Çömlekçisi, sürü cesareti", update task-3-report.md, then dispatch the Task 3 review (range 91972cf..<commit>; the ledger commit is docs-only).
+- Task 4 dispatch must carry: flankstab reach 0 + hitReach 1.1; pair-line wait timeout ≤ 1.5 s; Bıçakçı flank stab blockable when the player turns to face it (user decision).
+- Then Task 5 (map sketch first, show the user), Tasks 6-9.
