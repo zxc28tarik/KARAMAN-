@@ -104,12 +104,20 @@ namespace KaramaniReborn.Editor
             foreach (float gap in new[] { -1.2f, 1.4f, -1.4f }) w.Spawn(4 + gap, w.zone.floor, EnemyRole.Nefer).intentTime = 0;
             int most = 0;
             for (int i = 0; i < 360; i++) { w.Simulate(1f / 120, new InputFrame { block = true }, true); most = Mathf.Max(most, w.Attackers); }
-            Assert(most >= 1 && most <= GameWorld.MaxAttackers, "Simultaneous attackers " + most);
+            Assert(most == 2 && most <= GameWorld.MaxAttackers, "Simultaneous attackers " + most + " (spec: exactly 2, cap " + GameWorld.MaxAttackers + ")");   // sabit 2: sınırın kendisi değişirse de yakalanır
 
             // Açık cezalandırma: iksir içen oyuncuya bekleyen nefer hemen saldırır
             w = Arena(root, EnemyRole.Nefer, 1.3f, out e); e.intentTime = 0; e.cooldown = 5; w.player.health = 50;
             Run(w, .3f, i => new InputFrame { heal = i == 0 });
             Assert(e.state == ActionState.Light, "Nefer did not punish the potion");
+
+            // Açık cezalandırma: savuşturma penceresini ıskalayıp blokta kalan oyuncuya da saldırır (kontrol: blok yoksa saldırmaz)
+            w = Arena(root, EnemyRole.Nefer, 1.3f, out e); e.intentTime = 0; e.cooldown = 5;
+            Run(w, .3f);
+            Assert(e.state != ActionState.Light, "Nefer attacked with no opening");
+            w = Arena(root, EnemyRole.Nefer, 1.3f, out e); e.intentTime = 0; e.cooldown = 5;
+            Run(w, .3f, i => new InputFrame { block = true });
+            Assert(e.state == ActionState.Light, "Nefer did not punish a missed parry");
 
             // Yükseklik: platformdaki oyuncuya yerdeki nefer yakın saldırı başlatmaz
             w = Arena(root, EnemyRole.Nefer, 1.0f, out e); e.intentTime = 0;
@@ -134,16 +142,50 @@ namespace KaramaniReborn.Editor
             w.Damage(e, 20, 1, false, false, w.player);
             Assert(e.health == e.maxHealth - 20 && Mathf.Approximately(e.guard, e.maxGuard - 40), "Back hit should hurt and drain guard twice: guard " + e.guard);
 
+            // Denge bedeli: kalkanlıya ağır vuruş ya da arkadan vuruş x2 (üst üste binmez); kalkansıza ağır x1.5
+            w = Arena(root, EnemyRole.Spearman, 1.3f, out e);
+            w.Damage(e, 30, 1, true, false, w.player);
+            Assert(e.health == e.maxHealth - 30 && Mathf.Approximately(e.guard, e.maxGuard - 60), "Frontal heavy should drain guard x2: guard " + e.guard);
+            w = Arena(root, EnemyRole.Spearman, 1.3f, out e); e.face = 1;
+            w.Damage(e, 30, 1, true, false, w.player);
+            Assert(Mathf.Approximately(e.guard, e.maxGuard - 60), "Heavy from behind must not stack to x3: guard " + e.guard);
+            w = Arena(root, EnemyRole.Nefer, 1.3f, out e);
+            w.Damage(e, 20, 1, true, false, w.player);
+            Assert(Mathf.Approximately(e.guard, e.maxGuard - 30), "Unshielded heavy should drain guard x1.5: guard " + e.guard);
+
             // Denge kırılınca uzun sendeleme ve infaz fırsatı
             w = Arena(root, EnemyRole.Nefer, 1.2f, out e); e.guard = 10;
             w.Damage(e, 20, 1, false, false, w.player);
             Assert(e.state == ActionState.Hurt && e.duration > .8f && w.player.riposte > 0, "Guard break should stagger for 0.9 s and open a riposte");
+
+            // Savuşturma > infaz: infaz vuruşu dengeyi düşürüp yeniden sendeletmez, yeni infaz fırsatı açmaz
+            // (infaz ağır vuruş x2.6 olduğundan sıradan neferi öldürür; sağ kalıp denge sınanabilsin diye komutan)
+            w = Arena(root, EnemyRole.Captain, 1.2f, out e); var pl = w.player;
+            var nc = EnemyProfile.For(EnemyRole.Captain).Find("slash");
+            w.StartAttack(e, "slash");
+            int press = Mathf.RoundToInt((nc.windup - .06f) * 120);
+            Run(w, nc.windup + .1f, i => new InputFrame { block = i >= press });
+            Assert(e.state == ActionState.Hurt && pl.riposte > 0, "Setup: parry should stagger the Captain");
+            e.position.x = pl.position.x + 1f; e.knockback = 0;   // savuşturma geri iter; infaz menzilinde dursun
+            float before = e.health; bool hit = false;
+            for (int i = 0; i < 120 && !hit; i++)
+            {
+                w.Simulate(1f / 120, new InputFrame { light = i == 0 }, true);
+                hit = e.health < before;
+            }
+            Assert(hit && !e.Dead, "Execution never connected or killed: player " + pl.state + ", enemy " + e.state + " hp " + e.health);
+            Assert(pl.riposte <= 0 && e.duration < .8f, "Execution hit re-staggered the target: riposte " + pl.riposte + ", hurt duration " + e.duration);
 
             // Dönüş gecikmesi: oyuncu arkasına geçince kalkanlı geç döner
             w = Arena(root, EnemyRole.Spearman, 1.3f, out e); e.face = -1;
             w.player.position.x = e.position.x + 1.5f;
             Run(w, .3f); Assert(e.face == -1, "Spearman turned too fast");
             Run(w, .5f); Assert(e.face == 1, "Spearman never turned");
+            // Yarım kalan dönüş (kilitlenme) bir sonraki dönüşü kısaltmaz
+            w = Arena(root, EnemyRole.Spearman, 1.3f, out e); e.face = -1;
+            w.player.position.x = e.position.x + 1.5f;
+            Run(w, .4f); e.Enter(ActionState.Hurt, .3f); Run(w, .1f);
+            Assert(e.turnTimer == 0, "Interrupted turn kept its timer: " + e.turnTimer);
             Debug.Log("KARAMANI_ENEMY_BEHAVIOUR_PASS · range, two attackers, punish, height, dead player, shield, guard break, turn delay");
         }
     }

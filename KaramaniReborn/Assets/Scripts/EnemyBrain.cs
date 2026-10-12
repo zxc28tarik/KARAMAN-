@@ -57,10 +57,12 @@ namespace KaramaniReborn
             if (!a.Locked && awake)
             {
                 Face(a, p, dx, dt);
-                // Açık: iksir içen ya da ağır vuruşunu ıskalayıp toparlanan oyuncu
-                bool opening = player.state == ActionState.Heal || player.state == ActionState.Heavy && player.Progress > .73f;
+                // Açık: iksir içen, ağır vuruşunu ıskalayıp toparlanan ya da savuşturma penceresini ıskalayıp blokta kalan oyuncu
+                bool opening = player.state == ActionState.Heal || player.state == ActionState.Heavy && player.Progress > .73f
+                    || player.state == ActionState.Block && player.stateTime > .14f && player.stateTime < .5f;
                 bool facing = dx * a.face > 0;
                 var choice = facing && (a.intentTime <= 0 || opening) ? Choose(a, p, dist, height) : null;
+                if (choice != null && a.intentTime > 0 && !choice.punish) choice = null;   // niyet dolmadan yalnız cezalandırma saldırıları açılır
                 bool ready = a.cooldown <= 0 || opening && choice != null && choice.punish;
                 bool slot = choice != null && (choice.kind is AttackKind.Backstep or AttackKind.Teleport || Attackers < MaxAttackers);
                 if (choice != null && ready && slot && attackDirector <= 0) { Begin(a, choice); attackDirector = .26f; a.cooldown = .8f; }
@@ -74,6 +76,7 @@ namespace KaramaniReborn
                     else { vx = 0; a.state = ActionState.Idle; }
                 }
             }
+            else a.turnTimer = 0;   // kilitliyken ya da uykudayken yarım kalan dönüş sayılmaz
             k = a.attack;
             if (k != null && (a.state is ActionState.Light or ActionState.Dodge) && k.dash != 0 && a.stateTime >= k.windup && a.stateTime <= k.windup + k.active)
             {

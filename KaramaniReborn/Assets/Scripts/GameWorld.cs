@@ -358,10 +358,13 @@ namespace KaramaniReborn
             target.health = Mathf.Max(0, target.health - damage); target.hitFlash = .14f;
             damageEvents.Add(new DamageEvent { position = target.position + Vector2.up * (2.55f * target.size), amount = Mathf.Max(1, Mathf.RoundToInt(damage)), toPlayer = target.player, strong = heavy || damage >= 40 }); target.invincible = target.player ? .40f : .14f;
             target.knockback = direction * (heavy ? 3.1f : 1.5f); target.Enter(target.health <= 0 ? ActionState.Dead : ActionState.Hurt, heavy ? .6f : .28f);
-            // Denge: her vuruş düşürür (kalkanlıya arkadan iki kat); sıfırlanınca uzun sendeleme ve infaz fırsatı
-            if (profile != null && !target.Dead)
+            // Denge: her vuruş düşürür; sıfırlanınca uzun sendeleme ve infaz fırsatı
+            // İnfaz vuruşu dengeyi düşürmez: savuşturmayla sıfırlanan denge yüzünden yeniden sendeletmez
+            bool executed = source != null && source.riposting && target.id == source.riposteTarget;
+            if (profile != null && !target.Dead && !executed)
             {
-                target.guard -= damage * (heavy ? 1.5f : 1) * (profile.shielded && !front ? 2 : 1);
+                // Kalkanlıya ağır ya da arkadan vuruş x2 (üst üste binmez); kalkansıza ağır x1.5
+                target.guard -= damage * (profile.shielded ? (heavy || !front ? 2 : 1) : heavy ? 1.5f : 1);
                 if (target.guard <= 0) Stagger(target, source);
             }
             effects.Impact(target.position + Vector2.up * 1.25f, direction, false, heavy, target.position.y, stop);
