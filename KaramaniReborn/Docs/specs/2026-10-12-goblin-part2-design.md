@@ -247,3 +247,46 @@ Bu boss bir **düellocu**: sürü çağırmaz, yalnız ve hızlı dövüşür. T
 - boss: oyuncuyu çekme, havada yol izleyen (üçgen) saldırı, kaya sekmesi; geri ışınlanma ve düşeceği yer işaretli ateş topları 1. kısmın büyücü ve ok yağmuru sistemlerinden uyarlanır
 
 Bunlar 1. kısım (insan düşmanları ve 4 ağa) bittikten sonra ayrı bir uygulama planıyla yapılır.
+
+## 8. Yapı: 5 bölüm ve mağarada oda sistemi (kullanıcı kararı, 2026-10-12)
+Kullanıcı isteği:
+- goblin kısmı 5 bölüm olacak
+- 1. bölümde goblinler açık alanda Karamani'ye saldırır
+- 2. bölümde Karamani onları mağaraya kovalar
+- 3–5. bölümler mağarada geçer: tek harita, odalı sistem, SotN tarzı
+
+§6'daki 3 bölgelik dağılımın yerini bu bölüm alır.
+
+### 8.1 Bölümler
+| # | Bölüm | Yapı | Düşmanlar | Kapı bekçisi |
+|---|---|---|---|---|
+| 5 | YAĞMA YOLU (açık alan) | Düz, geniş, az platformlu sınır yolu; yanmış kervan arabaları. Goblinler dalgalar hâlinde açıkta saldırır. | 1. dalga: Bıçakçı ×3, Okçu ×1. 2. dalga: Bıçakçı ×2, Çömlekçi ×1, Kaba ×1 (sürü lideri) | yok: bölüm sonu, son dalga ölünce açılır |
+| 6 | SİSLİ KORU (kovalama) | Orman; ağaç dallarında pusu noktaları; sonunda mağara ağzı | Bıçakçı ×3, Okçu ×2, Pusucu ×3. Ayrıca 2 **kaçan Bıçakçı**. | yok |
+| 7–9 | ÇATLAK KAYA MAĞARALARI | Tek harita, odalı (8.2) | 8.3 | bölgelere göre |
+
+**Kovalama (6. bölüm):**
+- Bölüm başında iki Bıçakçı vurup geri çekilir ve mağara ağzına doğru koşar. Bu panik kaçışı değil, Karamani'yi pusuya çeken bir yemdir.
+- Kaçan goblinler önde durup okçuların ve pusucuların menziline girmesini bekler, sonra yeniden kaçar.
+- Mağara ağzına varınca içeri girip kaybolurlar.
+
+### 8.2 Oda sistemi (SotN tarzı)
+- **Harita:** Mağara tek bir haritadır ve birbirine bağlı **odalardan** oluşur.
+  - Oda boyları ekran katlarıdır. Bir ekran 28,8 × 21,6 birimdir; odalar 1×1, 2×1, 3×1 (yatay) ya da 1×2 (dikey kuyu) olur.
+  - Odalar, kenarlarındaki geçitlerle (sağ, sol, üst, alt) komşu odalara bağlanır.
+- **Kamera:** bulunulan odanın sınırları içinde kalır ve dikeyde de oyuncuyu izler. Oda kenarındaki geçitten çıkınca kısa bir kaydırma ya da kararmayla yan odaya geçilir.
+- **Düşmanlar:** odaya bağlıdır.
+  - Odaya girince doğarlar; odadan çıkıp dönünce sıradan düşmanlar yeniden doğar (SotN gibi).
+  - Bekçiler (yarı-boss, boss) ölünce bir daha doğmaz.
+- **Bekçi odaları:** girince geçitler kapanır, bekçi ölünce açılır.
+- **Harita ekranı:** gezilen odalar küçük haritada ve duraklatma menüsündeki harita ekranında açılır; bulunulan oda işaretlenir.
+- **Kayıt:** yol taşları ayrı küçük odalardadır. Ölünce son dinlenilen yol taşı odasından devam edilir.
+- **Yetenek kilidi yok:** yeni yetenekle açılan kapı yoktur, kullanıcı istemedi. Harita ana yol ve birkaç yan oda (yol taşı, ganimet) olarak çizilir; geri dönmek mümkündür.
+
+### 8.3 Mağara bölgeleri (bölüm 7, 8, 9)
+| # | Bölge | Odalar | Düşmanlar | Bekçi |
+|---|---|---|---|---|
+| 7 | DERİN MAĞARALAR | yaklaşık 6 oda, bir dikey kuyu dahil | Bıçakçı ×3, Pusucu ×2 (tavan girintileri), Kalkanlı ×2, Çömlekçi ×1, Kaba ×1 | Kan Şamanı Kırçıl (ritüel odası) |
+| 8 | ESKİ MADEN GALERİLERİ | yaklaşık 6 oda; ahşap iskeleler, kirişler | Bıçakçı ×3, Kalkanlı ×2, Okçu ×1, Çömlekçi ×2, Kaba ×1 | Domuz Binicisi Çatal (hücum için 3×1 geniş oda) |
+| 9 | KEMİK TAHTI | yaklaşık 3 oda: yaklaşma odaları ve taht salonu | Pusucu ×2, Kaba ×1 | Oymak Beyi Kara Diş (taht salonu, sıçrama kayaları) |
+
+Bölüm seçme ekranında 7, 8 ve 9 ayrı kart olarak görünür. Seçilen kart, o bölgenin giriş odasından başlatır.

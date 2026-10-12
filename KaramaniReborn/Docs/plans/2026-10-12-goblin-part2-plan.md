@@ -34,12 +34,13 @@
 - **Placeholder art:** goblins use existing pixel sheets until the user's HD sheets arrive. Bıçakçı, Pusucu and Çömlekçi use `duelist`; Okçu uses `archer`; Kalkanlı uses `shield`; Kaba, Kırçıl, Çatal and Kara Diş use `captain`. The size field scales them.
 - **Gold attack pattern:** every new attack has its own named clip, so that HD sheets can drop in later. A missing clip falls back as today.
 
-## Zone plan (spec §6)
-| Index | Title | Subtitle | Gate keeper (boss = true) | Others |
-|---|---|---|---|---|
-| 4 | SİSLİ KORU | Sınırın ötesindeki orman | none: the gate is open, `cleared` is true when there is no boss | Bıçakçı ×4, Okçu ×2, Pusucu ×2 |
-| 5 | DERİN MAĞARALAR | Çatlak Kaya'nın inleri | Kan Şamanı Kırçıl (half-boss used as the gate keeper; bar shows his title) | Bıçakçı ×3, Pusucu ×2, Kalkanlı ×2, Çömlekçi ×1, Kaba ×1 |
-| 6 | KEMİK TAHTI | Eski maden galerileri | Oymak Beyi Kara Diş | Bıçakçı ×3, Kalkanlı ×2, Okçu ×1, Çömlekçi ×2, Kaba ×1, Domuz Binicisi Çatal (half-boss, mid-zone) |
+## Zone plan (spec §6, superseded by spec §8 from Task 5 on: user decision 2026-10-12)
+Task 1 built zones 4–6 per the old §6 table. Task 5 restructures part 2 into 5 chapters:
+- zone index 4: YAĞMA YOLU, open field with waves
+- zone index 5: SİSLİ KORU, the chase to the cave mouth
+- zone index 6: ÇATLAK KAYA MAĞARALARI, ONE room-based map (Task 4 engine) with three regions shown as chapters 7, 8 and 9
+
+The menu shows 9 cards, indices 0–8: cards 6, 7 and 8 load the cave map at regions 0, 1 and 2. Enemy lists and keepers per chapter are in spec §8.1 and §8.3.
 
 ## Task List
 
@@ -157,11 +158,91 @@ Commit "Goblinler: Bıçakçı, Zehirli Okçu, Kalkanlı, Kaba".
 
 Commit "Goblinler: Pusucu, Ateş Çömlekçisi, sürü cesareti".
 
-### Task 4: Half-boss: Kan Şamanı Kırçıl
+### Task 4: Room engine (SotN-style rooms)
+**Spec:** §8.2. This task builds the engine only. The cave map content is Task 5.
+
+**Requirements:**
+1. **Room data:**
+   - A `RoomMap` holds rooms. Each room has: id, region index, bounds (world rect; sizes in screens of 28.8 × 21.6 u: 1×1, 2×1, 3×1, 1×2), its own `surfaces`, perches, enemy spawns (role + position + optional perch), flags (`shrine`, `keeper`), and exits.
+   - An exit is: side (L/R/U/D), the span along that side, target room id and the arrival point.
+   - `ZoneDefinition` gains an optional `RoomMap rooms`. Linear zones (0–5) keep working unchanged, with `rooms == null`.
+2. **Physics:**
+   - In a room zone, `KinematicMotor` uses the current room's surfaces. Surfaces may now be at any height; rooms have walls, a ceiling or a floor where there is no exit.
+   - Add solid side walls: a `Surface` flag or a separate wall list, whichever fits. Actors cannot leave the room except through an exit span.
+   - Vertical rooms need ledges reachable by the existing jump, double jump and hang/climb.
+3. **Camera:** in a room zone the camera follows the player on both axes, clamped to the room bounds. The view is 28.8 × 21.6 at OrthographicSize 10.8 with aspect 4:3. A 1×1 room shows exactly one screen.
+4. **Transition:**
+   - Crossing an exit span moves the player to the target room's arrival point, keeping vertical velocity sensibly. Use a 0.25 s fade-out/fade-in or a camera slide.
+   - The simulation pauses for enemies during the transition.
+   - Enemies of the old room are despawned. The new room's enemies spawn, except keepers already killed (persist kills of keepers per map run and in the save).
+5. **Keeper rooms:**
+   - Entering one seals its exits (a visual gate in each exit span plus physical blocking) until the keeper dies.
+   - The boss bar shows the keeper.
+   - The gate to the next region is open only after the keeper of that region dies.
+6. **Shrines and save:**
+   - A shrine room has a rest point.
+   - The checkpoint becomes (zone, room id, x, y). Respawn returns to the last rested shrine room.
+   - Extend the save format backward-compatibly (an old save without a room loads as before).
+7. **Map:**
+   - Visited rooms are recorded.
+   - The minimap (top right) draws the visited rooms of the current map as small rectangles at map scale, with the current room highlighted. Linear zones keep the current minimap.
+   - Add a map view in the pause menu showing all visited rooms.
+8. **Test map:** a small built-in test RoomMap (4 rooms: 1×1 start, 2×1 corridor, 1×2 shaft going up, 1×1 keeper room), used only by tests.
+9. **Tests (marker `KARAMANI_ROOMS_PASS`):**
+   - walking right through an exit arrives in the next room at the arrival point
+   - the camera stays inside room bounds on both axes (corners checked)
+   - walls block outside the exit spans
+   - climbing the shaft upward through an up exit works with the real jump input
+   - enemies despawn and respawn on re-entry, while a dead keeper does not respawn
+   - keeper room exits are sealed until the keeper dies
+   - shrine save and respawn land in the shrine room
+   - visited rooms are recorded and the minimap draws them
+   - linear zones 0–5 are unaffected (all earlier markers still pass)
+
+Commit "Odalar: SotN tarzı oda sistemi (kamera, geçiş, bekçi odası, harita, kayıt)".
+
+### Task 5: Part 2 structure: 5 chapters (open field, chase, cave map)
+**Spec:** §8.1 and §8.3. It replaces Task 1's zone 4–6 content (keep Task 1's generic pieces: roles, cap, perches, harness).
+
+**Requirements:**
+1. **Zone 4, YAĞMA YOLU** ("Sınırda kervan yolu"), linear:
+   - flat and wide, with few platforms
+   - waves: wave 2 spawns when wave 1 is dead, at both screen edges on standable ground
+   - the exit opens when the last wave is dead (`cleared` becomes wave-based for this zone)
+   - lists per spec §8.1
+2. **Zone 5, SİSLİ KORU** ("Mağaraya kovalama"), linear forest with 3 branch perches:
+   - Two **bait Bıçakçı** (a profile flag `bait`): they strike once, then run ahead toward the cave mouth (x ≈ 54).
+   - They stop and wait when they are 7–9 u ahead of the player, and run again when the player comes within 4 u.
+   - At x ≥ 54 they enter the cave and despawn. They are killable while waiting.
+   - No panic and no laughing; they run with weapons ready.
+   - The zone ends at the cave mouth (exit open; no keeper).
+3. **Zone 6, ÇATLAK KAYA MAĞARALARI:** one RoomMap with three regions:
+   - Region 0, DERİN MAĞARALAR: about 6 rooms, including one 1×2 shaft and one shrine room; the keeper Kırçıl is in a 2×1 ritual room.
+   - Region 1, ESKİ MADEN GALERİLERİ: about 6 rooms with timber scaffolds, one shrine room; the keeper Çatal is in a 3×1 wide room.
+   - Region 2, KEMİK TAHTI: about 3 rooms; the throne hall is 2×1 with 2 jump rocks; the keeper Kara Diş.
+   - Enemies per spec §8.3, distributed over the rooms. Pusucu are bound to ceiling or beam perches in their room. The exit to the next region is gated by the region keeper.
+   - Each region has a few side rooms (a shrine; a dead-end loot alcove).
+4. **Chapter cards:** the menu shows 9 cards (0–8). Cards 6, 7 and 8 load zone 6 at the entry room of regions 0, 1 and 2, with region names as card titles. Fit 9 cards at 1920×1080.
+5. **Progression:** zone 3 → 4 → 5 → 6. Killing Kara Diş completes the journey. Save and continue store room checkpoints.
+6. **Placeholder art:** room backgrounds reuse the existing paintings (cave regions → painting 3), darkened. The room walls and ceilings use the existing stone tiles. Zone art comes later.
+7. **Tests (marker `KARAMANI_GOBLIN_STRUCTURE_PASS`):**
+   - zone 4 waves: wave 2 spawns only after wave 1 dies, and the exit opens after the last wave
+   - zone 5 bait goblins lead and wait, then despawn at the mouth
+   - zone 6: every room is reachable from the region 0 entry by a path of exits
+   - every exit has a matching return exit
+   - every room's arrival points are standable
+   - region gates open only after their keeper dies
+   - enemy counts per region match §8.3
+   - cards 6–8 load the right entry rooms
+   - the journey zone 3 → … → Kara Diş's death → complete (keepers killed via damage)
+
+Commit "Goblinler: 5 bölüm yapısı (yağma yolu, kovalama, mağara haritası)".
+
+### Task 6: Half-boss: Kan Şamanı Kırçıl
 **Spec:** §4.1. Ruling: size 0.9 (spec says tall and thin among goblins; 0.68 × ~1.3).
 
 **Requirements:**
-1. **Stats:** health 200, guard 50, halfBoss, keeps 4–8, size 0.9. As the zone 5 gate keeper his bar shows "Kan Şamanı Kırçıl".
+1. **Stats:** health 200, guard 50, halfBoss, keeps 4–8, size 0.9. As the keeper of region 0 (his ritual room in the cave map) his bar shows "Kan Şamanı Kırçıl".
 2. **Attacks:**
    - 🔴 `curse`: a black thorn ring at the player's position, radius 1.5, shown by a ground mark, rising 0.8 s after the mark, damage 18.
    - `wolves`: summons 2 translucent **spirit wolves**, a new role `RuhKurdu`, size 0.6. They live 6 s, are fast (speed 3), bite ⚪ for damage 8, have 1 health and dissipate on the timer. Once per phase.
@@ -180,11 +261,11 @@ Commit "Goblinler: Pusucu, Ateş Çömlekçisi, sürü cesareti".
    - bloodbond heals others and not himself
    - repel only when cornered
    - phase-2 double curse
-   - zone 5's gate opens only after he dies
+   - the region 0 gate opens only after he dies
 
 Commit "Goblinler: Kan Şamanı Kırçıl".
 
-### Task 5: Half-boss: Domuz Binicisi Çatal and his boar
+### Task 7: Half-boss: Domuz Binicisi Çatal and his boar
 **Spec:** §4.2. **User decision (2026-10-12):** at half health Çatal leaves the boar, and the boar keeps attacking as a separate, easy, killable enemy. Ruling: the mounted size is 1.15 (the boar makes him taller than Karamani); on foot he is 0.72; the riderless boar is a new role `Domuz` with size 0.8 and bulk 1.6.
 
 **Requirements:**
@@ -202,22 +283,22 @@ Commit "Goblinler: Kan Şamanı Kırçıl".
    - Attacks: 🔴 `charge` (dash 5, damage 16, push 5, cooldown 3) and ⚪ `gore` (reach 1.3, damage 10).
    - It is not a pack leader and is not healed by Kırçıl's blood bond.
    - It can be killed. The boss bar keeps showing Çatal.
-5. **Placement:** he guards the middle of zone 6 (home around x 30, on ground), not the exit.
+5. **Placement:** he is the keeper of region 1 in its 3×1 wide room (cave map, Task 5); his charge uses the whole room width.
 6. **Tests (marker `KARAMANI_GOBLIN_CATAL_PASS`):**
    - the charge goes and returns, and never ends in a pit
    - poise while mounted
    - at ≤ 50% health he dismounts: invulnerable for 1 s, then on foot, the spear combo works
    - exactly one boar spawns, on standable ground, and attacks (both its attacks deal their damage)
    - the boar dies in 3 player light hits or fewer (45 health vs 20 per hit) and a heavy hit knocks it down
-   - zone 6's gate is unaffected by the deaths of Çatal and the boar (only Kara Diş opens it)
+   - the region 1 gate opens only after Çatal dies; the boar's death alone does not open it
 
 Commit "Goblinler: Domuz Binicisi Çatal ve domuzu".
 
-### Task 6: Boss: Oymak Beyi Kara Diş, phase 1
+### Task 8: Boss: Oymak Beyi Kara Diş, phase 1
 **Spec:** §5.1 (attacks 1–4), §5.2, §5.3, §5.4 phase 1. The spec's user list is binding.
 
 **Requirements:**
-1. **Stats:** health 420, guard 80, speed 3.2, size 1.1, boss of zone 6.
+1. **Stats:** health 420, guard 80, speed 3.2, size 1.1, keeper of the Kemik Tahtı throne hall (zone 6, region 2).
 2. **Pala attacks:**
    - ⚪ `combo`: 4 hits with hitTimes {0, .45, .9, 1.35}, damage 12; parrying the **4th** hit staggers him for 1.4 s
    - 🔴 `spin` (keep-away horizontal cut): radius 2.2, damage 20, warned by a 0.35 s crouch windup. Prefer it when the player is within 1 u or after he has taken 2 hits in a row.
@@ -232,7 +313,7 @@ Commit "Goblinler: Domuz Binicisi Çatal ve domuzu".
      - (d) hangs 0.25 s with a glint, then slams down at the player's new x: damage 22, shock radius 1.2
      - then he is grounded and open for 1.2 s (no attacks)
      - All landing points are standable-checked.
-   - **Rock bounce:** zone 6's arena has 2 jump rocks (one-way platforms near x 44 and x 54). He may leap onto one, then do the triangle or dive from there.
+   - **Rock bounce:** the throne hall (2×1 room) has 2 jump rocks (one-way platforms placed by Task 5). He may leap onto one, then do the triangle or dive from there.
 4. **Spells:**
    - 🔴 `pull`: a 0.6 s windup with red eyes, then pulls the player up to 6 u toward him (reuse Pull, but with no hit needed: it is a spell). A `spin` or `combo` follows immediately. If the player dodges during the windup, the pull fails and he is open 0.8 s.
    - 🔴 `skyfire`: he raises the palas and stands still for 1 s. 3 fireballs fall at 0.5 s intervals, each aimed at the player's position **at that moment**. Each has a red ground ring shown 0.7 s before impact, damage 16. A constantly moving player avoids all three.
@@ -249,7 +330,7 @@ Commit "Goblinler: Domuz Binicisi Çatal ve domuzu".
 
 Commit "Goblinler: Oymak Beyi Kara Diş, birinci evre".
 
-### Task 7: Kara Diş phase 2, integration, captures, docs
+### Task 9: Kara Diş phase 2, integration, captures, docs
 **Spec:** §5.4 phase 2, §5.1 (5).
 
 **Requirements:**
@@ -261,7 +342,7 @@ Commit "Goblinler: Oymak Beyi Kara Diş, birinci evre".
    - pull always chains to `combo`
    - blink cooldown 2 s
    - **breathing:** after every 4–5 attacks (random in that range, deterministic per seed) he rests 1.5 s, palas on the ground, without attacking
-3. **Integration:** zone 4–6 chapter captures in BuildTools (`Review/chapter-5..7.png`) and a Kara Diş capture `Review/boss-7.png`. Also check the journey across zones 0–6 (each gate opens after its keeper dies; zone 4 opens at once).
+3. **Integration:** chapter captures for part 2 in BuildTools (`Review/chapter-5..9.png`, cave chapters captured in their region entry rooms) and a Kara Diş capture in the throne hall `Review/boss-9.png`. Also check the journey across all chapters (each gate opens after its keeper dies; zones 4 and 5 open as specified in Task 5).
 4. **Full verification, in order:** compile_check → `-Job Enemies` → `-Job Verify` → `-Job Build` → `VERIFY_WINDOWS.ps1` (all PASS). Open the new captures and describe them in the report.
 5. **Docs:**
    - `Docs/TASK_BOARD.md`: add a T-011 row with the evidence.
