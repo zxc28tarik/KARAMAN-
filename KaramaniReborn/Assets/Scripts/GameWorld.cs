@@ -24,7 +24,8 @@ namespace KaramaniReborn
         float dustClock, ghostClock, attackDirector;
         int heardSteps;
         readonly System.Random rng;
-        public sealed class Projectile { public Vector2 position, velocity; public bool friendly; public float life; public SpriteRenderer renderer; public Actor source; }
+        public enum ShotKind { Pistol, Arrow, Bullet, VolleyMark, VolleyArrow, Wave, Orb }
+        public sealed class Projectile { public ShotKind kind; public Vector2 position, velocity; public bool friendly, red; public float life, delay, damage; public SpriteRenderer renderer; public Actor source; }
         // Arayüzün göstereceği hasar sayıları
         public struct DamageEvent { public Vector2 position; public int amount; public bool toPlayer, strong; }
         public readonly List<DamageEvent> damageEvents = new();
@@ -194,7 +195,7 @@ namespace KaramaniReborn
             if (a.state == ActionState.Heal && !a.attackConnected && a.Progress > .55f)
             { a.attackConnected = true; a.health = Mathf.Min(a.maxHealth, a.health + 48); effects.GlowBurst(a.position + Vector2.up, new Color(.5f, 1, .72f)); }
             if (a.state == ActionState.Shoot && !a.attackConnected && a.Progress > .35f)
-            { a.attackConnected = true; Shoot(a, true); sound?.Invoke("shot"); }
+            { a.attackConnected = true; Shoot(a); sound?.Invoke("shot"); }
         }
 
         void BeginAttack(Actor a, bool heavy, int combo)
@@ -387,19 +388,14 @@ namespace KaramaniReborn
             a.velocity = new Vector2(vx, vy); a.grounded = false; a.view?.ResetContacts();
         }
 
-        void Shoot(Actor a, bool friendly)
+        // Karamani'nin tabancası
+        void Shoot(Actor a)
         {
-            Vector2 position = a.view.BladeRoot + new Vector2(a.face * (friendly ? .46f : .08f), friendly ? .06f : 0);
-            Vector2 velocity = Vector2.right * a.face * (friendly ? 19 : 10);
-            if (!friendly)
-            {
-                Vector2 aim = player.position + Vector2.up * 1.2f - position;
-                if (aim.x * a.face > 0) velocity = aim.normalized * 10;
-            }
-            var sr = ArtLibrary.Draw(friendly ? "Pistol shot" : "Arrow", ArtLibrary.White, actorsRoot, position, 170, friendly ? new Color(1, .88f, .63f) : new Color(.7f, .59f, .43f));
+            Vector2 position = a.view.BladeRoot + new Vector2(a.face * .46f, .06f);
+            var sr = ArtLibrary.Draw("Pistol shot", ArtLibrary.White, actorsRoot, position, 170, new Color(1, .88f, .63f));
             sr.transform.localScale = new Vector3(.23f, .025f, 1);
-            sr.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg);
-            projectiles.Add(new Projectile { position = position, velocity = velocity, life = 1.4f, friendly = friendly, renderer = sr, source = a });
+            sr.transform.rotation = Quaternion.Euler(0, 0, a.face > 0 ? 0 : 180);
+            projectiles.Add(new Projectile { kind = ShotKind.Pistol, position = position, velocity = Vector2.right * a.face * 19, life = 1.4f, friendly = true, damage = 38, renderer = sr, source = a });
             effects.GlowBurst(position, new Color(1, .62f, .25f, .65f));
         }
 
@@ -407,12 +403,39 @@ namespace KaramaniReborn
         {
             for (int i = projectiles.Count - 1; i >= 0; i--)
             {
-                var p = projectiles[i]; Vector2 old = p.position; p.position += p.velocity * dt; p.life -= dt;
-                if (p.friendly) { foreach (var a in enemies) if (!a.Dead && SegmentHits(old, p.position, new Rect(a.position.x - .3f, a.position.y + .2f, .6f, 2.1f))) { Damage(a, 38, p.velocity.x > 0 ? 1 : -1, true, false, p.source, .08f); p.life = 0; break; } }
-                else if (SegmentHits(old, p.position, new Rect(player.position.x - .23f, player.position.y + .2f, .46f, 1.95f))) { Damage(player, 12, p.velocity.x > 0 ? 1 : -1, false, false, p.source); p.life = 0; }
-                p.renderer.transform.position = p.position;
-                if (p.life <= 0) { if (Application.isPlaying) UnityEngine.Object.Destroy(p.renderer.gameObject); else UnityEngine.Object.DestroyImmediate(p.renderer.gameObject); projectiles.RemoveAt(i); }
+                var p = projectiles[i];
+                if (p.life <= 0) { RemoveShot(i); continue; }
+                p.renderer.enabled = p.delay <= 0;
+                if (p.delay > 0) { p.delay -= dt; continue; }
+                // Lanet küresi oyuncuyu yavaşça izler
+                if (p.kind == ShotKind.Orb) p.velocity = Vector2.MoveTowards(p.velocity, (player.position + Vector2.up * 1.2f - p.position).normalized * 2.2f, dt * 6);
+                Vector2 old = p.position; p.position += p.velocity * dt; p.life -= dt;
+                if (p.friendly)
+                {
+                    foreach (var a in enemies)
+                        if (!a.Dead && SegmentHits(old, p.position, new Rect(a.position.x - .3f, a.position.y + .2f, .6f, 2.1f)))
+                        { Damage(a, p.damage, p.velocity.x > 0 ? 1 : -1, true, false, p.source, .08f); p.life = 0; break; }
+                }
+                else if (p.kind != ShotKind.VolleyMark && !player.Dead && HitsPlayer(p, old))
+                { Damage(player, p.damage, p.velocity.x >= 0 ? 1 : -1, false, false, p.source, -1, p.red); p.life = 0; }
+                p.renderer.transform.position = p.kind == ShotKind.Wave ? p.position + Vector2.up * .45f : p.position;
+                if (p.life <= 0) RemoveShot(i);
             }
+        }
+
+        bool HitsPlayer(Projectile p, Vector2 old)
+        {
+            var box = new Rect(player.position.x - .23f, player.position.y + .2f, .46f, 1.95f);
+            if (p.kind == ShotKind.Wave) return new Rect(p.position.x - .3f, p.position.y, .6f, .9f).Overlaps(box);
+            if (p.kind == ShotKind.Orb) return SegmentHits(old, p.position, new Rect(box.x - .2f, box.y - .2f, box.width + .4f, box.height + .4f));
+            return SegmentHits(old, p.position, box);
+        }
+
+        void RemoveShot(int i)
+        {
+            var p = projectiles[i];
+            if (Application.isPlaying) UnityEngine.Object.Destroy(p.renderer.gameObject); else UnityEngine.Object.DestroyImmediate(p.renderer.gameObject);
+            projectiles.RemoveAt(i);
         }
 
         public void Notify(string text) { notification = text; notificationTime = 2.2f; }

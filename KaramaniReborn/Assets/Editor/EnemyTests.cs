@@ -12,6 +12,7 @@ namespace KaramaniReborn.Editor
             Debug.Log("KARAMANI_ENEMY_PROFILES_PASS · six regular enemies with spec values and placeholder sheets");
             Attacks(root);
             Behaviour(root);
+            Ranged(root);
         }
 
         static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
@@ -32,6 +33,55 @@ namespace KaramaniReborn.Editor
         {
             int steps = Mathf.RoundToInt(seconds * 120);
             for (int i = 0; i < steps; i++) w.Simulate(1f / 120, input?.Invoke(i) ?? new InputFrame(), true);
+        }
+
+        static void Ranged(GameRoot root)
+        {
+            // Tüfek: kırmızı mermi bloğu deler (35), ardından 2 sn doldurma
+            var w = Arena(root, EnemyRole.Musketeer, 7, out var e); var pl = w.player;
+            w.StartAttack(e, "aim");
+            Run(w, 1.7f, i => new InputFrame { block = true });
+            Assert(pl.health == pl.maxHealth - 35, "Musket shot should pierce the block for 35, health " + pl.health);
+            Assert(e.state == ActionState.Shoot && e.attack?.name == "reload", "Musketeer did not reload after firing");
+
+            // Mermiye doğru zamanında yuvarlanma kurtarır
+            w = Arena(root, EnemyRole.Musketeer, 7, out e); pl = w.player;
+            w.StartAttack(e, "aim");
+            int press = Mathf.RoundToInt(1.36f * 120);
+            Run(w, 1.8f, i => new InputFrame { move = i >= press && i < press + 2 ? 1 : 0, dodge = i == press });
+            Assert(pl.health == pl.maxHealth, "Dodging into the bullet should avoid it, health " + pl.health);
+
+            // Nişan sırasında vurulan tüfekli doldurmaya geçmez
+            w = Arena(root, EnemyRole.Musketeer, 7, out e);
+            w.StartAttack(e, "aim"); Run(w, .3f);
+            w.Damage(e, 10, 1, false, false, w.player);
+            Run(w, .6f);
+            Assert(e.attack == null || e.attack.name != "reload", "Interrupted aim must not chain into reload");
+
+            // Ok yağmuru: işaretli yerde duran vurulur
+            w = Arena(root, EnemyRole.Archer, 7, out e); pl = w.player;
+            w.StartAttack(e, "volley");
+            Run(w, 2f);
+            Assert(pl.health == pl.maxHealth - 18, "Volley should hit a player standing on the mark, health " + pl.health);
+
+            // Ok yağmuru: işaretten çıkan kurtulur
+            w = Arena(root, EnemyRole.Archer, 7, out e); pl = w.player;
+            var volley = EnemyProfile.For(EnemyRole.Archer).Find("volley");
+            int leave = Mathf.RoundToInt((volley.windup + .1f) * 120);
+            Run(w, 2f, i => new InputFrame { move = i >= leave && i < leave + 60 ? -1 : 0 });
+            Assert(pl.health == pl.maxHealth, "Leaving the volley mark should avoid the arrows, health " + pl.health);
+
+            // Okçu yakındaki oyuncudan geri sıçrar
+            w = Arena(root, EnemyRole.Archer, 1f, out e); e.intentTime = 0;
+            Run(w, .6f);
+            Assert(e.position.x - w.player.position.x > 2.3f, "Archer did not backstep, gap " + (e.position.x - w.player.position.x));
+
+            // Platformdaki okçu geri çekilirken kenardan düşmez (platform 23.5 - 26.6, y = -0.75)
+            w = Arena(root, EnemyRole.Archer, 1f, out e);
+            e.position = new Vector2(26.2f, -.75f); w.player.position = new Vector2(24.8f, -.75f);
+            Run(w, 2f);
+            Assert(e.grounded && Mathf.Abs(e.position.y + .75f) < .01f, "Archer fell off the platform while retreating");
+            Debug.Log("KARAMANI_ENEMY_RANGED_PASS · musket pierce + reload + dodge, interrupted chain, volley mark, backstep, platform edge");
         }
 
         static void Profiles(GameRoot root)

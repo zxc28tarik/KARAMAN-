@@ -356,10 +356,9 @@ namespace KaramaniReborn.Editor
             ArtValidation.Assert(w.player.ammo == 7 && w.enemies[0].health < w.enemies[0].maxHealth, "Pistol muzzle, ammunition or projectile contact failed");
             root.LoadZone(0, true); w = root.world; w.player.position.x = 3;
             foreach (var enemy in w.enemies) enemy.position.x = 56;
-            var archer = w.enemies[2]; archer.position = new Vector2(6, -.75f); archer.face = -1;
-            archer.cooldown = archer.intentTime = 3; archer.Enter(ActionState.Shoot, .94f); archer.stateTime = .61f;
-            archer.view.ResetContacts(); archer.view.Render(archer, .016f, 1);
-            for (int i = 0; i < 100; i++) w.Simulate(1f / 120, new InputFrame(), true);
+            var archer = w.enemies[2]; archer.position = new Vector2(6, -.75f); archer.face = -1; archer.intentTime = 99;
+            w.StartAttack(archer, "arrow"); archer.view.ResetContacts();
+            for (int i = 0; i < 160; i++) w.Simulate(1f / 120, new InputFrame(), true);
             ArtValidation.Assert(w.player.health < w.player.maxHealth, "Elevated archer did not aim at the ground-level player");
             Debug.Log("KARAMANI_RANGED_PASS · held-weapon origin, pistol contact, elevated archer aim");
         }

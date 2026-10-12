@@ -125,8 +125,56 @@ namespace KaramaniReborn
                     Damage(player, k.damage, a.face, k.heavy, false, a, -1, k.red);
                     if (k.push > 0 && player.state == ActionState.Hurt) player.knockback = a.face * k.push;
                     return;
-                default: return;
+                case AttackKind.Reload: case AttackKind.Backstep: case AttackKind.Teleport:
+                    return;
+                default:   // mermi ve büyüler: hazırlık bittiği an bir kez
+                    if (a.state == ActionState.Light && a.stateTime >= k.windup && !a.attackConnected) { a.attackConnected = true; Release(a, k); }
+                    return;
             }
+        }
+
+        void Release(Actor a, EnemyAttack k)
+        {
+            Vector2 hand = a.position + new Vector2(a.face * .5f, 1.35f * a.size);
+            Vector2 chest = player.position + Vector2.up * 1.2f;
+            switch (k.kind)
+            {
+                case AttackKind.Bullet: case AttackKind.Arrow:
+                {
+                    float speed = k.kind == AttackKind.Bullet ? 22 : 13;
+                    Vector2 aim = chest - hand, velocity = aim.x * a.face > 0 ? aim.normalized * speed : Vector2.right * a.face * speed;
+                    AddShot(k.kind == AttackKind.Bullet ? ShotKind.Bullet : ShotKind.Arrow, hand, velocity, 1.4f, k, a);
+                    sound?.Invoke("shot"); effects.GlowBurst(hand, new Color(1, .62f, .25f, .65f));
+                    break;
+                }
+                case AttackKind.Volley:
+                {
+                    // Düşeceği yer önceden kırmızı işaretle belli olur; oklar .8 sn sonra yukarıdan iner
+                    float x = player.position.x, y = player.position.y;
+                    AddShot(ShotKind.VolleyMark, new Vector2(x, y + .05f), Vector2.zero, .8f, k, a);
+                    for (int i = -1; i <= 1; i++) AddShot(ShotKind.VolleyArrow, new Vector2(x + i * .8f, y + 5), new Vector2(0, -16), 5f / 16 + .05f, k, a, .8f);
+                    break;
+                }
+            }
+        }
+
+        Projectile AddShot(ShotKind kind, Vector2 position, Vector2 velocity, float life, EnemyAttack k, Actor source, float delay = 0)
+        {
+            var (sprite, color, scale) = kind switch
+            {
+                ShotKind.Bullet => (ArtLibrary.White, new Color(1, .86f, .55f), new Vector3(.32f, .035f, 1)),
+                ShotKind.Arrow or ShotKind.VolleyArrow => (ArtLibrary.White, new Color(.7f, .59f, .43f), new Vector3(.36f, .03f, 1)),
+                ShotKind.VolleyMark => (ArtLibrary.Glow, new Color(1, .15f, .1f, .55f), new Vector3(2.2f, .35f, 1)),
+                ShotKind.Wave => (ArtLibrary.Glow, new Color(.3f, .02f, .08f, .9f), new Vector3(.7f, 1.1f, 1)),
+                _ => (ArtLibrary.Glow, new Color(.55f, .1f, .8f, .9f), new Vector3(.45f, .45f, 1)),
+            };
+            var sr = ArtLibrary.Draw(kind.ToString(), sprite, actorsRoot, position, 170, color);
+            sr.transform.localScale = scale;
+            if (kind is ShotKind.Bullet or ShotKind.Arrow or ShotKind.VolleyArrow)
+                sr.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg);
+            sr.enabled = delay <= 0;
+            var shot = new Projectile { kind = kind, position = position, velocity = velocity, life = life, delay = delay, damage = k.damage, red = k.red, renderer = sr, source = source };
+            projectiles.Add(shot); return shot;
         }
 
         bool MeleeReach(Actor a, EnemyAttack k)
