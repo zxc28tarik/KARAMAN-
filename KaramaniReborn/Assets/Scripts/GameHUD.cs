@@ -130,24 +130,30 @@ namespace KaramaniReborn
             widgets.Clear();
             foreach (var mark in miniEnemies) { if (Application.isPlaying) UnityEngine.Object.Destroy(mark.gameObject); else UnityEngine.Object.DestroyImmediate(mark.gameObject); }
             miniEnemies.Clear();
-            foreach (var actor in world.enemies)
-            {
-                miniEnemies.Add(ImageAt(miniParent, "Enemy location", 1700, 104, 4, 4, new Color(.75f, .18f, .13f)));
-                var go = Group(playUI.transform, "Enemy health"); var rt = (RectTransform)go.transform;
-                var hp = FramedBar(rt, 0, 0, 98, 5, new Color(.61f, .06f, .03f));
-                var intent = ImageAt(rt, "Attack telegraph", 0, 9, 98, 2, gold);
-                intent.type = Image.Type.Filled; intent.fillMethod = Image.FillMethod.Horizontal;
-                widgets.Add(new EnemyWidget { actor = actor, root = rt, health = hp, intent = intent });
-            }
+            foreach (var actor in world.enemies) AddEnemy(actor);
             foreach (var n in numbers) { n.text.gameObject.SetActive(false); numberPool.Push(n); }
             numbers.Clear(); world.damageEvents.Clear();
             hpValue = 1; staminaValue = 1; region.text = world.zone.title; objective.text = world.zone.objective;
             selectedName.text = "SEÇİLİ · " + world.zone.title; deathUI.SetActive(false); completeUI.SetActive(false);
         }
 
+        // Bir düşmanın harita işareti ve başının üstündeki can / niyet çubuğu
+        void AddEnemy(Actor actor)
+        {
+            miniEnemies.Add(ImageAt(miniParent, "Enemy location", 1700, 104, 4, 4, new Color(.75f, .18f, .13f)));
+            var go = Group(playUI.transform, "Enemy health"); var rt = (RectTransform)go.transform;
+            var hp = FramedBar(rt, 0, 0, 98, 5, new Color(.61f, .06f, .03f));
+            var intent = ImageAt(rt, "Attack telegraph", 0, 9, 98, 2, gold);
+            intent.type = Image.Type.Filled; intent.fillMethod = Image.FillMethod.Horizontal;
+            widgets.Add(new EnemyWidget { actor = actor, root = rt, health = hp, intent = intent });
+        }
+
         public void Tick(float dt)
         {
             var w = game.world; var player = w.player;
+            // Sonradan doğan düşmanlar (boss çağrısı): düşman sayısı değişince eksik işaretler ve çubuklar eklenir
+            if (miniEnemies.Count > w.enemies.Count) Bind(w);
+            for (int i = miniEnemies.Count; i < w.enemies.Count; i++) AddEnemy(w.enemies[i]);
             playUI.SetActive(!game.menu && !game.photoMode);
             hpValue = Mathf.MoveTowards(hpValue, player.health / player.maxHealth, dt * 1.8f); staminaValue = Mathf.MoveTowards(staminaValue, player.stamina / 100, dt * 2.8f);
             health.fillAmount = hpValue; stamina.fillAmount = staminaValue; cooldownShade.fillAmount = Mathf.Clamp01(player.skillCooldown / 8);

@@ -28,8 +28,9 @@ namespace KaramaniReborn
         float dustClock, ghostClock, attackDirector;
         int heardSteps;
         readonly System.Random rng;
-        public enum ShotKind { Pistol, Arrow, Bullet, VolleyMark, VolleyArrow, Wave, Orb }
-        public sealed class Projectile { public ShotKind kind; public Vector2 position, velocity; public bool friendly, red; public float life, delay, damage; public SpriteRenderer renderer; public Actor source; }
+        public enum ShotKind { Pistol, Arrow, Bullet, VolleyMark, VolleyArrow, Wave, Orb, Fire, Grenade }
+        // Ateşte: genişlik ve bir sonraki yakışa kalan süre; humbarada: düşeceği yer ve saldırının tanımı
+        public sealed class Projectile { public ShotKind kind; public Vector2 position, velocity; public bool friendly, red; public float life, delay, damage; public SpriteRenderer renderer; public Actor source; public float width, tick; public Vector2 target; public EnemyAttack attack; }
         // Arayüzün göstereceği hasar sayıları
         public struct DamageEvent { public Vector2 position; public int amount; public bool toPlayer, strong; }
         public readonly List<DamageEvent> damageEvents = new();
@@ -461,6 +462,14 @@ namespace KaramaniReborn
                 // Lanet küresi oyuncuyu yavaşça izler
                 if (p.kind == ShotKind.Orb) p.velocity = Vector2.MoveTowards(p.velocity, (player.position + Vector2.up * 1.2f - p.position).normalized * 2.2f, dt * 6);
                 Vector2 old = p.position; p.position += p.velocity * dt; p.life -= dt;
+                if (p.kind == ShotKind.Fire)
+                {
+                    p.tick -= dt;
+                    bool inside = Mathf.Abs(player.position.x - p.position.x) < p.width * .5f + .2f && player.position.y - p.position.y < .6f && player.position.y >= p.position.y - .1f;
+                    if (inside && p.tick <= 0 && !player.Dead) { Damage(player, p.damage, 0, false, false, p.source, -1, true); p.tick = .5f; }
+                    if (p.life <= 0) RemoveShot(i);
+                    continue;
+                }
                 if (p.friendly)
                 {
                     foreach (var a in enemies)
@@ -475,6 +484,15 @@ namespace KaramaniReborn
                 p.renderer.transform.position = p.kind == ShotKind.Wave ? p.position + Vector2.up * .45f : p.position;
                 if (p.life <= 0) RemoveShot(i);
             }
+        }
+
+        // Yerde yanan ateş: genişlik boyunca, yerden .6 yüksekliğe kadar; her .5 sn'de bir kırmızı hasar (zıplayan yanmaz)
+        Projectile SpawnFire(Vector2 ground, float width, float life, float damage, Actor source, float delay = 0)
+        {
+            var sr = ArtLibrary.Draw("Fire", ArtLibrary.Glow, actorsRoot, ground + Vector2.up * .35f, 172, new Color(1, .45f, .1f, .75f));
+            sr.transform.localScale = new Vector3(width, .8f, 1); sr.enabled = delay <= 0;
+            var fire = new Projectile { kind = ShotKind.Fire, position = ground, life = life, delay = delay, damage = damage, red = true, width = width, renderer = sr, source = source };
+            projectiles.Add(fire); return fire;
         }
 
         bool HitsPlayer(Projectile p, Vector2 old)

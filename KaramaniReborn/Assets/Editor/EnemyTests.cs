@@ -17,6 +17,7 @@ namespace KaramaniReborn.Editor
             Sorcerer(root);
             Layouts(root);
             Bosses(root);
+            Arslan(root);
         }
 
         static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
@@ -183,6 +184,51 @@ namespace KaramaniReborn.Editor
             Run(w2, .45f); Assert(pl.health == pl.maxHealth - 2 * combo.damage, "No third hit before 1.1 s, health " + pl.health);
             Run(w2, .25f); Assert(pl.health == pl.maxHealth - 3 * combo.damage, "Third hit at 1.1 s, health " + pl.health);
             Debug.Log("KARAMANI_BOSS_FOUNDATION_PASS · four aghas per zone, profile values, phase gating + transition, uneven rhythm");
+        }
+
+        static void Arslan(GameRoot root)
+        {
+            // Direk dürtüşü beyaz: zamanında blok savuşturur
+            var w = Arena(root, EnemyRole.Arslan, 2.4f, out var e); var pl = w.player;
+            var thrust = EnemyProfile.For(EnemyRole.Arslan).Find("thrust");
+            w.StartAttack(e, "thrust"); int press = Mathf.RoundToInt((thrust.windup - .06f) * 120);
+            Run(w, thrust.windup + .1f, i => new InputFrame { block = i >= press });
+            Assert(pl.health == pl.maxHealth && e.state == ActionState.Hurt, "Arslan's thrust must be parryable");
+
+            // Geniş savuruş kırmızı: blok işe yaramaz
+            w = Arena(root, EnemyRole.Arslan, 2.6f, out e); pl = w.player;
+            w.StartAttack(e, "sweep"); Run(w, 1.8f, i => new InputFrame { block = true });
+            Assert(pl.health == pl.maxHealth - 22, "Red sweep must ignore block, health " + pl.health);
+
+            // Sancak dikme: iki nefer, yalnız sağlam zeminde; bu evrede bir daha olmaz, ikinci evrede yeniden açılır
+            w = Arena(root, EnemyRole.Arslan, 3, out e); int before = w.enemies.Count;
+            w.StartAttack(e, "plant"); Run(w, .9f);
+            var summoned = w.enemies.GetRange(before, w.enemies.Count - before);
+            Assert(summoned.Count == 2 && summoned.TrueForAll(n => n.role == EnemyRole.Nefer && n.grounded), "Plant must summon two grounded Nefers, got " + summoned.Count);
+            Assert(e.attackReady["plant"] > w.clock + 100, "Plant must be once per phase");
+            // Çağrılan neferler haritada da görünür (arayüz düşman sayısı değişince işaretleri tamamlar)
+            root.hud.Tick(0);
+            Assert(root.hud.EnemyMarkers == w.enemies.Count, "Minimap shows " + root.hud.EnemyMarkers + " of " + w.enemies.Count + " enemies after the summon");
+            // Çukur kenarında (13.5-15.7 çukuru): çukurun üstüne doğmaz
+            w = Arena(root, EnemyRole.Arslan, 3, out e); e.position.x = 15.9f; before = w.enemies.Count;
+            w.StartAttack(e, "plant"); Run(w, .9f);
+            foreach (var n in w.enemies.GetRange(before, w.enemies.Count - before)) Assert(!(n.position.x > 13.5f && n.position.x < 15.7f), "Nefer summoned over the pit at " + n.position.x);
+
+            // İkinci evre: sancak yanar; yanan savuruş ardında kısa ateş bırakır, birinci evre savuruşu bırakmaz
+            w = Arena(root, EnemyRole.Arslan, 2.6f, out e);
+            w.StartAttack(e, "sweep"); Run(w, .9f);
+            Assert(!w.projectiles.Exists(s => s.kind == GameWorld.ShotKind.Fire), "Phase-1 sweep must not leave fire");
+            e.Enter(ActionState.Idle); e.health = e.maxHealth * .45f; Run(w, 1.5f);
+            Assert(e.phase == 2 && !e.attackReady.ContainsKey("plant"), "Phase 2 must reopen the standard summon");
+            w.StartAttack(e, "burnsweep"); Run(w, .9f);
+            Assert(w.projectiles.Exists(s => s.kind == GameWorld.ShotKind.Fire), "Burning sweep must leave a fire trail");
+
+            // Boss ölünce çağrılan neferler yaşasa da kapı açılır
+            w = Arena(root, EnemyRole.Arslan, 3, out e);
+            var gateBoss = w.enemies.Find(a => a.boss); w.StartAttack(e, "plant"); Run(w, .9f);
+            w.Damage(gateBoss, 5000, 1, true, true); w.Simulate(1f / 120, new InputFrame(), true);
+            Assert(w.cleared, "Gate must open when the boss dies even with summons alive");
+            Debug.Log("KARAMANI_BOSS_ARSLAN_PASS · parryable thrust, red sweep, summon on ground once per phase, burning standard trail, gate");
         }
 
         static void Sorcerer(GameRoot root)

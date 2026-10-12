@@ -137,6 +137,9 @@ namespace KaramaniReborn
             {
                 case AttackKind.Melee: case AttackKind.Slam:
                     if (a.state != ActionState.Light || !InStrike(a, out int strike)) return;
+                    // Yanan sancak: savuruşun ilk etkin anında önüne (boss'un zemininde) kısa ömürlü ateş bırakır
+                    if (k.patchLife > 0 && !a.attackConnected)
+                    { a.attackConnected = true; SpawnFire(new Vector2(a.position.x + a.face * k.reach * .5f, a.position.y), k.patchWidth, k.patchLife, k.patchDamage, a); }
                     if (strike != a.strike) { a.strike = strike; a.hitTargets.Clear(); }
                     if (a.hitTargets.Contains(player.id) || !MeleeReach(a, k)) return;
                     a.hitTargets.Add(player.id);
