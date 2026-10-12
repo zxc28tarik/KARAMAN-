@@ -91,7 +91,7 @@ namespace KaramaniReborn
 
         public PixelCharacter(Actor actor, Transform parent)
         {
-            variant = actor.player ? "hero" : actor.role.ToString().ToLowerInvariant();
+            variant = actor.player ? "hero" : EnemyProfile.For(actor.role).sheet;
             pixel = Load(variant, true); hd = TryLoad("hd/" + variant); sheet = pixel;
             var go = new GameObject(actor.player ? "Karamani · Pixel Character" : actor.role + " · Pixel Character");
             root = go.transform; root.SetParent(parent, false);

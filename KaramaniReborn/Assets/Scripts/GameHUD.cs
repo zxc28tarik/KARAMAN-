@@ -157,7 +157,7 @@ namespace KaramaniReborn
             foreach (var widget in widgets)
             {
                 var a = widget.actor; Vector3 point = game.gameCamera.WorldToViewportPoint(a.position + Vector2.up * (2.62f * a.size));
-                widget.root.gameObject.SetActive(!a.Dead && point.x > -.05f && point.x < 1.05f && (a.health < a.maxHealth || a.Attacking || a.role == EnemyRole.Archer));
+                widget.root.gameObject.SetActive(!a.Dead && point.x > -.05f && point.x < 1.05f && (a.health < a.maxHealth || a.Attacking || EnemyProfile.For(a.role).ranged));
                 SetRectPosition(widget.root, point.x * GameView.CanvasWidth - 49, (1 - point.y) * GameView.CanvasHeight);
                 widget.health.fillAmount = a.health / a.maxHealth; widget.intent.enabled = a.Attacking; widget.intent.fillAmount = a.Progress;
             }

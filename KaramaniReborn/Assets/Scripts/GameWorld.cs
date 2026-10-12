@@ -37,20 +37,21 @@ namespace KaramaniReborn
             checkpoint = checkpointX;
             player = new Actor { id = 0, player = true, position = new Vector2(checkpointX, zone.floor), maxGuard = 100, guard = 100 };
             new PixelCharacter(player, actorsRoot);
-            Spawn(10.0f, zone.floor, EnemyRole.Duelist);
-            Spawn(18.1f, zone.floor, EnemyRole.Shield);
+            Spawn(10.0f, zone.floor, EnemyRole.Nefer);
+            Spawn(18.1f, zone.floor, EnemyRole.Spearman);
             Spawn(25.5f, -.75f, EnemyRole.Archer);
-            Spawn(35.1f, zone.floor, index == 1 ? EnemyRole.Ghoul : EnemyRole.Duelist);
-            Spawn(42.3f, zone.floor, EnemyRole.Shield);
+            Spawn(35.1f, zone.floor, EnemyRole.Nefer);
+            Spawn(42.3f, zone.floor, EnemyRole.Spearman);
             Spawn(50.4f, zone.floor, EnemyRole.Captain, true);
         }
 
-        void Spawn(float x, float y, EnemyRole role, bool boss = false)
+        public Actor Spawn(float x, float y, EnemyRole role, bool boss = false)
         {
+            var p = EnemyProfile.For(role);
             var a = new Actor { id = enemies.Count + 1, role = role, boss = boss, position = new Vector2(x, y), face = -1,
-                health = boss ? 210 + zone.index * 20 : role == EnemyRole.Shield ? 95 : 70, maxGuard = boss ? 95 : role == EnemyRole.Shield ? 75 : 35,
-                size = boss ? 1.09f : .98f, intentTime = .3f + enemies.Count * .11f };
+                health = boss ? 210 + zone.index * 20 : p.health, maxGuard = boss ? 95 : p.guard, size = boss ? 1.09f : p.size, intentTime = .3f + enemies.Count * .11f };
             a.maxHealth = a.health; a.guard = a.maxGuard; new PixelCharacter(a, actorsRoot); enemies.Add(a);
+            return a;
         }
 
         public void Simulate(float dt, InputFrame input, bool enemyAI = true)
@@ -216,19 +217,19 @@ namespace KaramaniReborn
             if (!a.Locked && awake)
             {
                 a.face = dx > 0 ? 1 : -1;
-                if (a.role == EnemyRole.Archer && dist < 8 && height < 3)
+                if (EnemyProfile.For(a.role).ranged && dist < 8 && height < 3)
                 {
                     if (a.cooldown <= 0 && a.intentTime <= 0) { a.Enter(ActionState.Shoot, .94f); a.cooldown = 1.7f; }
                     else a.state = ActionState.Idle;
                 }
                 else if (dist > (a.boss ? 1.56f : 1.48f))
                 {
-                    vx = a.face * (a.role == EnemyRole.Ghoul ? 1.9f : a.boss ? 1.7f : 1.35f); a.state = ActionState.Move;
+                    vx = a.face * (EnemyProfile.For(a.role).speed); a.state = ActionState.Move;
                     if (!GroundAhead(a, a.face * .34f) && a.grounded && dist > 2) { a.velocity.y = 8.4f; a.grounded = false; a.view.ResetContacts(); }
                 }
                 else if (height < .8f)
                 {
-                    bool shield = a.role is EnemyRole.Shield or EnemyRole.Captain;
+                    bool shield = EnemyProfile.For(a.role).shielded || a.role == EnemyRole.Captain;
                     if (shield && a.guard > 12 && player.Attacking && player.state != ActionState.Heavy && a.intentTime <= 0) a.state = ActionState.Block;
                     else if (a.cooldown <= 0 && attackDirector <= 0 && a.intentTime <= 0)
                     { BeginAttack(a, a.boss && rng.NextDouble() > .45, 1); attackDirector = .26f; a.cooldown = .8f; }
@@ -307,7 +308,7 @@ namespace KaramaniReborn
             }
             player.enGarde = nearest != null && player.grounded && (nearest.position.x - player.position.x) * player.face > 0;
             foreach (var e in enemies)
-                e.enGarde = !e.Dead && !player.Dead && e.role != EnemyRole.Archer && e.grounded && Mathf.Abs(player.position.x - e.position.x) < 3.4f
+                e.enGarde = !e.Dead && !player.Dead && !EnemyProfile.For(e.role).ranged && e.grounded && Mathf.Abs(player.position.x - e.position.x) < 3.4f
                     && Mathf.Abs(player.position.y - e.position.y) < 1 && (player.position.x - e.position.x) * e.face > 0;
         }
 

@@ -77,10 +77,11 @@ namespace KaramaniReborn.Editor
             var camera = CameraForReview(3.6f); camera.transform.position = new Vector3(4.4f, -.4f, -10);
             camera.backgroundColor = new Color(.27f, .2f, .3f);
             var actors = new Actor[6];
+            EnemyRole[] roles = { EnemyRole.Nefer, EnemyRole.Nefer, EnemyRole.Spearman, EnemyRole.Archer, EnemyRole.Captain, EnemyRole.Sorcerer };
             for (int i = 0; i < actors.Length; i++)
             {
-                var role = i == 0 ? EnemyRole.Duelist : (EnemyRole)(i - 1);
-                actors[i] = new Actor { player = i == 0, role = role, boss = role == EnemyRole.Captain, position = new Vector2(.4f + i * 1.6f, -2.25f), size = i == 0 ? 1 : role == EnemyRole.Captain ? 1.09f : .98f };
+                var role = roles[i];
+                actors[i] = new Actor { player = i == 0, role = role, boss = role == EnemyRole.Captain, position = new Vector2(.4f + i * 1.6f, -2.25f), size = i == 0 ? 1 : EnemyProfile.For(role).size };
                 new PixelCharacter(actors[i], parent);
             }
             Capture(camera, "Review/characters/ingame-lineup-idle.png");

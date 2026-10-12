@@ -4,13 +4,14 @@
 #   Verify       full movement/combat/presentation checks + chapter/animation captures  (~75-120 s)
 #   CaptureLook  only the four chapter captures, for quick look iterations             (~60 s)
 #   Build        Windows player into Build/                                             (~60-90 s)
+#   Enemies      only the enemy profile/behaviour checks (EnemyTests)                   (~30 s)
 #   ReviewCharacters  single-piece character lineup renders + foot-lock check
 # Guarantees: refuses to start if any Unity process already has this project open (Unity allows one
 # instance per project); fresh log per run in Logs/batch/; success = exit 0 AND marker in the fresh log;
 # exit 198 is reported as a license problem (the user must sign in to Unity Hub; never automate that).
 # Exit codes: 0 ok, 1 job failed, 3 project busy, 4 license, 5 timeout, 2 bad arguments / editor missing.
 param(
-    [Parameter(Mandatory = $true)][ValidateSet('Verify', 'CaptureLook', 'Build', 'ReviewCharacters')][string]$Job,
+    [Parameter(Mandatory = $true)][ValidateSet('Verify', 'CaptureLook', 'Build', 'ReviewCharacters', 'Enemies')][string]$Job,
     [int]$TimeoutSeconds = 900,
     [string]$Unity = 'C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Unity.exe'
 )
@@ -22,6 +23,7 @@ $jobs = @{
     Verify      = @{ Method = 'KaramaniReborn.Editor.BuildTools.Verify';        Marker = 'KARAMANI_VERIFY_SUCCESS'; Graphics = $true }
     CaptureLook = @{ Method = 'KaramaniReborn.Editor.BuildTools.CaptureLook';   Marker = 'KARAMANI_LOOK_CAPTURED';  Graphics = $true }
     Build       = @{ Method = 'KaramaniReborn.Editor.BuildTools.BuildWindows';  Marker = 'KARAMANI_BUILD_SUCCESS';  Graphics = $false }
+    Enemies     = @{ Method = 'KaramaniReborn.Editor.BuildTools.VerifyEnemiesOnly'; Marker = 'KARAMANI_ENEMIES_SUCCESS'; Graphics = $true }
     ReviewCharacters = @{ Method = 'KaramaniReborn.Editor.ArtValidation.ReviewCharacters'; Marker = 'KARAMANI_CHARACTER_REVIEW_PASS'; Graphics = $true }
 }
 $spec = $jobs[$Job]

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace KaramaniReborn
 {
     public enum ActionState { Idle, Move, Jump, Fall, Light, Heavy, Block, Parry, Dodge, Hurt, Dead, Heal, Spirit, Shoot, Hang, Climb }
-    public enum EnemyRole { Duelist, Shield, Archer, Captain, Ghoul }
+    public enum EnemyRole { Nefer, Spearman, Halberdier, Musketeer, Archer, Sorcerer, Captain }
 
     public struct InputFrame
     {
@@ -50,11 +50,16 @@ namespace KaramaniReborn
         public readonly System.Collections.Generic.HashSet<int> hitTargets = new();
         public float knockback, speed, size = 1;
         public PixelCharacter view;
+        // Düşman saldırısı: yürüyen saldırının tanımı, kaçıncı vuruşta olduğu, evre ve türlere özel sayaçlar
+        public EnemyAttack attack;
+        public int strike = -1, phase = 1;
+        public float turnTimer;
+        public readonly System.Collections.Generic.Dictionary<string, float> attackReady = new();
         public float Progress => duration > 0 ? Mathf.Clamp01(stateTime / duration) : 0;
         public bool Dead => health <= 0 || state == ActionState.Dead;
         public bool Attacking => state is ActionState.Light or ActionState.Heavy or ActionState.Spirit;
         public bool Locked => state is ActionState.Light or ActionState.Heavy or ActionState.Dodge or ActionState.Hurt or ActionState.Heal or ActionState.Spirit or ActionState.Shoot or ActionState.Dead or ActionState.Hang or ActionState.Climb;
-        public void Enter(ActionState next, float seconds = 0) { state = next; stateTime = 0; duration = seconds; attackConnected = false; telegraphed = false; backdash = false; riposting = false; hitTargets.Clear(); }
+        public void Enter(ActionState next, float seconds = 0) { state = next; stateTime = 0; duration = seconds; attackConnected = false; telegraphed = false; backdash = false; riposting = false; hitTargets.Clear(); attack = null; strike = -1; }
     }
 
     public struct Surface
