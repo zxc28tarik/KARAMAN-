@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace KaramaniReborn
 {
-    public sealed class GameWorld
+    public sealed partial class GameWorld
     {
         public readonly Actor player;
         public readonly List<Actor> enemies = new();
@@ -24,7 +24,8 @@ namespace KaramaniReborn
         float dustClock, ghostClock, attackDirector;
         int heardSteps;
         readonly System.Random rng;
-        public sealed class Projectile { public Vector2 position, velocity; public bool friendly; public float life; public SpriteRenderer renderer; public Actor source; }
+        public enum ShotKind { Pistol, Arrow, Bullet, VolleyMark, VolleyArrow, Wave, Orb }
+        public sealed class Projectile { public ShotKind kind; public Vector2 position, velocity; public bool friendly, red; public float life, delay, damage; public SpriteRenderer renderer; public Actor source; }
         // Arayüzün göstereceği hasar sayıları
         public struct DamageEvent { public Vector2 position; public int amount; public bool toPlayer, strong; }
         public readonly List<DamageEvent> damageEvents = new();
@@ -37,20 +38,33 @@ namespace KaramaniReborn
             checkpoint = checkpointX;
             player = new Actor { id = 0, player = true, position = new Vector2(checkpointX, zone.floor), maxGuard = 100, guard = 100 };
             new PixelCharacter(player, actorsRoot);
-            Spawn(10.0f, zone.floor, EnemyRole.Duelist);
-            Spawn(18.1f, zone.floor, EnemyRole.Shield);
-            Spawn(25.5f, -.75f, EnemyRole.Archer);
-            Spawn(35.1f, zone.floor, index == 1 ? EnemyRole.Ghoul : EnemyRole.Duelist);
-            Spawn(42.3f, zone.floor, EnemyRole.Shield);
+            foreach (var (x, y, role) in Layout(index)) Spawn(x, y, role);
             Spawn(50.4f, zone.floor, EnemyRole.Captain, true);
         }
 
-        void Spawn(float x, float y, EnemyRole role, bool boss = false)
+        // Bölge dizilişi (Docs/specs/2026-10-12-enemy-roster-design.md §5): önce insanlar, büyücü Kurt Geçidi'nde ilk kez.
+        // Platformlar: 23.5-26.6 (y -0.75), 37.4-40.7 (y -0.85)
+        (float x, float y, EnemyRole role)[] Layout(int index)
         {
+            float f = zone.floor;
+            return index switch
+            {
+                0 => new[] { (10f, f, EnemyRole.Nefer), (18.1f, f, EnemyRole.Spearman), (25.5f, -.75f, EnemyRole.Archer), (35.1f, f, EnemyRole.Nefer), (42.3f, f, EnemyRole.Nefer) },
+                1 => new[] { (10f, f, EnemyRole.Nefer), (20f, f, EnemyRole.Musketeer), (35.1f, f, EnemyRole.Halberdier), (39f, -.85f, EnemyRole.Musketeer), (44f, f, EnemyRole.Nefer) },
+                2 => new[] { (10f, f, EnemyRole.Spearman), (20f, f, EnemyRole.Musketeer), (25.5f, -.75f, EnemyRole.Archer), (35.1f, f, EnemyRole.Halberdier), (39f, -.85f, EnemyRole.Archer), (44f, f, EnemyRole.Sorcerer) },
+                _ => new[] { (10f, f, EnemyRole.Nefer), (18.1f, f, EnemyRole.Spearman), (25.5f, -.75f, EnemyRole.Musketeer), (35.1f, f, EnemyRole.Halberdier), (39f, -.85f, EnemyRole.Archer), (44f, f, EnemyRole.Sorcerer) },
+            };
+        }
+
+        public Actor Spawn(float x, float y, EnemyRole role, bool boss = false)
+        {
+            var p = EnemyProfile.For(role);
             var a = new Actor { id = enemies.Count + 1, role = role, boss = boss, position = new Vector2(x, y), face = -1,
-                health = boss ? 210 + zone.index * 20 : role == EnemyRole.Shield ? 95 : 70, maxGuard = boss ? 95 : role == EnemyRole.Shield ? 75 : 35,
-                size = boss ? 1.09f : .98f, intentTime = .3f + enemies.Count * .11f };
+                health = boss ? 210 + zone.index * 20 : p.health, maxGuard = boss ? 95 : p.guard, size = boss ? 1.09f : p.size, intentTime = .3f + enemies.Count * .11f };
+            // Karanlık Kale'de yarı-boss daha güçlü (spec §5): can x1.3, denge x1.2; profil aynı kalır
+            if (!boss && p.halfBoss && zone.index == 3) { a.health *= 1.3f; a.maxGuard *= 1.2f; }
             a.maxHealth = a.health; a.guard = a.maxGuard; new PixelCharacter(a, actorsRoot); enemies.Add(a);
+            return a;
         }
 
         public void Simulate(float dt, InputFrame input, bool enemyAI = true)
@@ -66,7 +80,7 @@ namespace KaramaniReborn
                 TickTimers(a, dt);
                 if (enemyAI) TickEnemy(a, dt); else a.velocity.x = 0;
                 a.view.Render(a, dt, clock);
-                if (enemyAI) ResolveBlade(a);
+                if (enemyAI) PerformAttack(a);
             }
             TickProjectiles(dt);
             if (player.position.y < -6 && !player.Dead) Damage(player, 200, 0, false, true);
@@ -92,7 +106,7 @@ namespace KaramaniReborn
 
         void TickTimers(Actor a, float dt)
         {
-            a.stateTime += dt; a.grabCooldown -= dt; a.airFlip -= dt; a.riposte -= dt; a.cooldown -= dt; a.invincible -= dt; a.parryWindow -= dt; a.hitFlash -= dt; a.dropTimer -= dt; a.skillCooldown -= dt; a.shotCooldown -= dt; a.staminaDelay -= dt;
+            a.stateTime += dt; a.grabCooldown -= dt; a.airFlip -= dt; a.riposte -= dt; a.cooldown -= dt; a.invincible -= dt; a.parryWindow -= dt; a.hitFlash -= dt; a.dropTimer -= dt; a.skillCooldown -= dt; a.shotCooldown -= dt; a.staminaDelay -= dt; a.pushTime -= dt;
             if (!a.Locked && a.staminaDelay <= 0) a.stamina = Mathf.MoveTowards(a.stamina, 100, dt * (a.state == ActionState.Block ? 6 : 24));
             if (!a.Attacking) a.guard = Mathf.MoveTowards(a.guard, a.maxGuard, dt * 7);
         }
@@ -171,6 +185,9 @@ namespace KaramaniReborn
             if (a.state == ActionState.Hurt) desired = a.knockback * (1 - a.Progress);
             if (a.skid > 0) desired = 0;
             a.velocity.x = Mathf.MoveTowards(a.velocity.x, desired, dt * (a.Locked ? 65 : a.skid > 0 ? 9 : a.grounded ? 25 : 12));
+            // Kalkanla itme: blokta bile kısa sürede sabit mesafe geri iter; bitince kayma kalmaz
+            if (a.pushTime > 0) a.velocity.x = a.pushSpeed;
+            else if (a.pushSpeed != 0) { a.velocity.x = 0; a.pushSpeed = 0; }
             // Dalış: kısa bir asılı kalıştan sonra hızla aşağı
             if (a.state == ActionState.Light && a.combo == 4 && a.stateTime > .06f) a.velocity.y = Mathf.Min(a.velocity.y, -11f);
             bool landed = !a.grounded; float fallSpeed = a.velocity.y;
@@ -193,7 +210,7 @@ namespace KaramaniReborn
             if (a.state == ActionState.Heal && !a.attackConnected && a.Progress > .55f)
             { a.attackConnected = true; a.health = Mathf.Min(a.maxHealth, a.health + 48); effects.GlowBurst(a.position + Vector2.up, new Color(.5f, 1, .72f)); }
             if (a.state == ActionState.Shoot && !a.attackConnected && a.Progress > .35f)
-            { a.attackConnected = true; Shoot(a, true); sound?.Invoke("shot"); }
+            { a.attackConnected = true; Shoot(a); sound?.Invoke("shot"); }
         }
 
         void BeginAttack(Actor a, bool heavy, int combo)
@@ -201,44 +218,6 @@ namespace KaramaniReborn
             a.combo = combo; a.Enter(heavy ? ActionState.Heavy : ActionState.Light, heavy ? .80f : combo == 4 ? 1.2f : combo == 3 ? .47f : .44f);
             if (a.player) { a.stamina -= heavy ? 28 : 10; a.staminaDelay = .45f; }
             sound?.Invoke(heavy ? "heavy" : "swing");
-        }
-
-        void TickEnemy(Actor a, float dt)
-        {
-            if (a.Dead) { SettleCorpse(a, dt); return; }
-            a.intentTime -= dt;
-            // Saldırıdan hemen önce kılıçta parıltı: oyuncuya savuşturma zamanını haber verir
-            if (a.Attacking && !a.telegraphed && a.Progress > .08f) { a.telegraphed = true; effects.Glint(a.view.BladeTip, a.boss); }
-            if (a.Locked && a.stateTime >= a.duration) { a.Enter(ActionState.Idle); a.cooldown = a.boss ? .46f : .7f; }
-            float dx = player.position.x - a.position.x, dist = Mathf.Abs(dx), height = Mathf.Abs(player.position.y - a.position.y);
-            bool awake = !player.Dead && dist < (a.boss ? 10 : 8.6f);
-            float vx = 0;
-            if (!a.Locked && awake)
-            {
-                a.face = dx > 0 ? 1 : -1;
-                if (a.role == EnemyRole.Archer && dist < 8 && height < 3)
-                {
-                    if (a.cooldown <= 0 && a.intentTime <= 0) { a.Enter(ActionState.Shoot, .94f); a.cooldown = 1.7f; }
-                    else a.state = ActionState.Idle;
-                }
-                else if (dist > (a.boss ? 1.56f : 1.48f))
-                {
-                    vx = a.face * (a.role == EnemyRole.Ghoul ? 1.9f : a.boss ? 1.7f : 1.35f); a.state = ActionState.Move;
-                    if (!GroundAhead(a, a.face * .34f) && a.grounded && dist > 2) { a.velocity.y = 8.4f; a.grounded = false; a.view.ResetContacts(); }
-                }
-                else if (height < .8f)
-                {
-                    bool shield = a.role is EnemyRole.Shield or EnemyRole.Captain;
-                    if (shield && a.guard > 12 && player.Attacking && player.state != ActionState.Heavy && a.intentTime <= 0) a.state = ActionState.Block;
-                    else if (a.cooldown <= 0 && attackDirector <= 0 && a.intentTime <= 0)
-                    { BeginAttack(a, a.boss && rng.NextDouble() > .45, 1); attackDirector = .26f; a.cooldown = .8f; }
-                    else a.state = ActionState.Idle;
-                }
-            }
-            if (a.Attacking) vx = Active(a) ? a.face * .85f : 0;
-            if (a.state == ActionState.Hurt) vx = a.knockback * (1 - a.Progress);
-            a.velocity.x = Mathf.MoveTowards(a.velocity.x, vx, dt * 24); KinematicMotor.Step(a, zone, dt);
-            if (a.state == ActionState.Shoot && !a.attackConnected && a.Progress > .64f) { a.attackConnected = true; Shoot(a, false); }
         }
 
         // ---------- Kenara tutunma ve tırmanma ----------
@@ -307,7 +286,7 @@ namespace KaramaniReborn
             }
             player.enGarde = nearest != null && player.grounded && (nearest.position.x - player.position.x) * player.face > 0;
             foreach (var e in enemies)
-                e.enGarde = !e.Dead && !player.Dead && e.role != EnemyRole.Archer && e.grounded && Mathf.Abs(player.position.x - e.position.x) < 3.4f
+                e.enGarde = !e.Dead && !player.Dead && !EnemyProfile.For(e.role).ranged && e.grounded && Mathf.Abs(player.position.x - e.position.x) < 3.4f
                     && Mathf.Abs(player.position.y - e.position.y) < 1 && (player.position.x - e.position.x) * e.face > 0;
         }
 
@@ -323,11 +302,15 @@ namespace KaramaniReborn
 
         static bool Active(Actor a) => a.state == ActionState.Light && a.combo == 4 ? a.stateTime > .05f : a.state == ActionState.Spirit ? a.Progress > .15f && a.Progress < .85f : a.state == ActionState.Heavy ? a.Progress > .44f && a.Progress < .73f : a.Progress > .27f && a.Progress < .64f;
 
+        // Oyuncunun kılıcı. Düşmanlar yalnız PerformAttack (EnemyBrain.cs) üzerinden vurur.
         void ResolveBlade(Actor source)
         {
             if (!source.Attacking || !Active(source) || source.Dead) return;
-            if (source.player) { foreach (var target in enemies) TryBlade(source, target); }
-            else TryBlade(source, player);
+            // Lanet küreleri kılıçla söndürülür
+            foreach (var shot in projectiles)
+                if (shot.kind == ShotKind.Orb && shot.life > 0 && shot.delay <= 0 && SegmentHits(source.view.StrikeRoot, source.view.BladeTip, new Rect(shot.position.x - .3f, shot.position.y - .3f, .6f, .6f)))
+                { shot.life = 0; effects.GlowBurst(shot.position, new Color(.55f, .1f, .8f)); }
+            foreach (var target in enemies) TryBlade(source, target);
         }
 
         void TryBlade(Actor source, Actor target)
@@ -338,14 +321,14 @@ namespace KaramaniReborn
             bool hit = SegmentHits(source.view.StrikeRoot, source.view.BladeTip, box);
             if (source.state == ActionState.Spirit) hit |= Vector2.Distance(source.position, target.position) < 1.6f;
             // Dalış: kılıcın yanı sıra ayakların hemen altı da vurur
-            if (source.player && source.state == ActionState.Light && source.combo == 4)
+            if (source.state == ActionState.Light && source.combo == 4)
                 hit |= new Rect(source.position.x - .45f, source.position.y - .8f, .9f, 1.1f).Overlaps(box);
             if (!hit) return;
             source.hitTargets.Add(target.id);
-            float damage = source.player ? source.state == ActionState.Heavy ? 44 : source.state == ActionState.Spirit ? 46 : source.combo == 3 ? 29 : 20 : source.boss ? source.state == ActionState.Heavy ? 25 : 19 : 14;
-            bool dive = source.player && source.state == ActionState.Light && source.combo == 4;
+            float damage = source.state == ActionState.Heavy ? 44 : source.state == ActionState.Spirit ? 46 : source.combo == 3 ? 29 : 20;
+            bool dive = source.state == ActionState.Light && source.combo == 4;
             if (dive) damage = 26;
-            float stop = source.state is ActionState.Heavy or ActionState.Spirit ? .1f : source.player && source.combo == 3 ? .075f : .055f;
+            float stop = source.state is ActionState.Heavy or ActionState.Spirit ? .1f : source.combo == 3 ? .075f : .055f;
             // İnfaz: savuşturulup sersemleyen rakibe karşı darbe
             bool execute = source.riposting && target.id == source.riposteTarget;
             if (execute) { damage *= 2.6f; stop = .16f; }
@@ -363,35 +346,74 @@ namespace KaramaniReborn
         static bool Clip(float p, float q, ref float low, ref float high)
         { if (Mathf.Abs(p) < .00001f) return q >= 0; float r = q / p; if (p < 0) { if (r > high) return false; low = Mathf.Max(low, r); } else { if (r < low) return false; high = Mathf.Min(high, r); } return true; }
 
-        public void Damage(Actor target, float damage, int direction, bool heavy, bool unblockable, Actor source = null, float stop = -1)
+        public void Damage(Actor target, float damage, int direction, bool heavy, bool unblockable, Actor source = null, float stop = -1, bool red = false)
         {
             if (target.Dead || target.invincible > 0 && !unblockable) return;
-            bool frontal = source == null || (source.position.x - target.position.x) * target.face >= 0;
-            if (!unblockable && frontal && target.state == ActionState.Block)
+            // Kalkanlı: önden gelen hafif vuruşu kalkan karşılar; ağır vuruş geçer, arkadan vuruş dengeyi iki kat düşürür
+            var profile = target.player ? null : EnemyProfile.For(target.role);
+            bool front = source != null && (source.position.x - target.position.x) * target.face > 0;
+            if (profile != null && profile.shielded && front && !heavy && !red && !unblockable && target.state != ActionState.Hurt)
             {
-                if (target.player && target.parryWindow > 0)
+                target.guard -= damage * 1.3f;
+                effects.Impact(target.position + Vector2.up * 1.35f, direction, true, false, float.NaN, .045f); sound?.Invoke("block");
+                if (target.guard > 0)
+                {
+                    // Yalnız görüntü: saldırmıyorsa kısa bir an kalkan bloğu klibi
+                    if (!target.Locked) target.Enter(ActionState.Block, .2f);
+                    return;
+                }
+                Stagger(target, source); Notify("KALKAN KIRILDI"); return;
+            }
+            bool frontal = source == null || (source.position.x - target.position.x) * target.face >= 0;
+            // Blok yalnız oyuncuda; düşmanın Block durumu kalkan klibidir (ağır vuruş kalkanı yine geçer)
+            if (target.player && !unblockable && !red && frontal && target.state == ActionState.Block)
+            {
+                if (target.parryWindow > 0)
                 {
                     target.Enter(ActionState.Parry, .15f); target.stamina = Mathf.Min(100, target.stamina + 12); effects.Impact(target.position + Vector2.up * 1.45f, -direction, true, true, float.NaN, .12f); Notify("SAVUŞTURMA"); sound?.Invoke("parry");
                     effects.slowMotion = .4f; effects.Glint(target.view.BladeTip, true);
-                    if (source != null) { source.Enter(ActionState.Hurt, .9f); source.guard = 0; source.knockback = -direction * 2; target.riposte = .8f; target.riposteTarget = source.id; }
+                    // Savuşturulan sendeler: denge dolar, geri itilmez (infaz menzilinde kalır), oyuncuya infaz açılır
+                    if (source != null) Stagger(source, target, EnemyProfile.For(source.role).parryStagger);
                     return;
                 }
                 float guardDamage = heavy ? 65 : damage * 1.3f;
-                if (target.player) target.stamina -= guardDamage; else target.guard -= guardDamage;
+                target.stamina -= guardDamage;
                 effects.Impact(target.position + Vector2.up * 1.35f, direction, true, heavy, float.NaN, heavy ? .07f : .045f); sound?.Invoke("block");
-                if ((target.player ? target.stamina : target.guard) > 0) return;
+                if (target.stamina > 0) return;
                 Notify("SAVUNMA KIRILDI"); damage *= .6f;
             }
             target.health = Mathf.Max(0, target.health - damage); target.hitFlash = .14f;
             damageEvents.Add(new DamageEvent { position = target.position + Vector2.up * (2.55f * target.size), amount = Mathf.Max(1, Mathf.RoundToInt(damage)), toPlayer = target.player, strong = heavy || damage >= 40 }); target.invincible = target.player ? .40f : .14f;
-            target.knockback = direction * (heavy ? 3.1f : 1.5f); target.Enter(target.health <= 0 ? ActionState.Dead : ActionState.Hurt, heavy ? .6f : .28f);
+            // Duruş: kendi saldırısını yürüten ağır düşman vurulunca durmaz (can ve denge yine düşer); denge kırılır ya da ölürse durur
+            bool poised = profile != null && profile.poise && target.attack != null && (target.state is ActionState.Light or ActionState.Shoot);
+            // Sendeleme kısalmaz: daha uzun sürecek bir sendelemenin içindeki sıradan vuruş onu (ve geri itmesini) değiştirmez
+            float hurt = heavy ? .6f : .28f;
+            bool longer = target.state == ActionState.Hurt && target.duration - target.stateTime > hurt;
+            if (target.health <= 0 || !poised && !longer) { target.knockback = direction * (heavy ? 3.1f : 1.5f); target.Enter(target.health <= 0 ? ActionState.Dead : ActionState.Hurt, hurt); }
+            // Denge: her vuruş düşürür; sıfırlanınca uzun sendeleme ve infaz fırsatı
+            // İnfaz vuruşu dengeyi düşürmez: savuşturmayla sıfırlanan denge yüzünden yeniden sendeletmez
+            bool executed = source != null && source.riposting && target.id == source.riposteTarget;
+            if (profile != null && !target.Dead && !executed)
+            {
+                // Kalkanlıya ağır ya da arkadan vuruş x2 (üst üste binmez); kalkansıza ağır x1.5
+                target.guard -= damage * (profile.shielded ? (heavy || !front ? 2 : 1) : heavy ? 1.5f : 1);
+                if (target.guard <= 0) Stagger(target, source);
+            }
+            bool held = poised && !target.Dead && target.state != ActionState.Hurt;   // saldırısı sürüyor: havaya kalkmaz
             effects.Impact(target.position + Vector2.up * 1.25f, direction, false, heavy, target.position.y, stop);
             effects.lastStruck = target; sound?.Invoke(heavy ? "heavyhit" : "hit");
             // Ölüm: geriye ve yukarı savrulur. Ağır darbe yaşayan sıradan düşmanı kısa süre havaya kaldırır.
             if (target.Dead && direction != 0) Launch(target, direction * (heavy ? 5.4f : 3.6f), heavy ? 5.6f : 4.2f);
-            else if (heavy && !target.player && !target.boss && direction != 0) Launch(target, direction * 1.2f, 3.4f);
+            else if (heavy && !target.player && !target.boss && !held && direction != 0) Launch(target, direction * 1.2f, 3.4f);
             if (target.Dead && !target.player)
             { kills++; player.stamina = Mathf.Min(100, player.stamina + 14); if (target.boss) { Notify(zone.bossName + " yenildi. İç kapı açıldı."); player.ammo += 4; } }
+        }
+
+        // Uzun sendeleme: denge dolar, geri itme yok; oyuncu sendeletmişse infaz fırsatı açılır
+        void Stagger(Actor target, Actor source, float seconds = .9f)
+        {
+            target.Enter(ActionState.Hurt, seconds); target.guard = target.maxGuard; target.knockback = 0;
+            if (source != null && source.player) { source.riposte = .8f; source.riposteTarget = target.id; }
         }
 
         static void Launch(Actor a, float vx, float vy)
@@ -399,19 +421,14 @@ namespace KaramaniReborn
             a.velocity = new Vector2(vx, vy); a.grounded = false; a.view?.ResetContacts();
         }
 
-        void Shoot(Actor a, bool friendly)
+        // Karamani'nin tabancası
+        void Shoot(Actor a)
         {
-            Vector2 position = a.view.BladeRoot + new Vector2(a.face * (friendly ? .46f : .08f), friendly ? .06f : 0);
-            Vector2 velocity = Vector2.right * a.face * (friendly ? 19 : 10);
-            if (!friendly)
-            {
-                Vector2 aim = player.position + Vector2.up * 1.2f - position;
-                if (aim.x * a.face > 0) velocity = aim.normalized * 10;
-            }
-            var sr = ArtLibrary.Draw(friendly ? "Pistol shot" : "Arrow", ArtLibrary.White, actorsRoot, position, 170, friendly ? new Color(1, .88f, .63f) : new Color(.7f, .59f, .43f));
+            Vector2 position = a.view.BladeRoot + new Vector2(a.face * .46f, .06f);
+            var sr = ArtLibrary.Draw("Pistol shot", ArtLibrary.White, actorsRoot, position, 170, new Color(1, .88f, .63f));
             sr.transform.localScale = new Vector3(.23f, .025f, 1);
-            sr.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg);
-            projectiles.Add(new Projectile { position = position, velocity = velocity, life = 1.4f, friendly = friendly, renderer = sr, source = a });
+            sr.transform.rotation = Quaternion.Euler(0, 0, a.face > 0 ? 0 : 180);
+            projectiles.Add(new Projectile { kind = ShotKind.Pistol, position = position, velocity = Vector2.right * a.face * 19, life = 1.4f, friendly = true, damage = 38, renderer = sr, source = a });
             effects.GlowBurst(position, new Color(1, .62f, .25f, .65f));
         }
 
@@ -419,12 +436,39 @@ namespace KaramaniReborn
         {
             for (int i = projectiles.Count - 1; i >= 0; i--)
             {
-                var p = projectiles[i]; Vector2 old = p.position; p.position += p.velocity * dt; p.life -= dt;
-                if (p.friendly) { foreach (var a in enemies) if (!a.Dead && SegmentHits(old, p.position, new Rect(a.position.x - .3f, a.position.y + .2f, .6f, 2.1f))) { Damage(a, 38, p.velocity.x > 0 ? 1 : -1, true, false, p.source, .08f); p.life = 0; break; } }
-                else if (SegmentHits(old, p.position, new Rect(player.position.x - .23f, player.position.y + .2f, .46f, 1.95f))) { Damage(player, 12, p.velocity.x > 0 ? 1 : -1, false, false, p.source); p.life = 0; }
-                p.renderer.transform.position = p.position;
-                if (p.life <= 0) { if (Application.isPlaying) UnityEngine.Object.Destroy(p.renderer.gameObject); else UnityEngine.Object.DestroyImmediate(p.renderer.gameObject); projectiles.RemoveAt(i); }
+                var p = projectiles[i];
+                if (p.life <= 0) { RemoveShot(i); continue; }
+                p.renderer.enabled = p.delay <= 0;
+                if (p.delay > 0) { p.delay -= dt; continue; }
+                // Lanet küresi oyuncuyu yavaşça izler
+                if (p.kind == ShotKind.Orb) p.velocity = Vector2.MoveTowards(p.velocity, (player.position + Vector2.up * 1.2f - p.position).normalized * 2.2f, dt * 6);
+                Vector2 old = p.position; p.position += p.velocity * dt; p.life -= dt;
+                if (p.friendly)
+                {
+                    foreach (var a in enemies)
+                        if (!a.Dead && SegmentHits(old, p.position, new Rect(a.position.x - .3f, a.position.y + .2f, .6f, 2.1f)))
+                        { Damage(a, p.damage, p.velocity.x > 0 ? 1 : -1, true, false, p.source, .08f); p.life = 0; break; }
+                }
+                else if (p.kind != ShotKind.VolleyMark && !player.Dead && HitsPlayer(p, old))
+                { Damage(player, p.damage, p.velocity.x >= 0 ? 1 : -1, false, false, p.source, -1, p.red); p.life = 0; }
+                p.renderer.transform.position = p.kind == ShotKind.Wave ? p.position + Vector2.up * .45f : p.position;
+                if (p.life <= 0) RemoveShot(i);
             }
+        }
+
+        bool HitsPlayer(Projectile p, Vector2 old)
+        {
+            var box = new Rect(player.position.x - .23f, player.position.y + .2f, .46f, 1.95f);
+            if (p.kind == ShotKind.Wave) return new Rect(p.position.x - .3f, p.position.y, .6f, .9f).Overlaps(box);
+            if (p.kind == ShotKind.Orb) return SegmentHits(old, p.position, new Rect(box.x - .2f, box.y - .2f, box.width + .4f, box.height + .4f));
+            return SegmentHits(old, p.position, box);
+        }
+
+        void RemoveShot(int i)
+        {
+            var p = projectiles[i];
+            if (Application.isPlaying) UnityEngine.Object.Destroy(p.renderer.gameObject); else UnityEngine.Object.DestroyImmediate(p.renderer.gameObject);
+            projectiles.RemoveAt(i);
         }
 
         public void Notify(string text) { notification = text; notificationTime = 2.2f; }

@@ -16,6 +16,8 @@ namespace KaramaniReborn
         readonly Image health, stamina, bossBar, miniHero, cooldownShade;
         readonly Text region, objective, notice, interaction, bossName, ammoCount, potionCount, chapter, selectedName;
         readonly List<Image> miniEnemies = new();
+        readonly Transform miniParent;   // haritadaki düşman işaretleri her bölümde düşman sayısı kadar kurulur (Bind)
+        public int EnemyMarkers => miniEnemies.Count;
         readonly List<EnemyWidget> widgets = new();
         readonly GameObject bossGroup;
         sealed class EnemyWidget { public Actor actor; public RectTransform root; public Image health, intent; }
@@ -59,7 +61,7 @@ namespace KaramaniReborn
             for (int i = 0; i < 3; i++) ImageAt(p, "Minimap rampart", 1660 + i * 69, 110, 62, 2, muted);
             for (int i = 0; i < 5; i++) ImageAt(p, "Minimap upper path", 1676 + i * 34, 79 - (i % 2) * 11, 21, 2, muted * .7f);
             miniHero = ImageAt(p, "Player location", 1670, 99, 8, 8, new Color(1, .86f, .50f)); miniHero.transform.localRotation = Quaternion.Euler(0, 0, 45);
-            for (int i = 0; i < 6; i++) miniEnemies.Add(ImageAt(p, "Enemy location", 1700, 104, 4, 4, new Color(.75f, .18f, .13f)));
+            miniParent = p;
             region = Label(p, "", 1230, 175, 635, 32, 24, ivory, TextAnchor.MiddleRight);
             objective = Label(p, "", 1270, 215, 595, 55, 17, gold, TextAnchor.UpperRight);
 
@@ -126,8 +128,11 @@ namespace KaramaniReborn
         {
             foreach (var widget in widgets) { if (Application.isPlaying) UnityEngine.Object.Destroy(widget.root.gameObject); else UnityEngine.Object.DestroyImmediate(widget.root.gameObject); }
             widgets.Clear();
+            foreach (var mark in miniEnemies) { if (Application.isPlaying) UnityEngine.Object.Destroy(mark.gameObject); else UnityEngine.Object.DestroyImmediate(mark.gameObject); }
+            miniEnemies.Clear();
             foreach (var actor in world.enemies)
             {
+                miniEnemies.Add(ImageAt(miniParent, "Enemy location", 1700, 104, 4, 4, new Color(.75f, .18f, .13f)));
                 var go = Group(playUI.transform, "Enemy health"); var rt = (RectTransform)go.transform;
                 var hp = FramedBar(rt, 0, 0, 98, 5, new Color(.61f, .06f, .03f));
                 var intent = ImageAt(rt, "Attack telegraph", 0, 9, 98, 2, gold);
@@ -157,14 +162,14 @@ namespace KaramaniReborn
             foreach (var widget in widgets)
             {
                 var a = widget.actor; Vector3 point = game.gameCamera.WorldToViewportPoint(a.position + Vector2.up * (2.62f * a.size));
-                widget.root.gameObject.SetActive(!a.Dead && point.x > -.05f && point.x < 1.05f && (a.health < a.maxHealth || a.Attacking || a.role == EnemyRole.Archer));
+                widget.root.gameObject.SetActive(!a.Dead && point.x > -.05f && point.x < 1.05f && (a.health < a.maxHealth || a.Attacking || EnemyProfile.For(a.role).ranged));
                 SetRectPosition(widget.root, point.x * GameView.CanvasWidth - 49, (1 - point.y) * GameView.CanvasHeight);
                 widget.health.fillAmount = a.health / a.maxHealth; widget.intent.enabled = a.Attacking; widget.intent.fillAmount = a.Progress;
             }
             TickNumbers(w, dt);
-            var boss = w.enemies.Find(a => a.boss);
-            bossGroup.SetActive(boss != null && !boss.Dead && Mathf.Abs(boss.position.x - player.position.x) < 9);
-            if (boss != null) { bossName.text = w.zone.bossName; bossBar.fillAmount = boss.health / boss.maxHealth; }
+            var boss = w.BarTarget;
+            bossGroup.SetActive(boss != null);
+            if (boss != null) { bossName.text = boss.boss ? w.zone.bossName : EnemyProfile.For(boss.role).title; bossBar.fillAmount = boss.health / boss.maxHealth; }
             deathUI.SetActive(player.Dead && player.stateTime > .8f && !game.menu);
         }
 

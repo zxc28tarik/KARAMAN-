@@ -97,14 +97,15 @@ namespace KaramaniReborn
         public void BloodPool(Vector2 feet, float size)
             => Decal(feet + new Vector2(0, .015f), new Vector2(1.35f * size, .16f * size), new Color(.17f, .008f, .012f, .9f), 32, 1.8f, 62);
 
-        // Saldırı uyarısı: kılıç ucunda kısa, parlak bir yıldız
-        public void Glint(Vector2 point, bool strong)
+        // Saldırı uyarısı: beyaz savuşturulabilir, kırmızı yalnız kaçışla atlatılır
+        public void Glint(Vector2 point, bool strong, bool red = false)
         {
             float s = strong ? 1.3f : 1;
-            Spawn(ArtLibrary.Glow, point, new Vector2(.42f, .42f) * s, new Color(1, .93f, .76f, .95f), .22f, 181);
+            Color core = red ? new Color(1, .22f, .16f, .95f) : new Color(1, .93f, .76f, .95f), ray = red ? new Color(1, .35f, .25f, .95f) : new Color(1, .96f, .86f, .95f);
+            Spawn(ArtLibrary.Glow, point, new Vector2(.42f, .42f) * s, core, .22f, 181);
             for (int i = 0; i < 2; i++)
             {
-                var p = Spawn(ArtLibrary.White, point, new Vector2(.62f * s, .012f), new Color(1, .96f, .86f, .95f), .2f, 182);
+                var p = Spawn(ArtLibrary.White, point, new Vector2(.62f * s, .012f), ray, .2f, 182);
                 p.renderer.transform.rotation = Quaternion.Euler(0, 0, i * 90 + 15);
             }
         }

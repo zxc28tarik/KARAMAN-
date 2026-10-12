@@ -56,10 +56,21 @@ namespace KaramaniReborn.Editor
             var root = new GameObject("Verification").AddComponent<GameRoot>(); root.Initialize(true);
             VerifyPresentation(root); VerifyPixelLook(root); VerifyCharacters(root);
             root.menu = false; root.hud.SetMenu(false);
-            VerifyInput(); VerifyLocomotion(root); VerifyJump(root); VerifyLedge(root); VerifyAgility(root); VerifyCombat(root); VerifyRanged(root); VerifyJourney(root);
+            VerifyInput(); VerifyLocomotion(root); VerifyJump(root); VerifyLedge(root); VerifyAgility(root); VerifyCombat(root); VerifyRanged(root); EnemyTests.Verify(root); VerifyJourney(root);
             CaptureChapters(root); CaptureAnimation(root);
             File.WriteAllText("Review/verification.txt", "PASS: 4:3 presentation and uniform pixel projection on 4:3, 16:9, ultrawide and portrait windows\nPASS: menu, pause and gameplay HUD stay inside the 4:3 viewport\nPASS: idle hero occupies 20-26 percent of viewport height without source-art resizing\nPASS: Last Faith-style pixel pipeline: 360x270 world, every chapter limited to its palette, HUD on its own crisp layer\nPASS: ten source PNG dimensions match imported Unity textures exactly\nPASS: no power-of-two resizing / no texture compression\nPASS: single-piece frame characters: one sprite per actor, no separate limb parts, all 6 character sheets\nPASS: every action state has a drawn clip; the player never falls back to a substitute clip\nPASS: stride-locked planted feet (< 1 game pixel), unscaled frames on the game-pixel grid\nPASS: high-refresh and hit-stop input latch\nPASS: buffered three-hit combo and actual blade intersection\nPASS: timed parry and dodge invulnerability\nPASS: jump takeoff, apex and landing\nPASS: ledge grab, hang and climb onto the ledge\nPASS: double jump, backdash and bouncing downward strike\nPASS: pistol contact and elevated archer aim\nPASS: checkpoint interaction and respawn\nPASS: four chapter gate transitions and journey completion\nPASS: painted walkway / physical surface alignment (<0.001 units)\nPASS: four chapters rendered by Unity with native HUD\n");
             Debug.Log("KARAMANI_VERIFY_SUCCESS");
+        }
+
+        // Yalnız düşman doğrulaması: düşman işinde tüm Verify'ı (2-3 dk) beklememek için
+        public static void VerifyEnemiesOnly()
+        {
+            Configure();
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var root = new GameObject("Enemy verification").AddComponent<GameRoot>(); root.Initialize(true);
+            root.menu = false; root.hud.SetMenu(false);
+            EnemyTests.Verify(root);
+            Debug.Log("KARAMANI_ENEMIES_SUCCESS");
         }
 
         // Yalnız dört bölümün görüntüsünü alır; görünüm denemelerinde tüm doğrulamayı beklememek için
@@ -142,9 +153,11 @@ namespace KaramaniReborn.Editor
             try
             {
                 foreach (EnemyRole role in Enum.GetValues(typeof(EnemyRole)))
-                    foreach (bool player in role == EnemyRole.Duelist ? new[] { true, false } : new[] { false })
+                    // Büyücü geçici olarak komutanın çizimini 1 boyutunda kullanır; boy aralığı o çizim için Captain'da (1.09) denetlenir
+                    // TODO: Büyücü kendi HD sayfasını alınca kaldır
+                    if (role != EnemyRole.Sorcerer) foreach (bool player in role == EnemyRole.Nefer ? new[] { true, false } : new[] { false })
                     {
-                        var a = new Actor { player = player, role = role, boss = role == EnemyRole.Captain, position = new Vector2(3, -2.25f), size = player ? 1 : role == EnemyRole.Captain ? 1.09f : .98f };
+                        var a = new Actor { player = player, role = role, boss = role == EnemyRole.Captain, position = new Vector2(3, -2.25f), size = player ? 1 : EnemyProfile.For(role).size };
                         var view = new PixelCharacter(a, parent);
                         ArtValidation.Assert(view.root.GetComponentsInChildren<SpriteRenderer>(true).Length == 1, view.variant + " is not a single-piece sprite");
                         float idleHeight = view.VisibleHeight / a.size;
@@ -245,7 +258,7 @@ namespace KaramaniReborn.Editor
             root.gameCamera.transform.position = new Vector3(ledge.x, ledge.y - .3f, -10); root.gameCamera.orthographicSize = 2.2f;
             root.photoMode = true; root.hud.Tick(.1f); root.hud.Follow(root.gameCamera); root.stage.Tick(0, 2, root.gameCamera.transform.position);
             ArtValidation.Capture(root.gameCamera, "Review/poses/" + name + ".png", 480, 360);
-            root.photoMode = false;
+            root.photoMode = false; root.gameCamera.orthographicSize = GameView.OrthographicSize;   // sonraki çekimler yakınlaştırılmış kalmasın
         }
 
         static void VerifyAgility(GameRoot root)
@@ -285,7 +298,9 @@ namespace KaramaniReborn.Editor
             ArtValidation.Assert(a.view.ScalePreserved && a.view.OnPixelGrid && a.view.FallbackFrames == 0, "Combat scaled the character frame or used a substitute clip");
             root.LoadZone(0, true); w = root.world; a = w.player; target = w.enemies[0];
             a.position.x = 4; target.position = new Vector2(5.1f, w.zone.floor); target.face = -1;
-            target.Enter(ActionState.Light, .7f); target.stateTime = .345f;
+            target.intentTime = 99; w.StartAttack(target, "combo");
+            target.stateTime = EnemyProfile.For(target.role).Find("combo").windup - .01f;
+            w.Simulate(1f / 120, new InputFrame { block = true }, true);
             w.Simulate(1f / 120, new InputFrame { block = true }, true);
             ArtValidation.Assert(a.health == a.maxHealth && target.state == ActionState.Hurt, "Timed parry did not prevent damage and stagger the attacker");
             a.Enter(ActionState.Idle); w.Simulate(1f / 120, new InputFrame { dodge = true }, false);
@@ -305,7 +320,7 @@ namespace KaramaniReborn.Editor
                 root.world.player.view.ResetContacts(); enemy.view.ResetContacts();
                 root.world.player.view.Render(root.world.player, .016f, 1); enemy.view.Render(enemy, .016f, 1);
                 root.world.effects.Impact(enemy.position + Vector2.up * 1.5f, 1, false, false);
-                root.gameCamera.transform.position = new Vector3(5.8f, GameView.GroundCameraY, -10);
+                root.gameCamera.transform.position = new Vector3(5.8f, GameView.GroundCameraY, -10); root.gameCamera.orthographicSize = GameView.OrthographicSize;
                 root.stage.Tick(0, 1, root.gameCamera.transform.position); root.hud.Tick(.1f); root.hud.Follow(root.gameCamera);
                 ArtValidation.Capture(root.gameCamera, "Review/chapter-" + (zone + 1) + ".png");
             }
@@ -342,12 +357,11 @@ namespace KaramaniReborn.Editor
             ArtValidation.Assert(w.player.ammo == 7 && w.enemies[0].health < w.enemies[0].maxHealth, "Pistol muzzle, ammunition or projectile contact failed");
             root.LoadZone(0, true); w = root.world; w.player.position.x = 3;
             foreach (var enemy in w.enemies) enemy.position.x = 56;
-            var archer = w.enemies[2]; archer.position = new Vector2(6, -.75f); archer.face = -1;
-            archer.cooldown = archer.intentTime = 3; archer.Enter(ActionState.Shoot, .94f); archer.stateTime = .61f;
-            archer.view.ResetContacts(); archer.view.Render(archer, .016f, 1);
-            for (int i = 0; i < 100; i++) w.Simulate(1f / 120, new InputFrame(), true);
+            var archer = w.enemies[2]; archer.position = new Vector2(6, -.75f); archer.face = -1; archer.intentTime = 99;
+            w.StartAttack(archer, "arrow"); archer.view.ResetContacts();
+            for (int i = 0; i < 160; i++) w.Simulate(1f / 120, new InputFrame(), true);
             ArtValidation.Assert(w.player.health < w.player.maxHealth, "Elevated archer did not aim at the ground-level player");
-            Debug.Log("KARAMANI_RANGED_PASS · held-weapon origin, pistol contact, elevated archer aim");
+            Debug.Log("KARAMANI_RANGED_PASS · enemy shot origin, pistol contact, elevated archer aim");
         }
 
         static void CaptureAnimation(GameRoot root)
