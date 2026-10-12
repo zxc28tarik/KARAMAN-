@@ -5,6 +5,20 @@ namespace KaramaniReborn
     // Düşman davranışı: mesafe, saldırı seçimi ve saldırının yürütülmesi. Değerler EnemyProfiles.cs'te.
     public sealed partial class GameWorld
     {
+        public const int MaxAttackers = 2;
+
+        // Şu anda saldırı yürüten (hazırlık dahil) düşman sayısı
+        public int Attackers { get { int n = 0; foreach (var e in enemies) if (!e.Dead && e.attack != null && e.state == ActionState.Light) n++; return n; } }
+
+        // Oyuncuya dönüş; kalkanlı yavaş döner (arkasına geçmek fırsattır)
+        static void Face(Actor a, EnemyProfile p, float dx, float dt)
+        {
+            int want = dx > 0 ? 1 : -1;
+            if (want == a.face) { a.turnTimer = 0; return; }
+            if (p.turnDelay > 0 && (a.turnTimer += dt) < p.turnDelay) return;
+            a.face = want; a.turnTimer = 0;
+        }
+
         // Adıyla saldırı başlatır (testler ve zincirleme saldırılar için)
         public bool StartAttack(Actor a, string name)
         {
@@ -42,10 +56,16 @@ namespace KaramaniReborn
             float vx = 0;
             if (!a.Locked && awake)
             {
-                a.face = dx > 0 ? 1 : -1;
-                var choice = a.intentTime <= 0 ? Choose(a, p, dist, height) : null;
-                if (choice != null && a.cooldown <= 0 && attackDirector <= 0) { Begin(a, choice); attackDirector = .26f; a.cooldown = .8f; }
+                Face(a, p, dx, dt);
+                // Açık: iksir içen ya da ağır vuruşunu ıskalayıp toparlanan oyuncu
+                bool opening = player.state == ActionState.Heal || player.state == ActionState.Heavy && player.Progress > .73f;
+                bool facing = dx * a.face > 0;
+                var choice = facing && (a.intentTime <= 0 || opening) ? Choose(a, p, dist, height) : null;
+                bool ready = a.cooldown <= 0 || opening && choice != null && choice.punish;
+                bool slot = choice != null && (choice.kind is AttackKind.Backstep or AttackKind.Teleport || Attackers < MaxAttackers);
+                if (choice != null && ready && slot && attackDirector <= 0) { Begin(a, choice); attackDirector = .26f; a.cooldown = .8f; }
                 else if (dist > p.keepMax) { vx = a.face * p.speed; a.state = ActionState.Move; }
+                else if (dist < p.keepMin) { vx = -a.face * p.speed * .8f; a.state = ActionState.Move; }   // yüzü oyuncuda, geri çekilir
                 else a.state = ActionState.Idle;
                 if (vx != 0 && a.grounded && !GroundAhead(a, Mathf.Sign(vx) * .34f))
                 {

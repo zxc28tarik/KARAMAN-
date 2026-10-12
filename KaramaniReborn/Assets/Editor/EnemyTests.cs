@@ -11,6 +11,7 @@ namespace KaramaniReborn.Editor
             Profiles(root);
             Debug.Log("KARAMANI_ENEMY_PROFILES_PASS · six regular enemies with spec values and placeholder sheets");
             Attacks(root);
+            Behaviour(root);
         }
 
         static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
@@ -85,6 +86,65 @@ namespace KaramaniReborn.Editor
             Run(w, combo.windup + .1f, i => new InputFrame { block = i >= press });
             Assert(pl.health == pl.maxHealth && e.state == ActionState.Hurt && pl.riposte > 0, "Parry of a white attack should stagger and open a riposte");
             Debug.Log("KARAMANI_ENEMY_ATTACKS_PASS · active windows, red ignores block, dodge avoids red, white parry staggers");
+        }
+    
+
+        static void Behaviour(GameRoot root)
+        {
+            // Mesafe: tüfekli yakındaki oyuncudan uzaklaşır, nefer uzaktaki oyuncuya yaklaşır
+            var w = Arena(root, EnemyRole.Musketeer, 2.5f, out var e);
+            Run(w, 2f);   // geri çekilme hızı .8×1.2 = .96 b/sn: 1.5 sn'de boşluk 3.9'da kalır, 2 sn gerekir
+            Assert(e.position.x - w.player.position.x > 4f, "Musketeer did not retreat: gap " + (e.position.x - w.player.position.x));
+            w = Arena(root, EnemyRole.Nefer, 6, out e);
+            Run(w, 4);
+            Assert(e.position.x - w.player.position.x < 1.6f, "Nefer did not close in: gap " + (e.position.x - w.player.position.x));
+
+            // Sıra: aynı anda en fazla iki düşman saldırır
+            w = Arena(root, EnemyRole.Nefer, 1.2f, out e); e.intentTime = 0;
+            foreach (float gap in new[] { -1.2f, 1.4f, -1.4f }) w.Spawn(4 + gap, w.zone.floor, EnemyRole.Nefer).intentTime = 0;
+            int most = 0;
+            for (int i = 0; i < 360; i++) { w.Simulate(1f / 120, new InputFrame { block = true }, true); most = Mathf.Max(most, w.Attackers); }
+            Assert(most >= 1 && most <= GameWorld.MaxAttackers, "Simultaneous attackers " + most);
+
+            // Açık cezalandırma: iksir içen oyuncuya bekleyen nefer hemen saldırır
+            w = Arena(root, EnemyRole.Nefer, 1.3f, out e); e.intentTime = 0; e.cooldown = 5; w.player.health = 50;
+            Run(w, .3f, i => new InputFrame { heal = i == 0 });
+            Assert(e.state == ActionState.Light, "Nefer did not punish the potion");
+
+            // Yükseklik: platformdaki oyuncuya yerdeki nefer yakın saldırı başlatmaz
+            w = Arena(root, EnemyRole.Nefer, 1.0f, out e); e.intentTime = 0;
+            w.player.position = new Vector2(8.5f, -.9f); e.position.x = 8.5f + 1f;
+            Run(w, 1f);
+            Assert(e.state != ActionState.Light, "Nefer attacked a player on a platform above");
+
+            // Ölü oyuncu: yeni saldırı başlamaz
+            w = Arena(root, EnemyRole.Nefer, 1.2f, out e); e.intentTime = 0;
+            w.Damage(w.player, 1000, 1, true, true);
+            Run(w, 1f);
+            Assert(w.Attackers == 0, "Enemy attacked a dead player");
+
+            // Kalkan: önden hafif vuruş can götürmez, ağır vuruş götürür, arkadan vuruş dengeyi iki kat düşürür
+            w = Arena(root, EnemyRole.Spearman, 1.3f, out e);
+            w.Damage(e, 20, 1, false, false, w.player);
+            Assert(e.health == e.maxHealth && e.guard < e.maxGuard, "Shield did not stop a frontal light hit");
+            e.Enter(ActionState.Idle); e.invincible = 0; float hp = e.health;
+            w.Damage(e, 44, 1, true, false, w.player);
+            Assert(e.health < hp, "Heavy hit should pass the shield");
+            w = Arena(root, EnemyRole.Spearman, 1.3f, out e); e.face = 1;   // sırtı oyuncuya dönük
+            w.Damage(e, 20, 1, false, false, w.player);
+            Assert(e.health == e.maxHealth - 20 && Mathf.Approximately(e.guard, e.maxGuard - 40), "Back hit should hurt and drain guard twice: guard " + e.guard);
+
+            // Denge kırılınca uzun sendeleme ve infaz fırsatı
+            w = Arena(root, EnemyRole.Nefer, 1.2f, out e); e.guard = 10;
+            w.Damage(e, 20, 1, false, false, w.player);
+            Assert(e.state == ActionState.Hurt && e.duration > .8f && w.player.riposte > 0, "Guard break should stagger for 0.9 s and open a riposte");
+
+            // Dönüş gecikmesi: oyuncu arkasına geçince kalkanlı geç döner
+            w = Arena(root, EnemyRole.Spearman, 1.3f, out e); e.face = -1;
+            w.player.position.x = e.position.x + 1.5f;
+            Run(w, .3f); Assert(e.face == -1, "Spearman turned too fast");
+            Run(w, .5f); Assert(e.face == 1, "Spearman never turned");
+            Debug.Log("KARAMANI_ENEMY_BEHAVIOUR_PASS · range, two attackers, punish, height, dead player, shield, guard break, turn delay");
         }
     }
 }

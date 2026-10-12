@@ -329,6 +329,16 @@ namespace KaramaniReborn
         public void Damage(Actor target, float damage, int direction, bool heavy, bool unblockable, Actor source = null, float stop = -1, bool red = false)
         {
             if (target.Dead || target.invincible > 0 && !unblockable) return;
+            // Kalkanlı: önden gelen hafif vuruşu kalkan karşılar; ağır vuruş geçer, arkadan vuruş dengeyi iki kat düşürür
+            var profile = target.player ? null : EnemyProfile.For(target.role);
+            bool front = source != null && (source.position.x - target.position.x) * target.face > 0;
+            if (profile != null && profile.shielded && front && !heavy && !red && !unblockable && target.state != ActionState.Hurt)
+            {
+                target.guard -= damage * 1.3f;
+                effects.Impact(target.position + Vector2.up * 1.35f, direction, true, false, float.NaN, .045f); sound?.Invoke("block");
+                if (target.guard > 0) return;
+                Stagger(target, source); Notify("KALKAN KIRILDI"); return;
+            }
             bool frontal = source == null || (source.position.x - target.position.x) * target.face >= 0;
             if (!unblockable && !red && frontal && target.state == ActionState.Block)
             {
@@ -348,6 +358,12 @@ namespace KaramaniReborn
             target.health = Mathf.Max(0, target.health - damage); target.hitFlash = .14f;
             damageEvents.Add(new DamageEvent { position = target.position + Vector2.up * (2.55f * target.size), amount = Mathf.Max(1, Mathf.RoundToInt(damage)), toPlayer = target.player, strong = heavy || damage >= 40 }); target.invincible = target.player ? .40f : .14f;
             target.knockback = direction * (heavy ? 3.1f : 1.5f); target.Enter(target.health <= 0 ? ActionState.Dead : ActionState.Hurt, heavy ? .6f : .28f);
+            // Denge: her vuruş düşürür (kalkanlıya arkadan iki kat); sıfırlanınca uzun sendeleme ve infaz fırsatı
+            if (profile != null && !target.Dead)
+            {
+                target.guard -= damage * (heavy ? 1.5f : 1) * (profile.shielded && !front ? 2 : 1);
+                if (target.guard <= 0) Stagger(target, source);
+            }
             effects.Impact(target.position + Vector2.up * 1.25f, direction, false, heavy, target.position.y, stop);
             effects.lastStruck = target; sound?.Invoke(heavy ? "heavyhit" : "hit");
             // Ölüm: geriye ve yukarı savrulur. Ağır darbe yaşayan sıradan düşmanı kısa süre havaya kaldırır.
@@ -355,6 +371,12 @@ namespace KaramaniReborn
             else if (heavy && !target.player && !target.boss && direction != 0) Launch(target, direction * 1.2f, 3.4f);
             if (target.Dead && !target.player)
             { kills++; player.stamina = Mathf.Min(100, player.stamina + 14); if (target.boss) { Notify(zone.bossName + " yenildi. İç kapı açıldı."); player.ammo += 4; } }
+        }
+
+        void Stagger(Actor target, Actor source)
+        {
+            target.Enter(ActionState.Hurt, .9f); target.guard = target.maxGuard; target.knockback = 0;
+            if (source != null && source.player) { source.riposte = .8f; source.riposteTarget = target.id; }
         }
 
         static void Launch(Actor a, float vx, float vy)
