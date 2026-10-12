@@ -33,7 +33,7 @@
   - `powershell -NoProfile -ExecutionPolicy Bypass -File Tools/unity_batch.ps1 -Job Enemies`, expect `UNITY_BATCH_SUCCESS`
   - `powershell -NoProfile -ExecutionPolicy Bypass -File Tools/unity_batch.ps1 -Job Verify`, expect `UNITY_BATCH_SUCCESS`
 - **Spec rules:**
-  - every boss is 12–25% taller than a regular janissary
+  - user-approved sizes relative to Karamani: Arslan 1.15, Kör Demir 1.12, Kurtbaş 1.12, Kara Murad 1.6 (bulk 2)
   - a second phase starts at 50% health
   - each boss uses the boss bar with its name
   - ⚪ attacks are blockable and parryable; 🔴 attacks are avoided only by dodge invulnerability or a jump
