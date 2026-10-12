@@ -59,7 +59,7 @@ namespace KaramaniReborn
             LightAmountId = Shader.PropertyToID("_LightAmount"), MoonId = Shader.PropertyToID("_MoonStrength"),
             VividId = Shader.PropertyToID("_CharacterVivid"), ContrastId = Shader.PropertyToID("_CharacterContrast"), CharacterRimId = Shader.PropertyToID("_CharacterRim");
 
-        string clip = ""; int frame = -1, face = 1;
+        string clip = "", fallback = "idle"; int frame = -1, face = 1;
         float clipTime, phase, landTimer, airTime, previousX;
         bool first = true;
         Vector2 origin;
@@ -253,6 +253,14 @@ namespace KaramaniReborn
         // mesafeyle (adım uzunluğu) ilerler, böylece ayaklar zeminde kaymaz.
         string Pick(Actor a, out Timing timing, out float value)
         {
+            // Düşman saldırıları: tanımdaki klip, saldırının ilerleyişiyle; yer tutucu sayfada yoksa genel saldırı / atış karesi
+            fallback = "idle";
+            if (!a.player && a.attack != null && (a.state is ActionState.Light or ActionState.Shoot or ActionState.Dodge))
+            {
+                timing = Timing.Progress; value = a.Progress;
+                fallback = a.state == ActionState.Light ? "light1" : a.state == ActionState.Shoot ? "shoot" : "hurt";
+                return a.attack.clip;
+            }
             timing = Timing.Progress; value = a.Progress;
             switch (a.state)
             {
@@ -288,7 +296,7 @@ namespace KaramaniReborn
         {
             if (pixel.clips.ContainsKey(wanted)) return wanted;
             if (Fallbacks.TryGetValue(wanted, out var options)) foreach (var o in options) if (pixel.clips.ContainsKey(o)) return o;
-            return "idle";
+            return pixel.clips.ContainsKey(fallback) ? fallback : "idle";
         }
 
         static int ByProgress(ClipData c, float t)

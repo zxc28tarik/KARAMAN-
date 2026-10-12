@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace KaramaniReborn
 {
-    public sealed class GameWorld
+    public sealed partial class GameWorld
     {
         public readonly Actor player;
         public readonly List<Actor> enemies = new();
@@ -67,7 +67,7 @@ namespace KaramaniReborn
                 TickTimers(a, dt);
                 if (enemyAI) TickEnemy(a, dt); else a.velocity.x = 0;
                 a.view.Render(a, dt, clock);
-                if (enemyAI) ResolveBlade(a);
+                if (enemyAI) PerformAttack(a);
             }
             TickProjectiles(dt);
             if (player.position.y < -6 && !player.Dead) Damage(player, 200, 0, false, true);
@@ -204,44 +204,6 @@ namespace KaramaniReborn
             sound?.Invoke(heavy ? "heavy" : "swing");
         }
 
-        void TickEnemy(Actor a, float dt)
-        {
-            if (a.Dead) { SettleCorpse(a, dt); return; }
-            a.intentTime -= dt;
-            // Saldırıdan hemen önce kılıçta parıltı: oyuncuya savuşturma zamanını haber verir
-            if (a.Attacking && !a.telegraphed && a.Progress > .08f) { a.telegraphed = true; effects.Glint(a.view.BladeTip, a.boss); }
-            if (a.Locked && a.stateTime >= a.duration) { a.Enter(ActionState.Idle); a.cooldown = a.boss ? .46f : .7f; }
-            float dx = player.position.x - a.position.x, dist = Mathf.Abs(dx), height = Mathf.Abs(player.position.y - a.position.y);
-            bool awake = !player.Dead && dist < (a.boss ? 10 : 8.6f);
-            float vx = 0;
-            if (!a.Locked && awake)
-            {
-                a.face = dx > 0 ? 1 : -1;
-                if (EnemyProfile.For(a.role).ranged && dist < 8 && height < 3)
-                {
-                    if (a.cooldown <= 0 && a.intentTime <= 0) { a.Enter(ActionState.Shoot, .94f); a.cooldown = 1.7f; }
-                    else a.state = ActionState.Idle;
-                }
-                else if (dist > (a.boss ? 1.56f : 1.48f))
-                {
-                    vx = a.face * (EnemyProfile.For(a.role).speed); a.state = ActionState.Move;
-                    if (!GroundAhead(a, a.face * .34f) && a.grounded && dist > 2) { a.velocity.y = 8.4f; a.grounded = false; a.view.ResetContacts(); }
-                }
-                else if (height < .8f)
-                {
-                    bool shield = EnemyProfile.For(a.role).shielded || a.role == EnemyRole.Captain;
-                    if (shield && a.guard > 12 && player.Attacking && player.state != ActionState.Heavy && a.intentTime <= 0) a.state = ActionState.Block;
-                    else if (a.cooldown <= 0 && attackDirector <= 0 && a.intentTime <= 0)
-                    { BeginAttack(a, a.boss && rng.NextDouble() > .45, 1); attackDirector = .26f; a.cooldown = .8f; }
-                    else a.state = ActionState.Idle;
-                }
-            }
-            if (a.Attacking) vx = Active(a) ? a.face * .85f : 0;
-            if (a.state == ActionState.Hurt) vx = a.knockback * (1 - a.Progress);
-            a.velocity.x = Mathf.MoveTowards(a.velocity.x, vx, dt * 24); KinematicMotor.Step(a, zone, dt);
-            if (a.state == ActionState.Shoot && !a.attackConnected && a.Progress > .64f) { a.attackConnected = true; Shoot(a, false); }
-        }
-
         // ---------- Kenara tutunma ve tırmanma ----------
         const float HangDepth = 1.78f, HangReach = .3f;
 
@@ -364,11 +326,11 @@ namespace KaramaniReborn
         static bool Clip(float p, float q, ref float low, ref float high)
         { if (Mathf.Abs(p) < .00001f) return q >= 0; float r = q / p; if (p < 0) { if (r > high) return false; low = Mathf.Max(low, r); } else { if (r < low) return false; high = Mathf.Min(high, r); } return true; }
 
-        public void Damage(Actor target, float damage, int direction, bool heavy, bool unblockable, Actor source = null, float stop = -1)
+        public void Damage(Actor target, float damage, int direction, bool heavy, bool unblockable, Actor source = null, float stop = -1, bool red = false)
         {
             if (target.Dead || target.invincible > 0 && !unblockable) return;
             bool frontal = source == null || (source.position.x - target.position.x) * target.face >= 0;
-            if (!unblockable && frontal && target.state == ActionState.Block)
+            if (!unblockable && !red && frontal && target.state == ActionState.Block)
             {
                 if (target.player && target.parryWindow > 0)
                 {

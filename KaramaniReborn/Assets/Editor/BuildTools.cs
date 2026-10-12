@@ -297,7 +297,9 @@ namespace KaramaniReborn.Editor
             ArtValidation.Assert(a.view.ScalePreserved && a.view.OnPixelGrid && a.view.FallbackFrames == 0, "Combat scaled the character frame or used a substitute clip");
             root.LoadZone(0, true); w = root.world; a = w.player; target = w.enemies[0];
             a.position.x = 4; target.position = new Vector2(5.1f, w.zone.floor); target.face = -1;
-            target.Enter(ActionState.Light, .7f); target.stateTime = .345f;
+            target.intentTime = 99; w.StartAttack(target, "combo");
+            target.stateTime = EnemyProfile.For(target.role).Find("combo").windup - .01f;
+            w.Simulate(1f / 120, new InputFrame { block = true }, true);
             w.Simulate(1f / 120, new InputFrame { block = true }, true);
             ArtValidation.Assert(a.health == a.maxHealth && target.state == ActionState.Hurt, "Timed parry did not prevent damage and stagger the attacker");
             a.Enter(ActionState.Idle); w.Simulate(1f / 120, new InputFrame { dodge = true }, false);

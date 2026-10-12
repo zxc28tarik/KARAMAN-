@@ -10,6 +10,7 @@ namespace KaramaniReborn.Editor
         {
             Profiles(root);
             Debug.Log("KARAMANI_ENEMY_PROFILES_PASS · six regular enemies with spec values and placeholder sheets");
+            Attacks(root);
         }
 
         static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
@@ -50,6 +51,40 @@ namespace KaramaniReborn.Editor
             Assert(EnemyProfile.For(EnemyRole.Spearman).shielded && EnemyProfile.For(EnemyRole.Sorcerer).halfBoss, "Shield / half-boss flags");
             var aim = EnemyProfile.For(EnemyRole.Musketeer).Find("aim");
             Assert(aim.red && aim.then == "reload", "Musket shot must be red and chain into reload");
+        }
+
+        static void Attacks(GameRoot root)
+        {
+            // Kombo: iki vuruş da yalnız etkin pencerede iner (2 x 14)
+            var w = Arena(root, EnemyRole.Nefer, 1.2f, out var e); var pl = w.player;
+            var combo = EnemyProfile.For(EnemyRole.Nefer).Find("combo");
+            Assert(w.StartAttack(e, "combo"), "StartAttack(combo) failed");
+            Run(w, combo.windup - .05f);
+            Assert(pl.health == pl.maxHealth, "Combo hit before its wind-up ended");
+            Run(w, combo.Duration);
+            Assert(pl.health == pl.maxHealth - 28, "Nefer combo should land 2 x 14, health " + pl.health);
+
+            // Kırmızı savuruş: blok işe yaramaz
+            w = Arena(root, EnemyRole.Halberdier, 2.2f, out e); pl = w.player;
+            w.StartAttack(e, "sweep");
+            Run(w, 1.7f, i => new InputFrame { block = true });
+            Assert(pl.health == pl.maxHealth - 22, "Red sweep must ignore block, health " + pl.health);
+
+            // Kırmızı savuruş: zamanında yuvarlanma kurtarır
+            w = Arena(root, EnemyRole.Halberdier, 2.2f, out e); pl = w.player;
+            var sweep = EnemyProfile.For(EnemyRole.Halberdier).Find("sweep");
+            w.StartAttack(e, "sweep");
+            int press = Mathf.RoundToInt((sweep.windup - .03f) * 120);
+            Run(w, 1.7f, i => new InputFrame { move = i >= press && i < press + 2 ? -1 : 0, dodge = i == press });
+            Assert(pl.health == pl.maxHealth, "Dodge i-frames should avoid the red sweep, health " + pl.health);
+
+            // Beyaz vuruş: zamanında blok savuşturur, saldıran sendeler, infaz açılır
+            w = Arena(root, EnemyRole.Nefer, 1.2f, out e); pl = w.player;
+            w.StartAttack(e, "combo");
+            press = Mathf.RoundToInt((combo.windup - .06f) * 120);
+            Run(w, combo.windup + .1f, i => new InputFrame { block = i >= press });
+            Assert(pl.health == pl.maxHealth && e.state == ActionState.Hurt && pl.riposte > 0, "Parry of a white attack should stagger and open a riposte");
+            Debug.Log("KARAMANI_ENEMY_ATTACKS_PASS · active windows, red ignores block, dodge avoids red, white parry staggers");
         }
     }
 }
