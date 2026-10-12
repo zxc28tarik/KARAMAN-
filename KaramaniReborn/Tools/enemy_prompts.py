@@ -21,6 +21,7 @@ HURT = ('darbe alma', 3, "a HURT reaction: 1 recoiling backward from a hit to th
 DEATH = ('ölüm', 5, "a DEATH: 1 struck and staggering, 2 dropping to the knees, 3 weapon slipping from the hand, 4 falling forward, 5 lying face down on the ground. Not gory")
 IDLE = ('bekleme', 4, "a subtle IDLE loop in a ready stance with the weapon held: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable)")
 WALK = ('yürüme', 8, "a WALKING cycle, loopable, evenly spaced phases of the step, weapon held ready")
+BOSS_DEATH = ('ölüm', 6, "a DEATH: 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the weapon falling from the hands, 5 collapsing forward, 6 lying still face down on the ground. Not gory")
 
 CHARS = [
     ('nefer', 'Kılıç Neferi', 'En sık görülen düşman: önce bu.', JAN + "; a curved yatagan sword in his right hand",
@@ -36,7 +37,7 @@ CHARS = [
         HURT, DEATH]),
     ('halberdier', 'Teberli', 'Yavaş ama geniş ve ağır vuruşlu.', JAN + "; heavier build, a long Ottoman teber halberd (axe blade and spike on a long pole) held in both hands",
      'about 7% shorter than the man in the reference', [IDLE, WALK,
-        ('yatay savuruş', 8, "a WIDE HORIZONTAL HALBERD SWEEP: 1-3 long wind-up turning the body back, 4 huge horizontal sweep with a wide white smear, 5 follow-through, 6-8 slow recovery"),
+        ('yatay savuruş', 8, "a WIDE HORIZONTAL HALBERD SWEEP: 1-3 long wind-up turning the body back, 4 huge horizontal sweep with a wide motion smear, 5 follow-through, 6-8 slow recovery"),
         ('yukarıdan iniş', 8, "a HEAVY OVERHEAD HALBERD CHOP: 1-3 raising the halberd high, 4 chopping down hard, 5 blade hitting the ground, 6-8 slow recovery"),
         ('sapla itme', 5, "a SHORT HAFT SHOVE: 1 bracing, 2-3 shoving the haft forward to push the enemy away, 4 hold, 5 recovering"),
         HURT, DEATH]),
@@ -78,26 +79,26 @@ BOSSES = [
         ('direkle savuruş', 8, "a WIDE ARC SWEEP with the standard pole: 1-3 big wind-up, 4 huge sweeping arc with a smear, 5 follow-through, 6-8 recovering"),
         ('sancağı dikme', 6, "PLANTING THE STANDARD and roaring a command: 1 lifting the pole, 2 stabbing it into the ground, 3-4 roaring with an arm raised, 5-6 pulling it out"),
         ('yanan sancakla savuruş', 8, "a SWEEP WITH THE BURNING STANDARD (the banner is on fire): 1-3 wind-up, 4 sweeping arc trailing flames, 5 follow-through, 6-8 recovering"),
-        HURT, ('ölüm', 6, DEATH[2])]),
+        HURT, BOSS_DEATH]),
     ('kordemir', 'Humbaracıbaşı Kör Demir (Yanmış Mahalle)', 'Mahalleyi yakan adam: humbara, kanca, yağ küpü.',
-     "Chief Grenadier Kor Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, "
+     "Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, "
      "leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe",
      'about 12% TALLER and broader than the man in the reference', [IDLE, WALK,
         ('humbara atma', 6, "THROWING A CLAY FIRE-GRENADE in a high arc: 1 lighting the fuse, 2 winding up, 3 throwing, 4 follow-through, 5-6 recovering"),
         ('kancayla çekme', 7, "a HOOK PULL: 1-2 swinging the hooked axe forward, 3 hooking, 4-5 yanking it back hard toward himself, 6-7 recovering"),
         ('yağ küpü', 6, "THROWING AN OIL POT: 1 lifting a clay pot over his head, 2-3 winding up, 4 hurling it forward, 5-6 recovering"),
         ('balta inişi', 8, "a HEAVY AXE CHOP: 1-3 raising the axe high, 4 chopping down hard, 5 axe in the ground, 6-8 recovering"),
-        HURT, ('ölüm', 6, DEATH[2])]),
+        HURT, BOSS_DEATH]),
     ('kurtbas', 'Deli Kurtbaş (Kurt Geçidi)', 'Kurt postlu vahşi delibaş; doğaüstü değil.',
      "Deli Kurtbas, a wild delibas warrior (dark fantasy boss, human): lean muscular man, a grey wolf pelt cloak with the wolf head worn as a hood, "
      "wild dark hair and beard, leather and fur armor, bare scarred arms, an axe in each hand",
-     'about 12% TALLER than the man in the reference', [IDLE,
+     'about 12% TALLER than the man in the reference', [IDLE, WALK,
         ('koşu', 8, "a FAST RUNNING cycle, loopable, low and aggressive, axes held out"),
         ('balta fırtınası', 10, "a 4-HIT AXE STORM: 1 wind-up, 2-3 first slash, 4-5 second slash, 6-7 third slash, 8-9 fourth slash, each with a smear, 10 recovering"),
         ('üstünden atlama', 6, "a FLIP OVER THE ENEMY: 1 crouch, 2 leaping up, 3 upside-down flip in the air, 4 coming down, 5 landing facing back, 6 ready"),
         ('sıçrayıp çakılma', 7, "a LEAPING SLAM: 1 crouch, 2 leaping high, 3 axes raised at the apex, 4 diving down, 5 both axes slamming into the ground, 6-7 rising"),
         ('uluma', 5, "a HOWL into frenzy: 1 hunching, 2-3 throwing the head back howling, 4 shaking with rage, 5 ready, eyes wild"),
-        HURT, ('ölüm', 6, DEATH[2])]),
+        HURT, BOSS_DEATH]),
     ('karamurad', 'Yeniçeri Ağası Kara Murad (Karanlık Kale)', 'Dev, kaslı dövüşçü; ikinci evrede çıplak elle.',
      "Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, shoulders nearly twice as wide as a normal man, "
      "bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, black beard, a giant two-handed pala sword",
@@ -107,7 +108,10 @@ BOSSES = [
         ('yakalayıp fırlatma', 8, "a GRAB AND THROW: 1 reaching forward, 2 grabbing, 3 lifting an invisible enemy overhead, 4-5 slamming down hard, 6 impact, 7-8 recovering"),
         ('yere çakma', 7, "a GROUND SLAM with the pala: 1-3 raising it high with both hands, 4 slamming into the ground, 5 a shock wave bursting forward, 6-7 recovering"),
         ('yumruk kombosu', 8, "a BARE-HANDED FIST COMBO (no sword): 1 guard up, 2-3 heavy straight punch, 4-5 hook, 6-7 uppercut, 8 recovering"),
-        HURT, ('ölüm', 6, DEATH[2])]),
+        ('palayı fırlatma', 5, "THROWING THE PALA AWAY in rage (phase change): 1 holding the pala, 2 raising it, 3 hurling it aside, 4 roaring with fists clenched, 5 bare-handed fighting stance"),
+        ('çıplak el bekleme', 4, "a subtle bare-handed IDLE loop in a boxer-wrestler stance, fists raised, NO sword: 1 base, 2 chest rises, 3 shift of weight, 4 almost back (loopable)"),
+        ('çıplak el yürüme', 8, "a bare-handed WALKING cycle, fists raised, NO sword, loopable, evenly spaced phases"),
+        HURT, BOSS_DEATH]),
 ]
 
 

@@ -150,7 +150,7 @@ STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full 
 ### halberdier 3. yatay savuruş: 8 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: an Ottoman-style Janissary soldier (dark fantasy): tall off-white felt bork hat with a long cloth flap hanging down the back of the neck and a small brass ornament at the front; thick dark moustache, fair skin, almond eyes, stern grim face; dark crimson long coat tucked up at the front over a weathered steel mail shirt; brown leather lamellar belt armor with bronze rivets; wide burgundy sash; baggy dark trousers; brown leather boots; heavier build, a long Ottoman teber halberd (axe blade and spike on a long pole) held in both hands.
-8 frames of a WIDE HORIZONTAL HALBERD SWEEP: 1-3 long wind-up turning the body back, 4 huge horizontal sweep with a wide white smear, 5 follow-through, 6-8 slow recovery, in ONE horizontal row.
+8 frames of a WIDE HORIZONTAL HALBERD SWEEP: 1-3 long wind-up turning the body back, 4 huge horizontal sweep with a wide motion smear, 5 follow-through, 6-8 slow recovery, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
@@ -465,7 +465,7 @@ STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full 
 ### arslan 8. ölüm: 6 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Standard-bearer Arslan, a giant janissary standard-bearer (dark fantasy boss): huge broad-shouldered man, tall off-white bork with a red band, thick black beard, battle scars, heavy mail with bronze plates, crimson coat, chained trophies on his belt, a long war-standard pole with a torn crimson banner used as a spear, a yatagan in the sash.
-6 frames of a DEATH: 1 struck and staggering, 2 dropping to the knees, 3 weapon slipping from the hand, 4 falling forward, 5 lying face down on the ground. Not gory, in ONE horizontal row.
+6 frames of a DEATH: 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the weapon falling from the hands, 5 collapsing forward, 6 lying still face down on the ground. Not gory, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
@@ -476,63 +476,63 @@ Mahalleyi yakan adam: humbara, kanca, yağ küpü.
 
 ### kordemir 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
 ```
-Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: Chief Grenadier Kor Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe. The character is about 12% TALLER and broader than the man in the reference.
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe. The character is about 12% TALLER and broader than the man in the reference.
 Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
 ```
 
 ### kordemir 1. bekleme: 4 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kor Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
+Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
 4 frames of a subtle IDLE loop in a ready stance with the weapon held: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable), in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### kordemir 2. yürüme: 8 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kor Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
+Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
 8 frames of a WALKING cycle, loopable, evenly spaced phases of the step, weapon held ready, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### kordemir 3. humbara atma: 6 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kor Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
+Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
 6 frames of THROWING A CLAY FIRE-GRENADE in a high arc: 1 lighting the fuse, 2 winding up, 3 throwing, 4 follow-through, 5-6 recovering, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### kordemir 4. kancayla çekme: 7 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kor Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
+Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
 7 frames of a HOOK PULL: 1-2 swinging the hooked axe forward, 3 hooking, 4-5 yanking it back hard toward himself, 6-7 recovering, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### kordemir 5. yağ küpü: 6 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kor Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
+Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
 6 frames of THROWING AN OIL POT: 1 lifting a clay pot over his head, 2-3 winding up, 4 hurling it forward, 5-6 recovering, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### kordemir 6. balta inişi: 8 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kor Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
+Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
 8 frames of a HEAVY AXE CHOP: 1-3 raising the axe high, 4 chopping down hard, 5 axe in the ground, 6-8 recovering, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### kordemir 7. darbe alma: 3 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kor Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
+Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
 3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### kordemir 8. ölüm: 6 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kor Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
-6 frames of a DEATH: 1 struck and staggering, 2 dropping to the knees, 3 weapon slipping from the hand, 4 falling forward, 5 lying face down on the ground. Not gory, in ONE horizontal row.
+Pixel art sprite sheet of the SAME character as the attached reference image: Chief Grenadier Kör Demir (dark fantasy boss): stocky brutal man, half of his face badly burned and one eye milky blind, shaved head with a scorched cap, leather apron over mail, clay fire-grenades hanging from his belt, a long hooked axe.
+6 frames of a DEATH: 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the weapon falling from the hands, 5 collapsing forward, 6 lying still face down on the ground. Not gory, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
@@ -554,52 +554,59 @@ Pixel art sprite sheet of the SAME character as the attached reference image: De
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### kurtbas 2. koşu: 8 kare (ana pozu ekle)
+### kurtbas 2. yürüme: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: Deli Kurtbas, a wild delibas warrior (dark fantasy boss, human): lean muscular man, a grey wolf pelt cloak with the wolf head worn as a hood, wild dark hair and beard, leather and fur armor, bare scarred arms, an axe in each hand.
+8 frames of a WALKING cycle, loopable, evenly spaced phases of the step, weapon held ready, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### kurtbas 3. koşu: 8 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Deli Kurtbas, a wild delibas warrior (dark fantasy boss, human): lean muscular man, a grey wolf pelt cloak with the wolf head worn as a hood, wild dark hair and beard, leather and fur armor, bare scarred arms, an axe in each hand.
 8 frames of a FAST RUNNING cycle, loopable, low and aggressive, axes held out, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### kurtbas 3. balta fırtınası: 10 kare (ana pozu ekle)
+### kurtbas 4. balta fırtınası: 10 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Deli Kurtbas, a wild delibas warrior (dark fantasy boss, human): lean muscular man, a grey wolf pelt cloak with the wolf head worn as a hood, wild dark hair and beard, leather and fur armor, bare scarred arms, an axe in each hand.
 10 frames of a 4-HIT AXE STORM: 1 wind-up, 2-3 first slash, 4-5 second slash, 6-7 third slash, 8-9 fourth slash, each with a smear, 10 recovering, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### kurtbas 4. üstünden atlama: 6 kare (ana pozu ekle)
+### kurtbas 5. üstünden atlama: 6 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Deli Kurtbas, a wild delibas warrior (dark fantasy boss, human): lean muscular man, a grey wolf pelt cloak with the wolf head worn as a hood, wild dark hair and beard, leather and fur armor, bare scarred arms, an axe in each hand.
 6 frames of a FLIP OVER THE ENEMY: 1 crouch, 2 leaping up, 3 upside-down flip in the air, 4 coming down, 5 landing facing back, 6 ready, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### kurtbas 5. sıçrayıp çakılma: 7 kare (ana pozu ekle)
+### kurtbas 6. sıçrayıp çakılma: 7 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Deli Kurtbas, a wild delibas warrior (dark fantasy boss, human): lean muscular man, a grey wolf pelt cloak with the wolf head worn as a hood, wild dark hair and beard, leather and fur armor, bare scarred arms, an axe in each hand.
 7 frames of a LEAPING SLAM: 1 crouch, 2 leaping high, 3 axes raised at the apex, 4 diving down, 5 both axes slamming into the ground, 6-7 rising, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### kurtbas 6. uluma: 5 kare (ana pozu ekle)
+### kurtbas 7. uluma: 5 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Deli Kurtbas, a wild delibas warrior (dark fantasy boss, human): lean muscular man, a grey wolf pelt cloak with the wolf head worn as a hood, wild dark hair and beard, leather and fur armor, bare scarred arms, an axe in each hand.
 5 frames of a HOWL into frenzy: 1 hunching, 2-3 throwing the head back howling, 4 shaking with rage, 5 ready, eyes wild, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### kurtbas 7. darbe alma: 3 kare (ana pozu ekle)
+### kurtbas 8. darbe alma: 3 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Deli Kurtbas, a wild delibas warrior (dark fantasy boss, human): lean muscular man, a grey wolf pelt cloak with the wolf head worn as a hood, wild dark hair and beard, leather and fur armor, bare scarred arms, an axe in each hand.
 3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### kurtbas 8. ölüm: 6 kare (ana pozu ekle)
+### kurtbas 9. ölüm: 6 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Deli Kurtbas, a wild delibas warrior (dark fantasy boss, human): lean muscular man, a grey wolf pelt cloak with the wolf head worn as a hood, wild dark hair and beard, leather and fur armor, bare scarred arms, an axe in each hand.
-6 frames of a DEATH: 1 struck and staggering, 2 dropping to the knees, 3 weapon slipping from the hand, 4 falling forward, 5 lying face down on the ground. Not gory, in ONE horizontal row.
+6 frames of a DEATH: 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the weapon falling from the hands, 5 collapsing forward, 6 lying still face down on the ground. Not gory, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
@@ -663,17 +670,38 @@ Pixel art sprite sheet of the SAME character as the attached reference image: Ja
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### karamurad 8. darbe alma: 3 kare (ana pozu ekle)
+### karamurad 8. palayı fırlatma: 5 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, shoulders nearly twice as wide as a normal man, bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, black beard, a giant two-handed pala sword.
+5 frames of THROWING THE PALA AWAY in rage (phase change): 1 holding the pala, 2 raising it, 3 hurling it aside, 4 roaring with fists clenched, 5 bare-handed fighting stance, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karamurad 9. çıplak el bekleme: 4 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, shoulders nearly twice as wide as a normal man, bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, black beard, a giant two-handed pala sword.
+4 frames of a subtle bare-handed IDLE loop in a boxer-wrestler stance, fists raised, NO sword: 1 base, 2 chest rises, 3 shift of weight, 4 almost back (loopable), in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karamurad 10. çıplak el yürüme: 8 kare (ana pozu ekle)
+```
+Pixel art sprite sheet of the SAME character as the attached reference image: Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, shoulders nearly twice as wide as a normal man, bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, black beard, a giant two-handed pala sword.
+8 frames of a bare-handed WALKING cycle, fists raised, NO sword, loopable, evenly spaced phases, in ONE horizontal row.
+STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
+```
+
+### karamurad 11. darbe alma: 3 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, shoulders nearly twice as wide as a normal man, bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, black beard, a giant two-handed pala sword.
 3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
-### karamurad 9. ölüm: 6 kare (ana pozu ekle)
+### karamurad 12. ölüm: 6 kare (ana pozu ekle)
 ```
 Pixel art sprite sheet of the SAME character as the attached reference image: Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, shoulders nearly twice as wide as a normal man, bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, black beard, a giant two-handed pala sword.
-6 frames of a DEATH: 1 struck and staggering, 2 dropping to the knees, 3 weapon slipping from the hand, 4 falling forward, 5 lying face down on the ground. Not gory, in ONE horizontal row.
+6 frames of a DEATH: 1 struck hard, 2 staggering back, 3 dropping to one knee, 4 the weapon falling from the hands, 5 collapsing forward, 6 lying still face down on the ground. Not gory, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
