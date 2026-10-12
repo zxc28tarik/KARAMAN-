@@ -257,7 +257,7 @@ namespace KaramaniReborn.Editor
             root.gameCamera.transform.position = new Vector3(ledge.x, ledge.y - .3f, -10); root.gameCamera.orthographicSize = 2.2f;
             root.photoMode = true; root.hud.Tick(.1f); root.hud.Follow(root.gameCamera); root.stage.Tick(0, 2, root.gameCamera.transform.position);
             ArtValidation.Capture(root.gameCamera, "Review/poses/" + name + ".png", 480, 360);
-            root.photoMode = false;
+            root.photoMode = false; root.gameCamera.orthographicSize = GameView.OrthographicSize;   // sonraki çekimler yakınlaştırılmış kalmasın
         }
 
         static void VerifyAgility(GameRoot root)
@@ -319,7 +319,7 @@ namespace KaramaniReborn.Editor
                 root.world.player.view.ResetContacts(); enemy.view.ResetContacts();
                 root.world.player.view.Render(root.world.player, .016f, 1); enemy.view.Render(enemy, .016f, 1);
                 root.world.effects.Impact(enemy.position + Vector2.up * 1.5f, 1, false, false);
-                root.gameCamera.transform.position = new Vector3(5.8f, GameView.GroundCameraY, -10);
+                root.gameCamera.transform.position = new Vector3(5.8f, GameView.GroundCameraY, -10); root.gameCamera.orthographicSize = GameView.OrthographicSize;
                 root.stage.Tick(0, 1, root.gameCamera.transform.position); root.hud.Tick(.1f); root.hud.Follow(root.gameCamera);
                 ArtValidation.Capture(root.gameCamera, "Review/chapter-" + (zone + 1) + ".png");
             }
