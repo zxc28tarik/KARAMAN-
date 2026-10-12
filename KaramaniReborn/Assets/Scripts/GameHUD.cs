@@ -18,6 +18,9 @@ namespace KaramaniReborn
         readonly List<Image> miniEnemies = new();
         readonly Transform miniParent;   // haritadaki düşman işaretleri her bölümde düşman sayısı kadar kurulur (Bind)
         public int EnemyMarkers => miniEnemies.Count;
+        // Can çubuğunun rengi: kırmızı; zehirliyken yeşil (Zehirli Okçu'nun oku)
+        static readonly Color HealthRed = new Color(.65f, .035f, .035f), HealthPoisoned = new Color(.22f, .55f, .12f);
+        public Color HealthTint => health.color;
         readonly List<EnemyWidget> widgets = new();
         readonly GameObject bossGroup;
         sealed class EnemyWidget { public Actor actor; public RectTransform root; public Image health, intent; }
@@ -52,7 +55,7 @@ namespace KaramaniReborn
             var face = Resources.Load<Texture2D>("Characters/hd/hero-portrait");
             var portrait = face ? Sprite.Create(face, new Rect(0, 0, face.width, face.height), new Vector2(.5f, .5f), 100) : ArtLibrary.Rig(false)[0];
             ImageAt(p, "Painted portrait", 43, 18, 86, 104, Color.white, portrait).preserveAspect = true;
-            health = FramedBar(p, 148, 42, 360, 18, new Color(.65f, .035f, .035f));
+            health = FramedBar(p, 148, 42, 360, 18, HealthRed);
             stamina = FramedBar(p, 148, 73, 293, 10, new Color(.20f, .50f, .43f));
             Label(p, "K A R A M A N İ", 151, 98, 330, 26, 16, ivory);
             for (int i = 0; i < 3; i++) { var d = ImageAt(p, "Resolve diamond", 151 + i * 28, 132, 10, 10, gold); d.transform.localRotation = Quaternion.Euler(0, 0, 45); }
@@ -157,7 +160,7 @@ namespace KaramaniReborn
             for (int i = miniEnemies.Count; i < w.enemies.Count; i++) AddEnemy(w.enemies[i]);
             playUI.SetActive(!game.menu && !game.photoMode);
             hpValue = Mathf.MoveTowards(hpValue, player.health / player.maxHealth, dt * 1.8f); staminaValue = Mathf.MoveTowards(staminaValue, player.stamina / 100, dt * 2.8f);
-            health.fillAmount = hpValue; stamina.fillAmount = staminaValue; cooldownShade.fillAmount = Mathf.Clamp01(player.skillCooldown / 8);
+            health.fillAmount = hpValue; health.color = player.poisonTicks > 0 && !player.Dead ? HealthPoisoned : HealthRed; stamina.fillAmount = staminaValue; cooldownShade.fillAmount = Mathf.Clamp01(player.skillCooldown / 8);
             ammoCount.text = player.ammo.ToString(); potionCount.text = player.potions.ToString();
             notice.text = w.notificationTime > 0 ? w.notification : ""; interaction.text = w.InteractionHint;
             objective.text = w.cleared ? "◇ İç kapı açık. Yoluna devam et." : "◇ İç kapıya ulaş. Nöbeti kır.";
@@ -187,7 +190,7 @@ namespace KaramaniReborn
                 var n = numberPool.Count > 0 ? numberPool.Pop() : new Number { text = Label(numberRoot, "", 0, 0, 180, 60, 30, ivory, TextAnchor.MiddleCenter) };
                 if (n.text.rectTransform.pivot.x < .5f) CenterRect(n.text.rectTransform);
                 n.text.gameObject.SetActive(true); n.text.text = e.amount.ToString(); n.text.fontSize = e.strong ? 42 : 31;
-                n.color = e.toPlayer ? new Color(.96f, .33f, .26f) : e.strong ? new Color(1f, .82f, .42f) : ivory;
+                n.color = e.poison ? new Color(.55f, .88f, .30f) : e.toPlayer ? new Color(.96f, .33f, .26f) : e.strong ? new Color(1f, .82f, .42f) : ivory;
                 n.world = e.position + new Vector2((float)numberRandom.NextDouble() * .5f - .25f, 0); n.age = 0; numbers.Add(n);
             }
             w.damageEvents.Clear();

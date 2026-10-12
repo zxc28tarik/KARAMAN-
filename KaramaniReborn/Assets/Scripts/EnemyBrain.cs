@@ -49,7 +49,7 @@ namespace KaramaniReborn
             {
                 // Oyuncunun üstünden arkasına; arkası sağlam değilse önüne iner; ikisi de sağlam değilse yerinde kalır
                 float side = Mathf.Sign(player.position.x - a.position.x);
-                float behind = player.position.x + side * 1.6f, front = player.position.x - side * 1.6f;
+                float behind = player.position.x + side * k.landGap, front = player.position.x - side * k.landGap;
                 if (Standable(behind, out _)) Leap(a, behind, k.active);
                 else if (Standable(front, out _)) Leap(a, front, k.active);
             }
@@ -81,6 +81,7 @@ namespace KaramaniReborn
             float dx = player.position.x - a.position.x, dist = Mathf.Abs(dx), height = Mathf.Abs(player.position.y - a.position.y);
             bool awake = !player.Dead && dist < (a.boss || p.halfBoss ? 10 : 8.6f) + (p.ranged ? 3 : 0);
             float vx = 0, speed = p.speed * (a.phase > 1 ? p.phase2Speed : 1);
+            var partner = p.pairGap > 0 ? PairPartner(a) : null;
             if (!a.Locked && awake)
             {
                 Face(a, p, dx, dt);
@@ -91,9 +92,12 @@ namespace KaramaniReborn
                 var choice = facing && (a.intentTime <= 0 || opening) ? Choose(a, p, dist, height) : null;
                 if (choice != null && a.intentTime > 0 && !choice.punish) choice = null;   // niyet dolmadan yalnız cezalandırma saldırıları açılır
                 bool ready = a.cooldown <= 0 || opening && choice != null && choice.punish;
-                bool slot = choice != null && (choice.kind is AttackKind.Backstep or AttackKind.Teleport or AttackKind.LeapOver || AttackersOf(p.goblin) < (p.goblin ? MaxGoblinAttackers : MaxAttackers));
+                // Arkasına dolanıp saplayan sıçrayış (then ile zincirli) sıra ister; yalnız üstünden aşan boss sıçrayışı muaf
+                bool exempt = choice != null && (choice.kind is AttackKind.Backstep or AttackKind.Teleport || choice.kind == AttackKind.LeapOver && choice.then == null);
+                bool slot = choice != null && (exempt || AttackersOf(p.goblin) < (p.goblin ? MaxGoblinAttackers : MaxAttackers));
                 if (choice != null && ready && slot && attackDirector <= 0) { Begin(a, choice); attackDirector = .26f; a.cooldown = .8f; }
                 else if (a.state == ActionState.Block) { }   // kalkan klibi (~.2 sn): yerinde siper alır; saldırı yine başlayabilir
+                else if (partner != null && PairHolds(a, p, partner, dist, speed, out float pairVx)) { vx = pairVx; a.state = pairVx != 0 ? ActionState.Move : ActionState.Idle; }
                 else if (dist > p.keepMax) { vx = a.face * speed; a.state = ActionState.Move; }
                 else if (dist < p.keepMin) { vx = -a.face * speed * .8f; a.state = ActionState.Move; }   // yüzü oyuncuda, geri çekilir
                 else a.state = ActionState.Idle;
@@ -115,18 +119,47 @@ namespace KaramaniReborn
             }
             if (a.state == ActionState.Hurt) vx = a.knockback * (1 - a.Progress);
             // Sıçrayışta yatay hız korunur (havada yön değiştirmez)
-            bool leaping = k != null && (k.kind is AttackKind.LeapOver or AttackKind.LeapSlam) && !a.grounded;
+            bool leaping = k != null && (k.kind is AttackKind.LeapOver or AttackKind.LeapSlam || k.leap > 0 && a.leapDone) && !a.grounded;
             if (!leaping) a.velocity.x = Mathf.MoveTowards(a.velocity.x, vx, dt * (k != null && k.dash != 0 ? 80 : 24));
             bool airborne = !a.grounded;
             KinematicMotor.Step(a, zone, dt);
             // Sıçrayıştan inişte kaymaz: yere değdiği ilk karede yatay hız sıfırlanır
-            if (airborne && a.grounded && k != null && k.kind is AttackKind.LeapOver or AttackKind.LeapSlam) a.velocity.x = 0;
+            if (airborne && a.grounded && k != null && (k.kind is AttackKind.LeapOver or AttackKind.LeapSlam || k.leap > 0)) a.velocity.x = 0;
         }
 
         // Sıçrayış: time sn'de targetX'e aynı yüksekliğe iner (yerçekimi 20: dikey hız 10 x time)
         void Leap(Actor a, float targetX, float time)
         {
             a.velocity = new Vector2((targetX - a.position.x) / time, 10 * time); a.grounded = false; a.view.ResetContacts();
+        }
+
+        // İkili sıra eşi: aynı türden, yaşayan, oyuncunun aynı yanında ve en çok 3 birim yakında olan en yakın düşman
+        Actor PairPartner(Actor a)
+        {
+            Actor best = null; float near = 3.0001f;
+            foreach (var e in enemies)
+            {
+                if (e == a || e.Dead || e.role != a.role) continue;
+                if ((e.position.x - player.position.x) * (a.position.x - player.position.x) <= 0) continue;   // oyuncu aralarında: ikili sıra bozulur
+                float d = Mathf.Abs(e.position.x - a.position.x);
+                if (d < near) { near = d; best = e; }
+            }
+            return best;
+        }
+
+        // İkili sıra: oyuncuya yakın olan ön, uzak olan arka. Arka, önün pairGap birim gerisinde (oyuncudan uzak yanda) aynı hızla durur;
+        // ön, arka geride kalmışsa (fark .3'ten fazla) bekler, yani hiçbiri hattan çıkıp tek başına saldırmaya gitmez.
+        // true: bu kare hareketi sıra belirler (hız vx); false: ön için olağan mesafe kuralları geçerlidir
+        bool PairHolds(Actor a, EnemyProfile p, Actor partner, float dist, float speed, out float vx)
+        {
+            vx = 0;
+            float own = Mathf.Abs(a.position.x - player.position.x), other = Mathf.Abs(partner.position.x - player.position.x);
+            bool front = own < other || Mathf.Approximately(own, other) && a.id < partner.id;
+            if (front) return Mathf.Abs(partner.position.x - a.position.x) - p.pairGap > .3f;   // arka geride: bekle
+            float side = Mathf.Sign(a.position.x - player.position.x);
+            float err = partner.position.x + side * p.pairGap - a.position.x;
+            if (Mathf.Abs(err) > .08f) vx = Mathf.Sign(err) * speed;
+            return true;
         }
 
         // Sıçrayışın ineceği yer: x sağlam değilse bosa doğru 1.5 birim içindeki en yakın sağlam nokta; yoksa NaN (sıçramaz)
@@ -188,6 +221,13 @@ namespace KaramaniReborn
             switch (k.kind)
             {
                 case AttackKind.Melee: case AttackKind.Slam:
+                    // Sıçrayarak gelen saldırı: hazırlığın son leapTime saniyesinde oyuncunun ~1 birim yanına iner (çukura ve oyuncunun ötesine değil)
+                    if (k.leap > 0 && !a.leapDone && a.state == ActionState.Light && a.stateTime >= k.windup - k.leapTime)
+                    {
+                        a.leapDone = true;
+                        float gap = (player.position.x - a.position.x) * a.face, travel = Mathf.Min(k.leap, gap - 1f);
+                        if (travel > .05f && GroundAhead(a, a.face * travel)) Leap(a, a.position.x + a.face * travel, k.leapTime);
+                    }
                     if (a.state != ActionState.Light || !InStrike(a, out int strike)) return;
                     // Yanan sancak: savuruşun ilk etkin anında önüne (boss'un zemininde) kısa ömürlü ateş bırakır
                     if (k.patchLife > 0 && !a.attackConnected)
@@ -385,7 +425,7 @@ namespace KaramaniReborn
             if (kind is ShotKind.Bullet or ShotKind.Arrow or ShotKind.VolleyArrow)
                 sr.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg);
             sr.enabled = delay <= 0;
-            var shot = new Projectile { kind = kind, position = position, velocity = velocity, life = life, delay = delay, damage = k.damage, red = k.red, renderer = sr, source = source };
+            var shot = new Projectile { kind = kind, position = position, velocity = velocity, life = life, delay = delay, damage = k.damage, red = k.red, renderer = sr, source = source, attack = k };
             projectiles.Add(shot); return shot;
         }
 

@@ -23,6 +23,14 @@ namespace KaramaniReborn
         public float patchWidth, patchLife, patchDamage = 6, radius;
         // Vuruş mesafesi: seçim mesafesinden (reach) farklıysa (uzaktan başlayan hücum yalnız temas edince vurur)
         public float hitReach;
+        // Zehir (ok isabet edince): saniyede poisonDamage hasar, poisonSeconds saniye; yenilenir, üst üste binmez
+        public float poisonDamage, poisonSeconds;
+        // Hazırlığın son leapTime saniyesinde oyuncuya doğru leap birim sıçrar (iner inmez vurur); en çok oyuncunun 1 birim önüne kadar
+        public float leap, leapTime;
+        // Üstünden aşan sıçrayışta oyuncunun arkasında (ya da önünde) duracağı uzaklık
+        public float landGap = 1.6f;
+        // Blok tutan oyuncunun kaybettiği dayanıklılık (0 = genel kural: ağır 65, diğeri hasar x 1.3)
+        public float blockDrain;
         public int hits = 1;
         public bool red, heavy, punish, first;
         public string then;   // bitince hemen başlayan saldırı (tüfekte doldurma)
@@ -41,6 +49,12 @@ namespace KaramaniReborn
         public bool goblin;
         // Duruş: kendi saldırısını yürütürken vurulunca durmaz (can ve denge yine düşer); yalnız denge kırılınca sendeler
         public bool poise;
+        // Duruş her an geçerli: hafif ve ağır vuruş saldırı dışında da sendeletmez, yalnız denge kırılınca sendeler
+        public bool poiseAlways;
+        // İkili sıra: yakınındaki aynı türden eşiyle (<= 3 birim) ön ve arka olarak yürür; arka olan pairGap birim gerisinde durur (0 = yok)
+        public float pairGap;
+        // Oyuncunun ağır vuruşunda yere serilme süresi (0 = yok): sıradan goblinler
+        public float heavyKnockdown;
         // Savuşturulunca sendeleme süresi (denge kırılınca her zaman .9 sn)
         public float parryStagger = .9f;
         // Evre geçişi: canı phaseAt'e inince oynayan saldırı (dokunulmaz); ikinci evrede hız ve alınan hasar çarpanı,
@@ -192,24 +206,36 @@ namespace KaramaniReborn
             // Boy (Karamani = 1): sıradan goblin .68, Kaba 1.0 (gövde 2 kat), Kırçıl .9, Çatal 1.15, Kara Diş 1.1. Çizim: mevcut sayfalar.
             [EnemyRole.Bicakci] = new EnemyProfile
             {
-                role = EnemyRole.Bicakci, title = "Bıçakçı", sheet = "duelist", goblin = true, health = 30, guard = 15, speed = 2.2f, keepMin = .8f, keepMax = 1f, size = .68f,
+                role = EnemyRole.Bicakci, title = "Bıçakçı", sheet = "duelist", goblin = true, health = 30, guard = 15, speed = 2.2f, keepMin = 1.2f, keepMax = 2f, size = .68f,
+                parryStagger = 1.2f, heavyKnockdown = 1.5f,
                 attacks = new[]
                 {
-                    new EnemyAttack { name = "stab", windup = .3f, active = .6f, hitGap = .45f, hits = 2, recovery = .3f, reach = 1.1f, damage = 8, punish = true },
+                    // Sıçrayarak gelen 2'li saplama: seçim mesafesi 2, vuruş mesafesi 1.1; hazırlığın son .2 sn'sinde oyuncunun 1 birim yanına sıçrar.
+                    // İkinci vuruş oyuncunun .4 sn'lik dokunulmazlığından sonra iner (.45). Vurunca hemen geri sıçrar
+                    new EnemyAttack { name = "stab", windup = .3f, active = .6f, hitGap = .45f, hits = 2, recovery = .15f, reach = 2f, hitReach = 1.1f, leap = 1f, leapTime = .2f, damage = 8, punish = true, then = "hop" },
+                    // Yuvarlanıp oyuncunun arkasına geçer (sağlam zemine, arkası yoksa önüne), orada bir kez saplar; 4 sn'de bir
+                    new EnemyAttack { name = "flank", kind = AttackKind.LeapOver, active = .45f, recovery = .05f, reach = 2f, landGap = .9f, cooldown = 4, then = "flankstab" },
+                    new EnemyAttack { name = "flankstab", windup = .25f, active = .12f, recovery = .15f, reach = 1.1f, damage = 8, then = "hop" },
+                    // Geri sıçrama: yalnız saldırıların ardından zincirle çalışır (reach 0: kendiliğinden seçilmez)
+                    new EnemyAttack { name = "hop", kind = AttackKind.Backstep, active = .25f, recovery = .1f, dash = -1.7f },
                 }
             },
             [EnemyRole.ZehirliOkcu] = new EnemyProfile
             {
                 role = EnemyRole.ZehirliOkcu, title = "Zehirli Okçu", sheet = "archer", goblin = true, health = 30, guard = 10, speed = 1.8f, keepMin = 6, keepMax = 10, size = .68f, ranged = true,
+                heavyKnockdown = 1.5f,
                 attacks = new[]
                 {
+                    new EnemyAttack { name = "backstep", kind = AttackKind.Backstep, active = .3f, recovery = .1f, reach = 2.5f, dash = -2, first = true, cooldown = 2 },
                     new EnemyAttack { name = "dagger", windup = .25f, active = .12f, recovery = .35f, reach = 1.2f, damage = 8 },
-                    new EnemyAttack { name = "arrow", clip = "shoot", kind = AttackKind.Arrow, windup = .45f, active = .05f, recovery = .4f, minRange = 2, reach = 11, damage = 8, cooldown = 1.2f },
+                    // Zehirli ok: 8 hasar, ardından 3 sn boyunca saniyede 3 zehir
+                    new EnemyAttack { name = "arrow", clip = "shoot", kind = AttackKind.Arrow, windup = .45f, active = .05f, recovery = .4f, minRange = 2, reach = 11, damage = 8, poisonDamage = 3, poisonSeconds = 3, cooldown = 1.2f },
+                    new EnemyAttack { name = "volley", kind = AttackKind.Volley, windup = .6f, active = .05f, recovery = .5f, minRange = 4, reach = 11, damage = 12, red = true, cooldown = 3 },
                 }
             },
             [EnemyRole.Pusucu] = new EnemyProfile
             {
-                role = EnemyRole.Pusucu, title = "Pusucu", sheet = "duelist", goblin = true, health = 40, guard = 20, speed = 1.8f, keepMin = .8f, keepMax = 1.2f, size = .68f,
+                role = EnemyRole.Pusucu, title = "Pusucu", sheet = "duelist", goblin = true, health = 40, guard = 20, speed = 1.8f, keepMin = .8f, keepMax = 1.2f, size = .68f, heavyKnockdown = 1.5f,
                 attacks = new[]
                 {
                     new EnemyAttack { name = "dagger", windup = .3f, active = .15f, recovery = .4f, reach = 1.3f, damage = 10, punish = true },
@@ -218,15 +244,16 @@ namespace KaramaniReborn
             [EnemyRole.GoblinKalkanli] = new EnemyProfile
             {
                 role = EnemyRole.GoblinKalkanli, title = "Kalkanlı Mızrakçı", sheet = "shield", goblin = true, health = 70, guard = 60, speed = 1.2f, keepMin = 1.2f, keepMax = 2f, size = .68f,
-                shielded = true, turnDelay = .6f, poise = true,
+                shielded = true, turnDelay = .6f, poise = true, pairGap = .9f,
                 attacks = new[]
                 {
-                    new EnemyAttack { name = "thrust", windup = .4f, active = .15f, recovery = .45f, reach = 2.2f, damage = 14 },
+                    new EnemyAttack { name = "thrust", windup = .4f, active = .15f, recovery = .45f, reach = 2.2f, damage = 12 },
+                    new EnemyAttack { name = "bash", windup = .25f, active = .12f, recovery = .4f, reach = 1.2f, damage = 8, pushBack = 1.5f, staminaDrain = 20, punish = true, cooldown = 1.5f },
                 }
             },
             [EnemyRole.Comlekci] = new EnemyProfile
             {
-                role = EnemyRole.Comlekci, title = "Ateş Çömlekçisi", sheet = "duelist", goblin = true, health = 35, guard = 15, speed = 1.6f, keepMin = .9f, keepMax = 1.4f, size = .68f,
+                role = EnemyRole.Comlekci, title = "Ateş Çömlekçisi", sheet = "duelist", goblin = true, health = 35, guard = 15, speed = 1.6f, keepMin = .9f, keepMax = 1.4f, size = .68f, heavyKnockdown = 1.5f,
                 attacks = new[]
                 {
                     new EnemyAttack { name = "pot", windup = .3f, active = .15f, recovery = .4f, reach = 1.3f, damage = 9 },
@@ -234,11 +261,14 @@ namespace KaramaniReborn
             },
             [EnemyRole.Kaba] = new EnemyProfile
             {
-                role = EnemyRole.Kaba, title = "Kaba", sheet = "captain", goblin = true, health = 130, guard = 100, speed = 1f, keepMin = 1f, keepMax = 1.7f, size = 1f, bulk = 2f,
-                poise = true,
+                role = EnemyRole.Kaba, title = "Kaba", sheet = "captain", goblin = true, health = 130, guard = 100, speed = 1f, keepMin = 0, keepMax = 1.2f, size = 1f, bulk = 2f,
+                poise = true, poiseAlways = true,
                 attacks = new[]
                 {
-                    new EnemyAttack { name = "cleave", windup = .55f, active = .15f, recovery = .7f, reach = 1.9f, damage = 24, heavy = true, punish = true },
+                    // Ağır iniş: bloklayanın dayanıklılığından 35 düşer
+                    new EnemyAttack { name = "cleaver", windup = .6f, active = .15f, recovery = .8f, reach = 1.9f, damage = 24, heavy = true, blockDrain = 35 },
+                    new EnemyAttack { name = "chainsweep", windup = .65f, active = .25f, recovery = .9f, reach = 3.2f, damage = 22, red = true, cooldown = 3 },
+                    new EnemyAttack { name = "grab", windup = .4f, active = .15f, recovery = .8f, reach = 1.4f, damage = 26, red = true, heavy = true, grab = true, cooldown = 3 },
                 }
             },
             [EnemyRole.Kircil] = new EnemyProfile

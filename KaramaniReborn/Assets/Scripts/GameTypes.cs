@@ -58,6 +58,11 @@ namespace KaramaniReborn
         public float knockback, speed, size = 1;
         // Kalkanla itme: kalan süre ve o süredeki yatay hız (blokta da uygulanır)
         public float pushTime, pushSpeed;
+        // Zehir: kalan vuruş sayısı (saniyede bir), vuruş başı hasar ve bir sonraki vuruşa kalan süre. Sendeletmez, yenilenir, üst üste binmez
+        public int poisonTicks;
+        public float poisonDamage, poisonTimer;
+        // Hazırlıktaki sıçrayış (EnemyAttack.leap) bu saldırıda yapıldı mı
+        public bool leapDone;
         public PixelCharacter view;
         // Düşman saldırısı: yürüyen saldırının tanımı, kaçıncı vuruşta olduğu, evre ve türlere özel sayaçlar
         public EnemyAttack attack;
@@ -69,7 +74,7 @@ namespace KaramaniReborn
         public bool Dead => health <= 0 || state == ActionState.Dead;
         public bool Attacking => state is ActionState.Light or ActionState.Heavy or ActionState.Spirit;
         public bool Locked => state is ActionState.Light or ActionState.Heavy or ActionState.Dodge or ActionState.Hurt or ActionState.Heal or ActionState.Spirit or ActionState.Shoot or ActionState.Dead or ActionState.Hang or ActionState.Climb;
-        public void Enter(ActionState next, float seconds = 0) { state = next; stateTime = 0; duration = seconds; attackConnected = false; telegraphed = false; backdash = false; riposting = false; hitTargets.Clear(); attack = null; strike = -1; }
+        public void Enter(ActionState next, float seconds = 0) { state = next; stateTime = 0; duration = seconds; attackConnected = false; leapDone = false; telegraphed = false; backdash = false; riposting = false; hitTargets.Clear(); attack = null; strike = -1; }
     }
 
     public struct Surface

@@ -33,7 +33,7 @@ namespace KaramaniReborn
         // Ateşte: genişlik ve bir sonraki yakışa kalan süre; humbarada: düşeceği yer ve saldırının tanımı
         public sealed class Projectile { public ShotKind kind; public Vector2 position, velocity; public bool friendly, red; public float life, delay, damage; public SpriteRenderer renderer; public Actor source; public float width, tick; public Vector2 target; public EnemyAttack attack; }
         // Arayüzün göstereceği hasar sayıları
-        public struct DamageEvent { public Vector2 position; public int amount; public bool toPlayer, strong; }
+        public struct DamageEvent { public Vector2 position; public int amount; public bool toPlayer, strong, poison; }
         public readonly List<DamageEvent> damageEvents = new();
 
         public GameWorld(int index, Transform parent, float checkpointX = 1.7f)
@@ -112,7 +112,7 @@ namespace KaramaniReborn
             {
                 for (int i = 0; i < shrines.Length; i++) if (Mathf.Abs(player.position.x - shrines[i]) < 1.4f)
                 {
-                    checkpoint = shrines[i]; player.health = player.maxHealth; player.stamina = 100; player.potions = 3;
+                    checkpoint = shrines[i]; player.health = player.maxHealth; player.stamina = 100; player.potions = 3; player.poisonTicks = 0;
                     if (shrineVisits.Add(i)) effects.GlowBurst(player.position + Vector2.up, zone.accent);
                     checkpointSaved?.Invoke(); Notify("YOL TAŞI · Nefes ve hatıra yenilendi."); sound?.Invoke("shrine");
                 }
@@ -131,6 +131,7 @@ namespace KaramaniReborn
             a.stateTime += dt; a.grabCooldown -= dt; a.airFlip -= dt; a.riposte -= dt; a.cooldown -= dt; a.invincible -= dt; a.parryWindow -= dt; a.hitFlash -= dt; a.dropTimer -= dt; a.skillCooldown -= dt; a.shotCooldown -= dt; a.staminaDelay -= dt; a.pushTime -= dt;
             if (!a.Locked && a.staminaDelay <= 0) a.stamina = Mathf.MoveTowards(a.stamina, 100, dt * (a.state == ActionState.Block ? 6 : 24));
             if (!a.Attacking) a.guard = Mathf.MoveTowards(a.guard, a.maxGuard, dt * 7);
+            TickPoison(a, dt);
         }
 
         void TickPlayer(float dt, InputFrame input)
@@ -409,6 +410,8 @@ namespace KaramaniReborn
                     return;
                 }
                 float guardDamage = heavy ? 65 : damage * 1.3f;
+                // Bazı ağır saldırıların kendi bedeli vardır (Kaba'nın satırı: 35)
+                if (source?.attack != null && source.attack.blockDrain > 0 && source.attack.kind is AttackKind.Melee or AttackKind.Slam) guardDamage = source.attack.blockDrain;
                 target.stamina -= guardDamage;
                 effects.Impact(target.position + Vector2.up * 1.35f, direction, true, heavy, float.NaN, heavy ? .07f : .045f); sound?.Invoke("block");
                 if (target.stamina > 0) return;
@@ -418,7 +421,7 @@ namespace KaramaniReborn
             damageEvents.Add(new DamageEvent { position = target.position + Vector2.up * (2.55f * target.size), amount = Mathf.Max(1, Mathf.RoundToInt(damage)), toPlayer = target.player, strong = heavy || damage >= 40 }); target.invincible = target.player ? .40f : .14f;
             // Duruş: kendi saldırısını yürüten ağır düşman vurulunca durmaz (can ve denge yine düşer); denge kırılır ya da ölürse durur
             bool unstoppable = profile != null && profile.phase2Unstoppable && target.phase > 1;
-            bool poised = profile != null && (unstoppable || profile.poise && target.attack != null && (target.state is ActionState.Light or ActionState.Shoot));
+            bool poised = profile != null && (unstoppable || profile.poise && (profile.poiseAlways || target.attack != null && (target.state is ActionState.Light or ActionState.Shoot)));
             // Sendeleme kısalmaz: daha uzun sürecek bir sendelemenin içindeki sıradan vuruş onu (ve geri itmesini) değiştirmez
             float hurt = heavy ? .6f : .28f;
             bool longer = target.state == ActionState.Hurt && target.duration - target.stateTime > hurt;
@@ -432,6 +435,8 @@ namespace KaramaniReborn
                 target.guard -= damage * (profile.shielded ? (heavy || !front ? 2 : 1) : heavy ? 1.5f : 1);
                 if (target.guard <= 0) { if (unstoppable) target.guard = target.maxGuard; else Stagger(target, source); }
             }
+            // Sıradan goblinler oyuncunun ağır vuruşuyla yere serilir (1.5 sn); kılıcın değdiği hepsi
+            if (heavy && source != null && source.player && profile != null && profile.heavyKnockdown > 0 && !target.Dead && !executed) Stagger(target, source, profile.heavyKnockdown);
             bool held = poised && !target.Dead && target.state != ActionState.Hurt;   // saldırısı sürüyor: havaya kalkmaz
             effects.Impact(target.position + Vector2.up * 1.25f, direction, false, heavy, target.position.y, stop);
             effects.lastStruck = target; sound?.Invoke(heavy ? "heavyhit" : "hit");
@@ -449,12 +454,31 @@ namespace KaramaniReborn
 
         // Ateş yakar ama sendeletmez: can, parlama ve hasar sayısı; Hurt yok, geri itme yok, duraksama yok.
         // Dokunulmazlık (kaçış) korur; can biterse ölür
-        void Burn(Actor target, float damage)
+        void Burn(Actor target, float damage, bool poison = false)
         {
-            if (target.Dead || target.invincible > 0) return;
+            // Zehir kandadır: kaçışın dokunulmazlığı vuruşu atlatmaz; ateşi atlatır
+            if (target.Dead || target.invincible > 0 && !poison) return;
             target.health = Mathf.Max(0, target.health - damage); target.hitFlash = .14f;
-            damageEvents.Add(new DamageEvent { position = target.position + Vector2.up * (2.55f * target.size), amount = Mathf.Max(1, Mathf.RoundToInt(damage)), toPlayer = target.player });
+            damageEvents.Add(new DamageEvent { position = target.position + Vector2.up * (2.55f * target.size), amount = Mathf.Max(1, Mathf.RoundToInt(damage)), toPlayer = target.player, poison = poison });
             if (target.health <= 0) { target.knockback = 0; target.Enter(ActionState.Dead, .6f); }
+        }
+
+        // Zehir: seconds vuruş (saniyede bir), her biri damage; yenilenir (üst üste binmez). Sendeletmez, Hurt'e sokmaz
+        void Poison(Actor target, float damage, float seconds)
+        {
+            if (target.Dead) return;
+            if (target.poisonTicks <= 0) target.poisonTimer = 1;   // yeni zehirde ilk vuruş 1 sn sonra; sürerken ritim bozulmaz
+            target.poisonDamage = damage; target.poisonTicks = Mathf.CeilToInt(seconds);
+        }
+
+        void TickPoison(Actor a, float dt)
+        {
+            if (a.poisonTicks <= 0) return;
+            if (a.Dead) { a.poisonTicks = 0; return; }
+            a.poisonTimer -= dt;
+            if (a.poisonTimer > 0) return;
+            a.poisonTimer += 1; a.poisonTicks--;
+            Burn(a, a.poisonDamage, true);
         }
 
         // Uzun sendeleme: denge dolar, geri itme yok; oyuncu sendeletmişse infaz fırsatı açılır
@@ -510,7 +534,13 @@ namespace KaramaniReborn
                     }
                 }
                 else if (p.kind is not (ShotKind.VolleyMark or ShotKind.Grenade) && !player.Dead && HitsPlayer(p, old))
-                { Damage(player, p.damage, p.velocity.x >= 0 ? 1 : -1, false, false, p.source, -1, p.red); p.life = 0; }
+                {
+                    float before = player.health;
+                    Damage(player, p.damage, p.velocity.x >= 0 ? 1 : -1, false, false, p.source, -1, p.red);
+                    // Zehir yalnız gerçek isabette (can düştüyse): blok, savuşturma ya da dokunulmazlık zehirlemez
+                    if (p.attack != null && p.attack.poisonSeconds > 0 && player.health < before && !player.Dead) Poison(player, p.attack.poisonDamage, p.attack.poisonSeconds);
+                    p.life = 0;
+                }
                 p.renderer.transform.position = p.kind == ShotKind.Wave ? p.position + Vector2.up * .45f : p.position;
                 if (p.life <= 0) { if (p.kind == ShotKind.Grenade) Explode(p); RemoveShot(i); }
             }
