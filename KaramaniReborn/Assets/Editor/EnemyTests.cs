@@ -20,6 +20,7 @@ namespace KaramaniReborn.Editor
             Arslan(root);
             KorDemir(root);
             Kurtbas(root);
+            KaraMurad(root);
         }
 
         static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
@@ -323,6 +324,45 @@ namespace KaramaniReborn.Editor
             w.Damage(e, 20, 1, false, false, w.player);
             Assert(Mathf.Approximately(e.health, hp - 25) && e.state != ActionState.Hurt && e.guard > 0, "Frenzy: +25% damage, no stagger, guard refills");
             Debug.Log("KARAMANI_BOSS_KURTBAS_PASS · 4-hit storm, leap-over behind + pit fallback, red leap slam + dodge, frenzy");
+        }
+
+        static void KaraMurad(GameRoot root)
+        {
+            // Omuz hücumu: arenayı boydan boya, kırmızı (blok işe yaramaz) 26
+            var w = Arena(root, EnemyRole.KaraMurad, 7, out var e); var pl = w.player;
+            w.StartAttack(e, "charge"); Run(w, 2.3f, i => new InputFrame { block = true });
+            Assert(pl.health == pl.maxHealth - 26, "Shoulder charge must ignore block for 26, health " + pl.health);
+
+            // Yakalama: yalnız boşta duran oyuncuya; saldıran ya da yuvarlanan oyuncuya hiç başlamaz
+            w = Arena(root, EnemyRole.KaraMurad, 1, out e); pl = w.player; e.intentTime = 0;
+            bool grabbed = false;
+            for (int i = 0; i < 360; i++)
+            {
+                var input = new InputFrame { light = i % 30 == 0 };
+                w.Simulate(1f / 120, input, true);
+                if (e.attack != null && e.attack.grab && (pl.Attacking || pl.invincible > 0) && e.stateTime < 1f / 60) grabbed = true;
+            }
+            Assert(!grabbed, "Grab must never start while the player attacks or is invulnerable");
+            w = Arena(root, EnemyRole.KaraMurad, 1, out e); pl = w.player;
+            w.StartAttack(e, "grab"); Run(w, 1f, i => new InputFrame { block = true });
+            Assert(pl.health == pl.maxHealth - 30, "Grab must ignore block for 30, health " + pl.health);
+
+            // Yere çakma: kırmızı yer dalgası; zıplayan kurtulur
+            w = Arena(root, EnemyRole.KaraMurad, 5, out e); pl = w.player;
+            w.StartAttack(e, "quake"); Run(w, 2f);
+            Assert(pl.health == pl.maxHealth - 20, "Quake wave should hit a grounded player for 20, health " + pl.health);
+
+            // İkinci evre: pala atılır; yumruk kombosu, art arda hücum, daha hızlı yürüyüş
+            w = Arena(root, EnemyRole.KaraMurad, 6, out e); pl = w.player;
+            e.health = e.maxHealth * .45f; Run(w, 1.4f);
+            Assert(e.phase == 2 && !w.StartAttack(e, "combo"), "Phase 2 must drop the pala combo");
+            e.Enter(ActionState.Idle);
+            w.StartAttack(e, "charge2"); Run(w, EnemyProfile.For(EnemyRole.KaraMurad).Find("charge2").Duration + .05f);
+            Assert(e.attack != null && e.attack.name == "recharge", "Phase-2 charge must chain into a second charge");
+            w = Arena(root, EnemyRole.KaraMurad, 6, out e); e.health = e.maxHealth * .45f; Run(w, 1.4f);
+            e.Enter(ActionState.Idle); e.intentTime = 99; float x0 = e.position.x; Run(w, 1f);
+            Assert(x0 - e.position.x > 1f * EnemyProfile.For(EnemyRole.KaraMurad).speed * 1.15f, "Phase 2 must move faster (x1.3)");
+            Debug.Log("KARAMANI_BOSS_KARAMURAD_PASS · red charge, grab only on idle player, quake wave, bare-handed phase 2 chain + speed");
         }
 
         static void Sorcerer(GameRoot root)
