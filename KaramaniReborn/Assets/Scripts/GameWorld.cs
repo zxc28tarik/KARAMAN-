@@ -456,11 +456,12 @@ namespace KaramaniReborn
             for (int i = projectiles.Count - 1; i >= 0; i--)
             {
                 var p = projectiles[i];
-                if (p.life <= 0) { RemoveShot(i); continue; }
+                if (p.life <= 0) { if (p.kind == ShotKind.Grenade) Explode(p); RemoveShot(i); continue; }
                 p.renderer.enabled = p.delay <= 0;
                 if (p.delay > 0) { p.delay -= dt; continue; }
                 // Lanet küresi oyuncuyu yavaşça izler
                 if (p.kind == ShotKind.Orb) p.velocity = Vector2.MoveTowards(p.velocity, (player.position + Vector2.up * 1.2f - p.position).normalized * 2.2f, dt * 6);
+                if (p.kind == ShotKind.Grenade) p.velocity.y -= 20 * dt;   // humbara kavisle düşer
                 Vector2 old = p.position; p.position += p.velocity * dt; p.life -= dt;
                 if (p.kind == ShotKind.Fire)
                 {
@@ -479,10 +480,10 @@ namespace KaramaniReborn
                         { Damage(a, p.damage, p.velocity.x > 0 ? 1 : -1, true, false, p.source, .08f); p.life = 0; break; }
                     }
                 }
-                else if (p.kind != ShotKind.VolleyMark && !player.Dead && HitsPlayer(p, old))
+                else if (p.kind is not (ShotKind.VolleyMark or ShotKind.Grenade) && !player.Dead && HitsPlayer(p, old))
                 { Damage(player, p.damage, p.velocity.x >= 0 ? 1 : -1, false, false, p.source, -1, p.red); p.life = 0; }
                 p.renderer.transform.position = p.kind == ShotKind.Wave ? p.position + Vector2.up * .45f : p.position;
-                if (p.life <= 0) RemoveShot(i);
+                if (p.life <= 0) { if (p.kind == ShotKind.Grenade) Explode(p); RemoveShot(i); }
             }
         }
 
@@ -493,6 +494,18 @@ namespace KaramaniReborn
             sr.transform.localScale = new Vector3(width, .8f, 1); sr.enabled = delay <= 0;
             var fire = new Projectile { kind = ShotKind.Fire, position = ground, life = life, delay = delay, damage = damage, red = true, width = width, renderer = sr, source = source };
             projectiles.Add(fire); return fire;
+        }
+
+        // Test için: verilen yere doğrudan ateş koyar
+        public void SpawnFireForTest(Vector2 ground, float width, float life) => SpawnFire(ground, width, life, 6, null);
+
+        // Humbara / yağ küpü yere değdi: yakındakine kırmızı patlama, yerinde ateş
+        void Explode(Projectile p)
+        {
+            var k = p.attack; effects.GlowBurst(p.target + Vector2.up * .4f, new Color(1, .5f, .15f));
+            if (!player.Dead && Mathf.Abs(player.position.x - p.target.x) < 1.2f && Mathf.Abs(player.position.y - p.target.y) < 1.5f)
+                Damage(player, p.damage, (int)Mathf.Sign(player.position.x - p.target.x), false, false, p.source, -1, true);
+            if (k != null && k.patchLife > 0) SpawnFire(p.target, k.patchWidth, k.patchLife, k.patchDamage, p.source);
         }
 
         bool HitsPlayer(Projectile p, Vector2 old)

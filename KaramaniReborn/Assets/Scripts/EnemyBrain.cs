@@ -107,7 +107,8 @@ namespace KaramaniReborn
                 if (!Allowed(a, k)) continue;
                 if (k.grab && (player.Attacking || player.invincible > 0)) continue;   // yakalama yalnız boşta duran oyuncuya
                 if (k.reach <= 0 || dist < k.minRange || dist > k.reach) continue;
-                if (height > (k.Ranged ? 3 : .8f)) continue;
+                // Humbara da uzak saldırı yüksekliğiyle seçilir (platformdaki oyuncuya atılır); Ranged'e eklenmez, çünkü o savuruş sesini de belirler
+                if (height > (k.Ranged || k.kind == AttackKind.Grenade ? 3 : .8f)) continue;
                 if (a.attackReady.TryGetValue(k.name, out float ready) && clock < ready) continue;
                 if (k.first) return k;
                 if (rng.Next(++seen) == 0) pick = k;
@@ -152,6 +153,17 @@ namespace KaramaniReborn
                     if (!avoided && !player.Dead && k.pushBack > 0) { player.pushTime = .2f; player.pushSpeed = dir * k.pushBack / .2f; }
                     if (!avoided && !player.Dead && k.staminaDrain > 0) { player.stamina = Mathf.Max(0, player.stamina - k.staminaDrain); player.staminaDelay = .7f; }
                     return;
+                case AttackKind.Pull:
+                {
+                    if (a.state != ActionState.Light || !InStrike(a, out _) || a.hitTargets.Contains(player.id)) return;
+                    float d = (player.position.x - a.position.x) * a.face;
+                    if (d < -.2f || d > k.reach || Mathf.Abs(player.position.y - a.position.y) > 1.2f) return;
+                    a.hitTargets.Add(player.id);
+                    Damage(player, k.damage, a.face, false, false, a, -1, k.red);
+                    // Kanca tuttuysa (blok, savuşturma ya da kaçış değilse) oyuncu ayağının dibine çekilir
+                    if (player.state == ActionState.Hurt && !player.Dead) { player.pushTime = .25f; player.pushSpeed = -a.face * Mathf.Max(0, d - 1.1f) / .25f; }
+                    return;
+                }
                 case AttackKind.Teleport:
                     if (a.stateTime >= k.windup && !a.attackConnected) { a.attackConnected = true; Teleport(a); }
                     return;
@@ -210,6 +222,31 @@ namespace KaramaniReborn
                 case AttackKind.Rage:
                     effects.GlowBurst(a.position + Vector2.up * 1.4f, new Color(1, .35f, .15f));
                     break;
+                case AttackKind.Grenade:
+                {
+                    // Kavisli atış: .9 sn'de oyuncunun bulunduğu yere düşer; düşeceği yer önceden kızıl işaretli
+                    const float flight = .9f;
+                    Vector2 target = new Vector2(player.position.x, player.position.y);
+                    var mark = AddShot(ShotKind.VolleyMark, target + Vector2.up * .05f, Vector2.zero, flight, k, a);
+                    mark.renderer.transform.localScale = new Vector3(Mathf.Max(1.6f, k.patchWidth), .35f, 1);
+                    var v = new Vector2((target.x - hand.x) / flight, (target.y - hand.y) / flight + 10 * flight);
+                    var pot = AddShot(ShotKind.Grenade, hand, v, flight, k, a); pot.target = target; pot.attack = k;
+                    break;
+                }
+                case AttackKind.ArenaFire:
+                {
+                    // Arenanın yarısı tutuşur: boss'un arkası (home+1.5 … +7) ve giriş yanı (home-8 … -5); ortada dar alan kalır.
+                    // Ateş .8 sn önce kızıl işaretle belli olur
+                    (float from, float to)[] spans = { (a.home + 1.5f, a.home + 7), (a.home - 8, a.home - 5) };
+                    foreach (var (from, to) in spans)
+                    {
+                        var at = new Vector2((from + to) * .5f, zone.floor); float width = to - from;
+                        var mark = AddShot(ShotKind.VolleyMark, at + Vector2.up * .05f, Vector2.zero, .8f, k, a);
+                        mark.renderer.transform.localScale = new Vector3(width, .35f, 1);
+                        SpawnFire(at, width, 999, k.patchDamage, a, .8f);
+                    }
+                    break;
+                }
             }
         }
 
@@ -255,6 +292,7 @@ namespace KaramaniReborn
                 ShotKind.Arrow or ShotKind.VolleyArrow => (ArtLibrary.White, new Color(.7f, .59f, .43f), new Vector3(.36f, .03f, 1)),
                 ShotKind.VolleyMark => (ArtLibrary.Glow, new Color(1, .15f, .1f, .55f), new Vector3(2.2f, .35f, 1)),
                 ShotKind.Wave => (ArtLibrary.Glow, new Color(.3f, .02f, .08f, .9f), new Vector3(.7f, 1.1f, 1)),
+                ShotKind.Grenade => (ArtLibrary.Glow, new Color(.55f, .35f, .2f, 1), new Vector3(.3f, .3f, 1)),
                 _ => (ArtLibrary.Glow, new Color(.55f, .1f, .8f, .9f), new Vector3(.45f, .45f, 1)),
             };
             var sr = ArtLibrary.Draw(kind.ToString(), sprite, actorsRoot, position, 170, color);

@@ -18,6 +18,7 @@ namespace KaramaniReborn.Editor
             Layouts(root);
             Bosses(root);
             Arslan(root);
+            KorDemir(root);
         }
 
         static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
@@ -229,6 +230,60 @@ namespace KaramaniReborn.Editor
             w.Damage(gateBoss, 5000, 1, true, true); w.Simulate(1f / 120, new InputFrame(), true);
             Assert(w.cleared, "Gate must open when the boss dies even with summons alive");
             Debug.Log("KARAMANI_BOSS_ARSLAN_PASS · parryable thrust, red sweep, summon on ground once per phase, burning standard trail, gate");
+        }
+
+        static void KorDemir(GameRoot root)
+        {
+            // Humbara: kavisle düşer, patlama 18 (kırmızı), yerinde 4 sn yanan ateş bırakır
+            var w = Arena(root, EnemyRole.KorDemir, 6, out var e); var pl = w.player;
+            var g = EnemyProfile.For(EnemyRole.KorDemir).Find("grenade");
+            w.StartAttack(e, "grenade"); Run(w, g.windup + .9f + .1f);
+            Assert(pl.health == pl.maxHealth - 18, "Grenade blast should deal 18, health " + pl.health);
+            var fire = w.projectiles.Find(s => s.kind == GameWorld.ShotKind.Fire);
+            Assert(fire != null && Mathf.Abs(fire.width - 1.6f) < .01f && fire.life > 3.5f, "Grenade must leave a 1.6 u fire patch for ~4 s");
+            Run(w, 1f); Assert(pl.health < pl.maxHealth - 18, "Standing in the fire must burn");
+            // Humbaradan kaçan kurtulur; ateşin üstünden zıplayan yanmaz
+            w = Arena(root, EnemyRole.KorDemir, 6, out e); pl = w.player;
+            w.StartAttack(e, "grenade");
+            Run(w, 1.6f, i => new InputFrame { move = i >= 70 && i < 130 ? -1 : 0 });
+            Assert(pl.health == pl.maxHealth, "Leaving the grenade mark should avoid it, health " + pl.health);
+            w = Arena(root, EnemyRole.KorDemir, 6, out e); pl = w.player;
+            w.SpawnFireForTest(new Vector2(5.5f, w.zone.floor), 1.6f, 4);
+            // Tam zıplama (tuş basılı): kısa sıçrayış (.33 sn) x≈6.45'te, yanma sınırının (5.5 + .8 + .2 = 6.5) içinde iner; tam zıplama ≈6.62'de
+            Run(w, 1.2f, i => new InputFrame { move = 1, jump = i == 0, jumpHeld = true });
+            Assert(pl.health == pl.maxHealth || pl.position.x < 4.7f, "Jumping over a fire patch should not burn, health " + pl.health);
+
+            // Yüksekteki oyuncuya humbara atar: humbara uzak saldırı yükseklik sınırını (3) kullanır, yakın dövüşün .8'ini değil
+            // (oyuncu 23.5-26.6 platformunda, y -0.75: yerden 1.5 yukarıda)
+            w = Arena(root, EnemyRole.KorDemir, 6, out e); pl = w.player;
+            pl.position = new Vector2(25, -.75f); pl.view.ResetContacts(); e.position.x = 20; e.intentTime = 0;
+            bool threw = false;
+            Run(w, 1.5f, i => { threw |= e.attack != null && e.attack.kind == AttackKind.Grenade; return new InputFrame(); });
+            Assert(threw, "Kör Demir must throw at a player on a platform above (ranged height gate)");
+
+            // Kanca: tutarsa oyuncu ayağının dibine çekilir (8 hasar); blokta çekilmez
+            w = Arena(root, EnemyRole.KorDemir, 3.5f, out e); pl = w.player;
+            var hook = EnemyProfile.For(EnemyRole.KorDemir).Find("hook");
+            w.StartAttack(e, "hook"); Run(w, hook.windup + .5f);
+            Assert(pl.health == pl.maxHealth - 8 && Mathf.Abs(e.position.x - pl.position.x) < 1.7f, "Hook should pull the player in, gap " + Mathf.Abs(e.position.x - pl.position.x));
+            w = Arena(root, EnemyRole.KorDemir, 3.5f, out e); pl = w.player;
+            w.StartAttack(e, "hook"); Run(w, hook.windup + .5f, i => new InputFrame { block = true });
+            Assert(Mathf.Abs(e.position.x - pl.position.x) > 3f, "A blocked hook must not pull");
+
+            // Yağ küpü: uzun yanan şerit (4.5)
+            w = Arena(root, EnemyRole.KorDemir, 6, out e);
+            w.StartAttack(e, "oil"); Run(w, .7f + .9f + .1f);
+            Assert(w.projectiles.Exists(s => s.kind == GameWorld.ShotKind.Fire && Mathf.Abs(s.width - 4.5f) < .01f), "Oil pot must leave a 4.5 u burning strip");
+
+            // İkinci evre: arenanın yarısı tutuşur, ortada dar bir alan kalır
+            w = Arena(root, EnemyRole.KorDemir, 3, out e); pl = w.player; float home = e.home;
+            e.health = e.maxHealth * .45f; Run(w, 2.2f);
+            Assert(e.phase == 2, "Kör Demir did not enter phase 2");
+            pl.position = new Vector2(home + 3, w.zone.floor); pl.invincible = 0; float hp = pl.health; Run(w, 1f);
+            Assert(pl.health < hp, "Arena fire must burn beside the boss (home + 3)");
+            pl.position = new Vector2(home - 2, w.zone.floor); pl.invincible = 0; hp = pl.health; Run(w, 1f);
+            Assert(pl.health == hp || e.Attacking, "The middle strip (home - 2) must stay free of fire");
+            Debug.Log("KARAMANI_BOSS_KORDEMIR_PASS · grenade blast + fire patch, dodge, jump over fire, throws up to a platform, hook pull / blocked, oil strip, arena fire");
         }
 
         static void Sorcerer(GameRoot root)
