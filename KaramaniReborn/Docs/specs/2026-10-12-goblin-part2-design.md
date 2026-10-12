@@ -274,12 +274,20 @@ Kullanıcı isteği:
   - Oda boyları ekran katlarıdır. Bir ekran 28,8 × 21,6 birimdir; odalar 1×1, 2×1, 3×1 (yatay) ya da 1×2 (dikey kuyu) olur.
   - Odalar, kenarlarındaki geçitlerle (sağ, sol, üst, alt) komşu odalara bağlanır.
 - **Kamera:** bulunulan odanın sınırları içinde kalır ve dikeyde de oyuncuyu izler. Oda kenarındaki geçitten çıkınca kısa bir kaydırma ya da kararmayla yan odaya geçilir.
-- **Düşmanlar:** odaya bağlıdır.
-  - Odaya girince doğarlar; odadan çıkıp dönünce sıradan düşmanlar yeniden doğar (SotN gibi).
-  - Bekçiler (yarı-boss, boss) ölünce bir daha doğmaz.
+- **Düşmanlar:** odaya bağlıdır ve odaya ilk girişte doğarlar.
+  - **Ölen düşman bir daha doğmaz** (kullanıcı, 2026-10-12): odadan çıkıp dönünce ölenler yok, sağ kalanlar oradadır. Bu, sıradan düşmanlar için de bekçiler için de geçerlidir.
+  - Ölümler kayda geçer.
+  - Oyuncu ölünce yol taşından devam eder; o ana kadar öldürülenler ölü kalır.
 - **Bekçi odaları:** girince geçitler kapanır, bekçi ölünce açılır.
 - **Harita ekranı:** gezilen odalar küçük haritada ve duraklatma menüsündeki harita ekranında açılır; bulunulan oda işaretlenir.
 - **Kayıt:** yol taşları ayrı küçük odalardadır. Ölünce son dinlenilen yol taşı odasından devam edilir.
+- **Zıplama ve tırmanma (kullanıcı, 2026-10-12):** mağara içi platform bölümleriyle doludur. Hepsi doğal ve dönemine uygun; makine yok:
+  - Dikey kuyulara çift zıplama ve kenara tutunup tırmanmayla çıkılır.
+  - Uçurumların üstünden zıplanarak geçilir.
+  - Goblinlerin **ip merdivenleri** tırmanılır: yukarı ve aşağı hareket, iptan zıplayıp ayrılma.
+  - **Ufalanan kaya çıkıntıları:** üstüne basılınca 0,6 saniye titrer ve düşer, 3 saniye sonra yerine gelir.
+  - Ahşap iskelelerden aşağı inilebilir.
+  - Mağarada uçuruma düşmek öldürmez: 25 hasar alınır ve son sağlam zemine dönülür. Açık alan bölümlerindeki çukurlar eskisi gibi öldürür.
 - **Yetenek kilidi yok:** yeni yetenekle açılan kapı yoktur, kullanıcı istemedi. Harita ana yol ve birkaç yan oda (yol taşı, ganimet) olarak çizilir; geri dönmek mümkündür.
 
 ### 8.3 Mağara bölgeleri (bölüm 7, 8, 9)
