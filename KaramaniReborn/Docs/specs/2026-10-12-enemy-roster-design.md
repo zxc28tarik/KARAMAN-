@@ -33,6 +33,7 @@ All values are starting points; they are tuned in playtesting. The player's ligh
 - **Weapon:** yatagan. **Health:** 70. **Guard:** 35. **Speed:** 1.35 u/s.
 - **Attacks:**
   - ⚪ 2-hit yatagan combo, reach 1.5 u. Wind-up 0.35 s; the two hits 0.22 s apart.
+    - Implementation note: 2-hit combos (this one and the Sorcerer's staff combo) use a 0.45 s hit gap, because the player's 0.4 s invulnerability after a hit would swallow a second hit only 0.22 s later.
   - ⚪ Fast lunge from 2.5 u. Wind-up 0.3 s; dashes 1.2 u forward.
 - **Behaviour:** closes in, waits its turn at 1.5 u, occasionally steps back.
 - **Weakness:** staggers when parried.
