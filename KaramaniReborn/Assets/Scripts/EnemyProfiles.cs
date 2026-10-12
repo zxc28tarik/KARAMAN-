@@ -46,6 +46,7 @@ namespace KaramaniReborn
         public string phaseShift;
         public float phase2Speed = 1, phase2Taken = 1;
         public bool phase2Unstoppable;
+        public float bulk;   // vurulma kutusu genişlik çarpanı (0 = size)
         public EnemyAttack[] attacks;
 
         public EnemyAttack Find(string name) { foreach (var a in attacks) if (a.name == name) return a; return null; }
@@ -169,19 +170,19 @@ namespace KaramaniReborn
             },
             [EnemyRole.KaraMurad] = new EnemyProfile
             {
-                role = EnemyRole.KaraMurad, title = "Yeniçeri Ağası Kara Murad", sheet = "captain", health = 380, guard = 140, speed = 1.5f, keepMin = 1, keepMax = 1.8f, size = 1.25f,
+                role = EnemyRole.KaraMurad, title = "Yeniçeri Ağası Kara Murad", sheet = "captain", health = 380, guard = 140, speed = 1.5f, keepMin = 1, keepMax = 1.8f, size = 1.6f, bulk = 2f,
                 poise = true, phaseAt = .5f, phaseShift = "throwpala", phase2Speed = 1.3f,
                 attacks = new[]
                 {
-                    new EnemyAttack { name = "combo", windup = .45f, active = 1.25f, hitTimes = new[] { 0f, .45f, 1.1f }, recovery = .6f, reach = 1.9f, damage = 18, punish = true, phase = 1 },
-                    new EnemyAttack { name = "charge", windup = .5f, active = .9f, recovery = .8f, minRange = 3, reach = 12, hitReach = 1.2f, dash = 8, damage = 26, red = true, push = 6, cooldown = 5, phase = 1 },
-                    new EnemyAttack { name = "grab", windup = .35f, active = .15f, recovery = .7f, reach = 1.2f, damage = 30, red = true, heavy = true, grab = true, cooldown = 3, phase = 1 },
+                    new EnemyAttack { name = "combo", windup = .45f, active = 1.25f, hitTimes = new[] { 0f, .45f, 1.1f }, recovery = .6f, reach = 2.4f, damage = 18, punish = true, phase = 1 },
+                    new EnemyAttack { name = "charge", windup = .5f, active = .9f, recovery = .8f, minRange = 3, reach = 12, hitReach = 1.5f, dash = 8, damage = 26, red = true, push = 6, cooldown = 5, phase = 1 },
+                    new EnemyAttack { name = "grab", windup = .35f, active = .15f, recovery = .7f, reach = 1.5f, damage = 30, red = true, heavy = true, grab = true, cooldown = 3, phase = 1 },
                     new EnemyAttack { name = "quake", kind = AttackKind.FlameWave, windup = .7f, active = .05f, recovery = .6f, minRange = 2.5f, reach = 10, damage = 20, red = true, cooldown = 4, phase = 1 },
                     new EnemyAttack { name = "throwpala", kind = AttackKind.Rage, windup = 1f, active = .05f, recovery = .2f },
-                    new EnemyAttack { name = "fists", windup = .25f, active = 1f, hitTimes = new[] { 0f, .42f, .84f }, recovery = .4f, reach = 1.3f, damage = 14, punish = true, phase = 2 },
-                    new EnemyAttack { name = "charge2", clip = "charge", windup = .4f, active = .9f, recovery = .3f, minRange = 3, reach = 12, hitReach = 1.2f, dash = 8, damage = 26, red = true, push = 6, cooldown = 4, then = "recharge", phase = 2 },
-                    new EnemyAttack { name = "recharge", clip = "charge", windup = .35f, active = .9f, recovery = .8f, hitReach = 1.2f, dash = 8, damage = 26, red = true, push = 6, phase = 2 },
-                    new EnemyAttack { name = "grab2", clip = "grab", windup = .3f, active = .15f, recovery = .6f, reach = 1.2f, damage = 30, red = true, heavy = true, grab = true, cooldown = 1.5f, phase = 2 },
+                    new EnemyAttack { name = "fists", windup = .25f, active = 1f, hitTimes = new[] { 0f, .42f, .84f }, recovery = .4f, reach = 1.65f, damage = 14, punish = true, phase = 2 },
+                    new EnemyAttack { name = "charge2", clip = "charge", windup = .4f, active = .9f, recovery = .3f, minRange = 3, reach = 12, hitReach = 1.5f, dash = 8, damage = 26, red = true, push = 6, cooldown = 4, then = "recharge", phase = 2 },
+                    new EnemyAttack { name = "recharge", clip = "charge", windup = .35f, active = .9f, recovery = .8f, hitReach = 1.5f, dash = 8, damage = 26, red = true, push = 6, phase = 2 },
+                    new EnemyAttack { name = "grab2", clip = "grab", windup = .3f, active = .15f, recovery = .6f, reach = 1.5f, damage = 30, red = true, heavy = true, grab = true, cooldown = 1.5f, phase = 2 },
                 }
             },
         };

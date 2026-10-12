@@ -145,7 +145,10 @@ namespace KaramaniReborn.Editor
             {
                 root.LoadZone(zone, true); var w = root.world; var boss = w.enemies[^1]; var p = EnemyProfile.For(boss.role);
                 Assert(boss.boss && boss.role == expect[zone], "Zone " + zone + " boss is " + boss.role);
-                Assert(boss.maxHealth == p.health && boss.maxGuard == p.guard && boss.size >= 1.12f && boss.size <= 1.25f, boss.role + " values from profile");
+                // Boy kullanıcı kararı: Karamani'ye göre %12-25 büyük; Kara Murad %60 uzun ve iki kat iri (vurulma kutusu bulk)
+                float[] sizes = { 1.15f, 1.12f, 1.12f, 1.6f };
+                Assert(boss.maxHealth == p.health && boss.maxGuard == p.guard && Mathf.Approximately(boss.size, sizes[zone]) && p.size == sizes[zone], boss.role + " values from profile, size " + boss.size);
+                Assert(zone == 3 ? p.bulk == 2f : p.bulk == 0, boss.role + " bulk " + p.bulk);
                 Assert(w.zone.bossName == names[zone], "Zone " + zone + " boss name " + w.zone.bossName);
                 Assert(p.phaseAt == .5f && p.poise && p.phaseShift != null && p.Find(p.phaseShift) != null, boss.role + " needs a phase change at 50% with a transition attack");
             }
@@ -158,6 +161,17 @@ namespace KaramaniReborn.Editor
             Assert(e.phase == 2 && e.attack != null && e.attack.name == EnemyProfile.For(e.role).phaseShift && e.invincible > 0, "Phase change must start the transition attack, invulnerable");
             Assert(!e.attackReady.ContainsKey("combo"), "Phase change must reset cooldowns");
             Assert(w2.StartAttack(e, "fists") && !w2.StartAttack(e, "combo"), "Phase 2 must allow only phase-2 attacks");
+
+            // Seçim kapısı: ikinci evredeki Kara Murad kendiliğinden yalnız ikinci evre saldırılarını seçer
+            w2 = Arena(root, EnemyRole.KaraMurad, 1.2f, out e); w2.player.maxHealth = w2.player.health = 9999;
+            e.health = e.maxHealth * .45f; Run(w2, .05f);
+            Assert(e.phase == 2, "Setup: Kara Murad should be in phase 2");
+            Run(w2, EnemyProfile.For(e.role).Find(EnemyProfile.For(e.role).phaseShift).Duration + .1f);
+            var started = new System.Collections.Generic.HashSet<EnemyAttack>();
+            e.intentTime = 0; e.cooldown = 0;
+            Run(w2, 3f, i => { if (e.attack != null && e.stateTime < 1f / 60) started.Add(e.attack); return new InputFrame(); });
+            Assert(started.Count > 0, "Phase-2 Kara Murad never started an attack on its own");
+            foreach (var k in started) Assert(k.phase != 1, "Phase-2 Kara Murad picked the phase-1 attack " + k.name);
 
             // Düzensiz ritim: Kara Murad'ın 3'lü palası yavaş-hızlı-yavaş (vuruş anları 0, .45, 1.1)
             w2 = Arena(root, EnemyRole.KaraMurad, 1.4f, out e); var pl = w2.player;

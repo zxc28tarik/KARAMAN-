@@ -155,7 +155,9 @@ namespace KaramaniReborn.Editor
                 foreach (EnemyRole role in Enum.GetValues(typeof(EnemyRole)))
                     // Büyücü geçici olarak komutanın çizimini 1 boyutunda kullanır; boy aralığı o çizim için Captain'da (1.09) denetlenir
                     // TODO: Büyücü kendi HD sayfasını alınca kaldır
-                    if (role != EnemyRole.Sorcerer) foreach (bool player in role == EnemyRole.Nefer ? new[] { true, false } : new[] { false })
+                    // Kara Murad da 1.6 boyunda; yer tutucu komutan çizimi bunu gösteremez (boy aralığı 1 boyutu için)
+                    // TODO: Kara Murad'ın HD sayfası (Karamani'nin 1.6 katı boy) gelince kaldır
+                    if (role != EnemyRole.Sorcerer && role != EnemyRole.KaraMurad) foreach (bool player in role == EnemyRole.Nefer ? new[] { true, false } : new[] { false })
                     {
                         var a = new Actor { player = player, role = role, boss = role == EnemyRole.Captain, position = new Vector2(3, -2.25f), size = player ? 1 : EnemyProfile.For(role).size };
                         var view = new PixelCharacter(a, parent);

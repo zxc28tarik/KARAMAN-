@@ -75,7 +75,7 @@ EFFECTS = [
     ('lanet küresi efekti', 4, "4 frames of a GLOWING PURPLE CURSE ORB with a small dark core and wisps, pulsing, loopable, pixel art effect"),
 ]
 # Kara Murad: silahsız gövde tanımı; ikinci evre istemleri palasız tanımı kullanır (ChatGPT'ye çelişkili "pala" + "kılıçsız" gitmesin)
-KARA_MURAD = ("Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, shoulders nearly twice as wide as a normal man, "
+KARA_MURAD = ("Janissary Agha Kara Murad (dark fantasy final boss, fully human): a giant, heavily muscled, very tall fighter, twice as broad as a normal man, "
               "bare huge muscular arms, an open dark vest over a mail shirt, crimson sash, tall bork with a gold band and a long plume, "
               f"{LOOK}, a thick chestnut moustache and beard ({NOT_DARK})")
 KARA_MURAD_BARE = KARA_MURAD + "; bare-handed, his pala thrown away: NO sword or weapon anywhere, empty hands"
@@ -115,7 +115,7 @@ BOSSES = [
         HURT, BOSS_DEATH]),
     ('karamurad', 'Yeniçeri Ağası Kara Murad (Karanlık Kale)', 'Dev, kaslı dövüşçü; ikinci evrede çıplak elle.',
      KARA_MURAD + ", a giant two-handed pala sword",
-     'about 25% TALLER and nearly twice as broad as the man in the reference', [IDLE, WALK,
+     'about 60% TALLER and twice as broad as the man in the reference', [IDLE, WALK,
         ('pala kombosu', 10, "a 3-HIT HEAVY PALA COMBO with a slow-fast-slow rhythm: 1-2 wind-up, 3 first heavy slash, 4-5 quick second slash, 6-7 wind-up, 8 huge third slash with a wide smear, 9-10 recovering"),
         ('omuz hücumu', 6, "a SHOULDER CHARGE: 1 lowering the shoulder, 2-4 charging forward fast, 5 impact, 6 recovering"),
         ('yakalayıp fırlatma', 8, "a GRAB AND THROW: 1 reaching forward, 2 grabbing, 3 lifting an invisible enemy overhead, 4-5 slamming down hard, 6 impact, 7-8 recovering"),

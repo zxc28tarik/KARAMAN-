@@ -320,11 +320,20 @@ namespace KaramaniReborn
             foreach (var target in enemies) TryBlade(source, target);
         }
 
+        // Vurulma kutusunun genişlik çarpanı: oyuncuda ve sıradan düşmanda boy, bulk verilmişse o
+        static float BodyWidth(Actor a)
+        {
+            if (a.player) return a.size;
+            float bulk = EnemyProfile.For(a.role).bulk;
+            return bulk > 0 ? bulk : a.size;
+        }
+
         void TryBlade(Actor source, Actor target)
         {
             if (!source.Attacking || target.Dead || source.hitTargets.Contains(target.id)) return;
             Vector2 p = target.position;
-            var box = new Rect(p.x - .24f * target.size, p.y + .20f, .48f * target.size, 1.91f * target.size);
+            float w = BodyWidth(target);   // gövde genişliği: iri boss'ta boydan fazla (bulk)
+            var box = new Rect(p.x - .24f * w, p.y + .20f, .48f * w, 1.91f * target.size);
             bool hit = SegmentHits(source.view.StrikeRoot, source.view.BladeTip, box);
             if (source.state == ActionState.Spirit) hit |= Vector2.Distance(source.position, target.position) < 1.6f;
             // Dalış: kılıcın yanı sıra ayakların hemen altı da vurur
@@ -455,8 +464,11 @@ namespace KaramaniReborn
                 if (p.friendly)
                 {
                     foreach (var a in enemies)
-                        if (!a.Dead && SegmentHits(old, p.position, new Rect(a.position.x - .3f, a.position.y + .2f, .6f, 2.1f)))
+                    {
+                        float bulk = EnemyProfile.For(a.role).bulk, half = .3f * (bulk > 0 ? bulk : 1);   // iri boss'ta daha geniş
+                        if (!a.Dead && SegmentHits(old, p.position, new Rect(a.position.x - half, a.position.y + .2f, 2 * half, 2.1f)))
                         { Damage(a, p.damage, p.velocity.x > 0 ? 1 : -1, true, false, p.source, .08f); p.life = 0; break; }
+                    }
                 }
                 else if (p.kind != ShotKind.VolleyMark && !player.Dead && HitsPlayer(p, old))
                 { Damage(player, p.damage, p.velocity.x >= 0 ? 1 : -1, false, false, p.source, -1, p.red); p.life = 0; }
