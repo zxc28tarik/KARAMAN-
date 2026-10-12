@@ -58,7 +58,8 @@ CHARS = [
         ('hançer', 5, "a QUICK DAGGER SLASH: 1 drawing the dagger, 2 wind-up, 3 fast slash, 4 hold, 5 recovering"),
         HURT, DEATH]),
     ('sorcerer', 'Paşanın Büyücüsü (yarı-boss)', 'Mesafe tutar, büyü yapar, yakına girince asayla dövüşür. Dinî bir figür değil.',
-     "the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale face with sunken eyes and a thin black beard, "
+     "the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, "
+     f"pale fair skin, sunken almond eyes and a thin grey-streaked chestnut beard ({NOT_DARK}), "
      "layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple",
      'the same height as the man in the reference', [IDLE, WALK,
         ('asa kombosu', 8, "a 2-HIT STAFF COMBO: 1-2 wind-up, 3 first staff swing with a smear, 4 follow-through, 5 second swing the other way, 6 hold, 7-8 recovering"),

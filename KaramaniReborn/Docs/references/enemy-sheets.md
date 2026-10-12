@@ -316,69 +316,69 @@ Mesafe tutar, büyü yapar, yakına girince asayla dövüşür. Dinî bir figür
 
 ### sorcerer 0. Ana poz (Karamani profilini **stil örneği** olarak ekle)
 ```
-Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale face with sunken eyes and a thin black beard, layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple. The character is the same height as the man in the reference.
+Use the attached image ONLY as a STYLE reference (same pixel-art style, same level of detail, same lighting and color depth, same scale), but draw a DIFFERENT character: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale fair skin, sunken almond eyes and a thin grey-streaked chestnut beard (never black or dark hair, not swarthy), layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple. The character is the same height as the man in the reference.
 Single character, strict side profile view facing right, standing idle, full body, the body, hips and feet pointing right. Flat solid background color #47304C, no shadow, no text.
 ```
 
 ### sorcerer 1. bekleme: 4 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale face with sunken eyes and a thin black beard, layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
+Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale fair skin, sunken almond eyes and a thin grey-streaked chestnut beard (never black or dark hair, not swarthy), layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
 4 frames of a subtle IDLE loop in a ready stance with the weapon held: 1 base pose, 2 chest rises slightly, 3 slight shift of weight, 4 almost back to the start (loopable), in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### sorcerer 2. yürüme: 8 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale face with sunken eyes and a thin black beard, layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
+Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale fair skin, sunken almond eyes and a thin grey-streaked chestnut beard (never black or dark hair, not swarthy), layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
 8 frames of a WALKING cycle, loopable, evenly spaced phases of the step, weapon held ready, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### sorcerer 3. asa kombosu: 8 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale face with sunken eyes and a thin black beard, layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
+Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale fair skin, sunken almond eyes and a thin grey-streaked chestnut beard (never black or dark hair, not swarthy), layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
 8 frames of a 2-HIT STAFF COMBO: 1-2 wind-up, 3 first staff swing with a smear, 4 follow-through, 5 second swing the other way, 6 hold, 7-8 recovering, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### sorcerer 4. alev büyüsü: 6 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale face with sunken eyes and a thin black beard, layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
+Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale fair skin, sunken almond eyes and a thin grey-streaked chestnut beard (never black or dark hair, not swarthy), layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
 6 frames of casting a GROUND FLAME SPELL: 1-2 raising the staff, dark flames gathering in the crystal, 3 slamming the staff end to the ground, 4 black-purple fire bursting forward along the ground, 5-6 recovering, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### sorcerer 5. küre büyüsü: 6 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale face with sunken eyes and a thin black beard, layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
+Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale fair skin, sunken almond eyes and a thin grey-streaked chestnut beard (never black or dark hair, not swarthy), layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
 6 frames of casting CURSE ORBS: 1-2 raising the free hand, 3 three glowing purple orbs forming above the hand, 4 throwing the hand forward, orbs flying, 5-6 recovering, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### sorcerer 6. ışınlanma: 6 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale face with sunken eyes and a thin black beard, layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
+Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale fair skin, sunken almond eyes and a thin grey-streaked chestnut beard (never black or dark hair, not swarthy), layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
 6 frames of TELEPORTING: 1 wrapping himself in his robe, 2 dissolving into black smoke, 3 only smoke left, 4 smoke gathering, 5 re-forming, 6 standing ready, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### sorcerer 7. yere vurma: 6 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale face with sunken eyes and a thin black beard, layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
+Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale fair skin, sunken almond eyes and a thin grey-streaked chestnut beard (never black or dark hair, not swarthy), layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
 6 frames of a STAFF GROUND SLAM: 1-2 raising the staff high with both hands, 3 slamming it into the ground, 4 a purple shock ring bursting around him, 5-6 recovering, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### sorcerer 8. darbe alma: 3 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale face with sunken eyes and a thin black beard, layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
+Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale fair skin, sunken almond eyes and a thin grey-streaked chestnut beard (never black or dark hair, not swarthy), layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
 3 frames of a HURT reaction: 1 recoiling backward from a hit to the chest, head snapped back, 2 staggering one step back, 3 regaining balance, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
 
 ### sorcerer 9. ölüm: 6 kare (ana pozu ekle)
 ```
-Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale face with sunken eyes and a thin black beard, layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
+Pixel art sprite sheet of the SAME character as the attached reference image: the pasha's black sorcerer (dark fantasy, NOT a religious figure): gaunt tall man with a deep dark-purple hood, pale fair skin, sunken almond eyes and a thin grey-streaked chestnut beard (never black or dark hair, not swarthy), layered black and deep purple robes, many bone and brass amulets on chains, a long carved dark-wood staff with a cracked crystal at the top glowing faint purple.
 6 frames of a DEATH: 1 struck, 2 dropping the staff, 3 falling to his knees, 4 body crumbling into black smoke, 5 mostly smoke, 6 only a pile of robe and amulets left, in ONE horizontal row.
 STRICT SIDE PROFILE view facing right (side-scrolling action game sprite), full body visible in every frame, evenly spaced, identical scale, feet on the same ground line (except airborne frames), frames must not overlap, every frame a DIFFERENT pose. Flat solid background color #47304C, no shadow, no text, no borders, no grid. Same colors, costume details and proportions as the reference.
 ```
