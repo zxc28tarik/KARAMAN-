@@ -16,6 +16,7 @@ namespace KaramaniReborn.Editor
             Ranged(root);
             Sorcerer(root);
             Layouts(root);
+            Bosses(root);
         }
 
         static void Assert(bool ok, string message) => ArtValidation.Assert(ok, message);
@@ -113,10 +114,10 @@ namespace KaramaniReborn.Editor
             // Bölge dizilişi (spec §5): insanlar önce, büyücü Kurt Geçidi'nde ilk kez; her bölümde bir boss
             var expect = new[]
             {
-                new[] { EnemyRole.Nefer, EnemyRole.Spearman, EnemyRole.Archer, EnemyRole.Nefer, EnemyRole.Nefer, EnemyRole.Captain },
-                new[] { EnemyRole.Nefer, EnemyRole.Musketeer, EnemyRole.Halberdier, EnemyRole.Musketeer, EnemyRole.Nefer, EnemyRole.Captain },
-                new[] { EnemyRole.Spearman, EnemyRole.Musketeer, EnemyRole.Archer, EnemyRole.Halberdier, EnemyRole.Archer, EnemyRole.Sorcerer, EnemyRole.Captain },
-                new[] { EnemyRole.Nefer, EnemyRole.Spearman, EnemyRole.Musketeer, EnemyRole.Halberdier, EnemyRole.Archer, EnemyRole.Sorcerer, EnemyRole.Captain },
+                new[] { EnemyRole.Nefer, EnemyRole.Spearman, EnemyRole.Archer, EnemyRole.Nefer, EnemyRole.Nefer, EnemyRole.Arslan },
+                new[] { EnemyRole.Nefer, EnemyRole.Musketeer, EnemyRole.Halberdier, EnemyRole.Musketeer, EnemyRole.Nefer, EnemyRole.KorDemir },
+                new[] { EnemyRole.Spearman, EnemyRole.Musketeer, EnemyRole.Archer, EnemyRole.Halberdier, EnemyRole.Archer, EnemyRole.Sorcerer, EnemyRole.Kurtbas },
+                new[] { EnemyRole.Nefer, EnemyRole.Spearman, EnemyRole.Musketeer, EnemyRole.Halberdier, EnemyRole.Archer, EnemyRole.Sorcerer, EnemyRole.KaraMurad },
             };
             for (int zone = 0; zone < 4; zone++)
             {
@@ -133,6 +134,41 @@ namespace KaramaniReborn.Editor
                         "Zone " + zone + " sorcerer health/guard " + sorcerer.maxHealth + "/" + sorcerer.maxGuard);
             }
             Debug.Log("KARAMANI_ENEMY_LAYOUT_PASS · four zones per spec §5, stronger sorcerer in Karanlık Kale");
+        }
+
+        static void Bosses(GameRoot root)
+        {
+            // Her bölümün sonunda kendi ağası; değerler profilden, boy %12-25 büyük, ad çubukta
+            EnemyRole[] expect = { EnemyRole.Arslan, EnemyRole.KorDemir, EnemyRole.Kurtbas, EnemyRole.KaraMurad };
+            string[] names = { "Bayraktar Arslan", "Humbaracıbaşı Kör Demir", "Deli Kurtbaş", "Yeniçeri Ağası Kara Murad" };
+            for (int zone = 0; zone < 4; zone++)
+            {
+                root.LoadZone(zone, true); var w = root.world; var boss = w.enemies[^1]; var p = EnemyProfile.For(boss.role);
+                Assert(boss.boss && boss.role == expect[zone], "Zone " + zone + " boss is " + boss.role);
+                Assert(boss.maxHealth == p.health && boss.maxGuard == p.guard && boss.size >= 1.12f && boss.size <= 1.25f, boss.role + " values from profile");
+                Assert(w.zone.bossName == names[zone], "Zone " + zone + " boss name " + w.zone.bossName);
+                Assert(p.phaseAt == .5f && p.poise && p.phaseShift != null && p.Find(p.phaseShift) != null, boss.role + " needs a phase change at 50% with a transition attack");
+            }
+
+            // Evre kapısı: yalnız ikinci evre saldırısı birinci evrede başlamaz; geçişte bekleme süreleri sıfırlanır ve geçiş saldırısı oynar
+            var w2 = Arena(root, EnemyRole.KaraMurad, 1.4f, out var e);
+            Assert(!w2.StartAttack(e, "fists") && w2.StartAttack(e, "combo"), "Phase 1 must allow only phase-1 attacks");
+            e.Enter(ActionState.Idle); e.attackReady["combo"] = 999;
+            e.health = e.maxHealth * .45f; Run(w2, .05f);
+            Assert(e.phase == 2 && e.attack != null && e.attack.name == EnemyProfile.For(e.role).phaseShift && e.invincible > 0, "Phase change must start the transition attack, invulnerable");
+            Assert(!e.attackReady.ContainsKey("combo"), "Phase change must reset cooldowns");
+            Assert(w2.StartAttack(e, "fists") && !w2.StartAttack(e, "combo"), "Phase 2 must allow only phase-2 attacks");
+
+            // Düzensiz ritim: Kara Murad'ın 3'lü palası yavaş-hızlı-yavaş (vuruş anları 0, .45, 1.1)
+            w2 = Arena(root, EnemyRole.KaraMurad, 1.4f, out e); var pl = w2.player;
+            var combo = EnemyProfile.For(EnemyRole.KaraMurad).Find("combo");
+            w2.StartAttack(e, "combo");
+            Run(w2, combo.windup + .05f); Assert(pl.health == pl.maxHealth - combo.damage, "First pala hit at 0 s, health " + pl.health);
+            Run(w2, .35f); Assert(pl.health == pl.maxHealth - combo.damage, "No second hit before .45 s, health " + pl.health);
+            Run(w2, .15f); Assert(pl.health == pl.maxHealth - 2 * combo.damage, "Second hit at .45 s, health " + pl.health);
+            Run(w2, .45f); Assert(pl.health == pl.maxHealth - 2 * combo.damage, "No third hit before 1.1 s, health " + pl.health);
+            Run(w2, .25f); Assert(pl.health == pl.maxHealth - 3 * combo.damage, "Third hit at 1.1 s, health " + pl.health);
+            Debug.Log("KARAMANI_BOSS_FOUNDATION_PASS · four aghas per zone, profile values, phase gating + transition, uneven rhythm");
         }
 
         static void Sorcerer(GameRoot root)

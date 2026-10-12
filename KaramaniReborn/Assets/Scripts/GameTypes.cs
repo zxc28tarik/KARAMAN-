@@ -4,7 +4,7 @@ using UnityEngine;
 namespace KaramaniReborn
 {
     public enum ActionState { Idle, Move, Jump, Fall, Light, Heavy, Block, Parry, Dodge, Hurt, Dead, Heal, Spirit, Shoot, Hang, Climb }
-    public enum EnemyRole { Nefer, Spearman, Halberdier, Musketeer, Archer, Sorcerer, Captain }
+    public enum EnemyRole { Nefer, Spearman, Halberdier, Musketeer, Archer, Sorcerer, Captain, Arslan, KorDemir, Kurtbas, KaraMurad }
 
     public struct InputFrame
     {
@@ -56,6 +56,7 @@ namespace KaramaniReborn
         public EnemyAttack attack;
         public int strike = -1, phase = 1;
         public float turnTimer;
+        public float home;   // doğduğu x (boss arenasının merkezi)
         public readonly System.Collections.Generic.Dictionary<string, float> attackReady = new();
         public float Progress => duration > 0 ? Mathf.Clamp01(stateTime / duration) : 0;
         public bool Dead => health <= 0 || state == ActionState.Dead;
@@ -85,7 +86,7 @@ namespace KaramaniReborn
         {
             string[] names = { "KIZIL SURLAR", "YANMIŞ MAHALLE", "KURT GEÇİDİ", "KARANLIK KALE" };
             string[] sub = { "Gün batımında sınır", "Küllerin arasındaki iz", "Ayın altında uyananlar", "Son nöbet" };
-            string[] bosses = { "Yeniçeri Kaptanı", "Kül Muhafızı", "Geçidin Bekçisi", "Kale Komutanı" };
+            string[] bosses = { "Bayraktar Arslan", "Humbaracıbaşı Kör Demir", "Deli Kurtbaş", "Yeniçeri Ağası Kara Murad" };
             return new ZoneDefinition {
                 index = index, title = names[index], subtitle = sub[index], bossName = bosses[index], objective = "İç kapıya ulaş. Nöbeti kır.",
                 ambient = index == 0 ? new Color(1, .92f, .83f) : index == 3 ? new Color(.85f, .93f, 1) : new Color(.84f, .88f, 1),

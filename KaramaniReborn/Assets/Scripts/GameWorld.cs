@@ -9,6 +9,10 @@ namespace KaramaniReborn
         public readonly Actor player;
         public readonly List<Actor> enemies = new();
         public readonly List<Projectile> projectiles = new();
+        // Çağrılan düşmanlar döngü bittikten sonra doğar (liste dolaşılırken değiştirilmez)
+        readonly List<(Vector2 at, EnemyRole role)> spawnQueue = new();
+        // Bölümlerin sonundaki ağalar (bölüm sırasıyla)
+        public static readonly EnemyRole[] ZoneBosses = { EnemyRole.Arslan, EnemyRole.KorDemir, EnemyRole.Kurtbas, EnemyRole.KaraMurad };
         public readonly ZoneDefinition zone;
         public readonly Effects effects;
         public readonly Transform actorsRoot;
@@ -39,7 +43,7 @@ namespace KaramaniReborn
             player = new Actor { id = 0, player = true, position = new Vector2(checkpointX, zone.floor), maxGuard = 100, guard = 100 };
             new PixelCharacter(player, actorsRoot);
             foreach (var (x, y, role) in Layout(index)) Spawn(x, y, role);
-            Spawn(50.4f, zone.floor, EnemyRole.Captain, true);
+            Spawn(50.4f, zone.floor, ZoneBosses[index], true);
         }
 
         // Bölge dizilişi (Docs/specs/2026-10-12-enemy-roster-design.md §5): önce insanlar, büyücü Kurt Geçidi'nde ilk kez.
@@ -60,7 +64,7 @@ namespace KaramaniReborn
         {
             var p = EnemyProfile.For(role);
             var a = new Actor { id = enemies.Count + 1, role = role, boss = boss, position = new Vector2(x, y), face = -1,
-                health = boss ? 210 + zone.index * 20 : p.health, maxGuard = boss ? 95 : p.guard, size = boss ? 1.09f : p.size, intentTime = .3f + enemies.Count * .11f };
+                health = role == EnemyRole.Captain ? 210 + zone.index * 20 : p.health, maxGuard = p.guard, size = p.size, home = x, intentTime = .3f + enemies.Count * .11f };
             // Karanlık Kale'de yarı-boss daha güçlü (spec §5): can x1.3, denge x1.2; profil aynı kalır
             if (!boss && p.halfBoss && zone.index == 3) { a.health *= 1.3f; a.maxGuard *= 1.2f; }
             a.maxHealth = a.health; a.guard = a.maxGuard; new PixelCharacter(a, actorsRoot); enemies.Add(a);
@@ -82,6 +86,9 @@ namespace KaramaniReborn
                 a.view.Render(a, dt, clock);
                 if (enemyAI) PerformAttack(a);
             }
+            // Çağrılan düşmanlar döngü bittikten sonra doğar (liste dolaşılırken değiştirilmez)
+            foreach (var (at, role) in spawnQueue) Spawn(at.x, at.y, role).intentTime = .4f;
+            spawnQueue.Clear();
             TickProjectiles(dt);
             if (player.position.y < -6 && !player.Dead) Damage(player, 200, 0, false, true);
             foreach (var a in enemies) if (a.position.y < -6 && !a.Dead) Damage(a, 1000, 0, false, true);
@@ -351,6 +358,7 @@ namespace KaramaniReborn
             if (target.Dead || target.invincible > 0 && !unblockable) return;
             // Kalkanlı: önden gelen hafif vuruşu kalkan karşılar; ağır vuruş geçer, arkadan vuruş dengeyi iki kat düşürür
             var profile = target.player ? null : EnemyProfile.For(target.role);
+            if (profile != null && target.phase > 1) damage *= profile.phase2Taken;   // çılgınlık: daha çok hasar alır
             bool front = source != null && (source.position.x - target.position.x) * target.face > 0;
             if (profile != null && profile.shielded && front && !heavy && !red && !unblockable && target.state != ActionState.Hurt)
             {
@@ -385,7 +393,8 @@ namespace KaramaniReborn
             target.health = Mathf.Max(0, target.health - damage); target.hitFlash = .14f;
             damageEvents.Add(new DamageEvent { position = target.position + Vector2.up * (2.55f * target.size), amount = Mathf.Max(1, Mathf.RoundToInt(damage)), toPlayer = target.player, strong = heavy || damage >= 40 }); target.invincible = target.player ? .40f : .14f;
             // Duruş: kendi saldırısını yürüten ağır düşman vurulunca durmaz (can ve denge yine düşer); denge kırılır ya da ölürse durur
-            bool poised = profile != null && profile.poise && target.attack != null && (target.state is ActionState.Light or ActionState.Shoot);
+            bool unstoppable = profile != null && profile.phase2Unstoppable && target.phase > 1;
+            bool poised = profile != null && (unstoppable || profile.poise && target.attack != null && (target.state is ActionState.Light or ActionState.Shoot));
             // Sendeleme kısalmaz: daha uzun sürecek bir sendelemenin içindeki sıradan vuruş onu (ve geri itmesini) değiştirmez
             float hurt = heavy ? .6f : .28f;
             bool longer = target.state == ActionState.Hurt && target.duration - target.stateTime > hurt;
@@ -397,7 +406,7 @@ namespace KaramaniReborn
             {
                 // Kalkanlıya ağır ya da arkadan vuruş x2 (üst üste binmez); kalkansıza ağır x1.5
                 target.guard -= damage * (profile.shielded ? (heavy || !front ? 2 : 1) : heavy ? 1.5f : 1);
-                if (target.guard <= 0) Stagger(target, source);
+                if (target.guard <= 0) { if (unstoppable) target.guard = target.maxGuard; else Stagger(target, source); }
             }
             bool held = poised && !target.Dead && target.state != ActionState.Hurt;   // saldırısı sürüyor: havaya kalkmaz
             effects.Impact(target.position + Vector2.up * 1.25f, direction, false, heavy, target.position.y, stop);

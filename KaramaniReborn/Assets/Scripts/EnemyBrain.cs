@@ -19,11 +19,14 @@ namespace KaramaniReborn
             a.face = want; a.turnTimer = 0;
         }
 
+        // Evre kapısı: phase 0 iki evrede, 1 / 2 yalnız o evrede
+        public static bool Allowed(Actor a, EnemyAttack k) => k.phase == 0 || k.phase == a.phase;
+
         // Adıyla saldırı başlatır (testler ve zincirleme saldırılar için)
         public bool StartAttack(Actor a, string name)
         {
             var k = EnemyProfile.For(a.role).Find(name);
-            if (k == null) return false;
+            if (k == null || !Allowed(a, k)) return false;
             Begin(a, k); return true;
         }
 
@@ -41,7 +44,12 @@ namespace KaramaniReborn
             if (a.Dead) { SettleCorpse(a, dt); return; }
             var p = EnemyProfile.For(a.role);
             a.intentTime -= dt;
-            if (p.phaseAt > 0 && a.phase == 1 && a.health <= a.maxHealth * p.phaseAt) { a.phase = 2; Notify(p.title.ToUpperInvariant() + " · İKİNCİ EVRE"); }
+            if (p.phaseAt > 0 && a.phase == 1 && a.health <= a.maxHealth * p.phaseAt)
+            {
+                a.phase = 2; a.attackReady.Clear();   // evreye özel saldırılar (çağrı gibi) bu evrede yeniden açılır
+                Notify((a.boss ? zone.bossName : p.title).ToUpper(System.Globalization.CultureInfo.GetCultureInfo("tr-TR")) + " · İKİNCİ EVRE");
+                if (p.phaseShift != null && StartAttack(a, p.phaseShift)) a.invincible = Mathf.Max(a.invincible, a.duration);
+            }
             var k = a.attack;
             // Hazırlığın başında silahta parıltı: beyaz savuşturulabilir, kırmızı yalnız kaçışla atlatılır
             if (k != null && a.state == ActionState.Light && !a.telegraphed && a.stateTime >= k.windup * .25f)
@@ -50,12 +58,12 @@ namespace KaramaniReborn
             {
                 string next = a.state == ActionState.Hurt ? null : k?.then;
                 a.Enter(ActionState.Idle);
-                if (next != null) StartAttack(a, next); else a.cooldown = a.boss ? .46f : .7f;
+                if (next != null) { a.face = player.position.x > a.position.x ? 1 : -1; StartAttack(a, next); } else a.cooldown = a.boss ? .46f : .7f;
             }
             if (a.state == ActionState.Block && a.stateTime >= a.duration) a.Enter(ActionState.Idle);   // kalkan klibi bitti
             float dx = player.position.x - a.position.x, dist = Mathf.Abs(dx), height = Mathf.Abs(player.position.y - a.position.y);
             bool awake = !player.Dead && dist < (a.boss || p.halfBoss ? 10 : 8.6f) + (p.ranged ? 3 : 0);
-            float vx = 0;
+            float vx = 0, speed = p.speed * (a.phase > 1 ? p.phase2Speed : 1);
             if (!a.Locked && awake)
             {
                 Face(a, p, dx, dt);
@@ -66,11 +74,11 @@ namespace KaramaniReborn
                 var choice = facing && (a.intentTime <= 0 || opening) ? Choose(a, p, dist, height) : null;
                 if (choice != null && a.intentTime > 0 && !choice.punish) choice = null;   // niyet dolmadan yalnız cezalandırma saldırıları açılır
                 bool ready = a.cooldown <= 0 || opening && choice != null && choice.punish;
-                bool slot = choice != null && (choice.kind is AttackKind.Backstep or AttackKind.Teleport || Attackers < MaxAttackers);
+                bool slot = choice != null && (choice.kind is AttackKind.Backstep or AttackKind.Teleport or AttackKind.LeapOver || Attackers < MaxAttackers);
                 if (choice != null && ready && slot && attackDirector <= 0) { Begin(a, choice); attackDirector = .26f; a.cooldown = .8f; }
                 else if (a.state == ActionState.Block) { }   // kalkan klibi (~.2 sn): yerinde siper alır; saldırı yine başlayabilir
-                else if (dist > p.keepMax) { vx = a.face * p.speed; a.state = ActionState.Move; }
-                else if (dist < p.keepMin) { vx = -a.face * p.speed * .8f; a.state = ActionState.Move; }   // yüzü oyuncuda, geri çekilir
+                else if (dist > p.keepMax) { vx = a.face * speed; a.state = ActionState.Move; }
+                else if (dist < p.keepMin) { vx = -a.face * speed * .8f; a.state = ActionState.Move; }   // yüzü oyuncuda, geri çekilir
                 else a.state = ActionState.Idle;
                 if (vx != 0 && a.grounded && !GroundAhead(a, Mathf.Sign(vx) * .34f))
                 {
@@ -96,6 +104,8 @@ namespace KaramaniReborn
             EnemyAttack pick = null; int seen = 0;
             foreach (var k in p.attacks)
             {
+                if (!Allowed(a, k)) continue;
+                if (k.grab && (player.Attacking || player.invincible > 0)) continue;   // yakalama yalnız boşta duran oyuncuya
                 if (k.reach <= 0 || dist < k.minRange || dist > k.reach) continue;
                 if (height > (k.Ranged ? 3 : .8f)) continue;
                 if (a.attackReady.TryGetValue(k.name, out float ready) && clock < ready) continue;
@@ -105,10 +115,15 @@ namespace KaramaniReborn
             return pick;
         }
 
-        // Etkin pencere: çok vuruşlu saldırıda her vuruşun ilk .12 sn'si
+        // Etkin pencere: her vuruşun ilk .12 sn'si; vuruş anları (hitTimes) verilmişse eşit aralık yerine onlar
         static bool InStrike(Actor a, out int strike)
         {
             var k = a.attack; float t = a.stateTime - k.windup;
+            if (k.hitTimes != null)
+            {
+                strike = 0; while (strike + 1 < k.hitTimes.Length && t >= k.hitTimes[strike + 1]) strike++;
+                return t >= 0 && t <= k.active && t - k.hitTimes[strike] < .12f;
+            }
             strike = k.hits > 1 ? Mathf.Clamp(Mathf.FloorToInt(t / k.hitGap), 0, k.hits - 1) : 0;
             if (t < 0 || t > k.active) return false;
             return k.hits <= 1 || t - strike * k.hitGap < Mathf.Min(.12f, k.hitGap);
@@ -181,6 +196,17 @@ namespace KaramaniReborn
                 case AttackKind.Orbs:
                     for (int i = 0; i < 3; i++) AddShot(ShotKind.Orb, hand + new Vector2(0, .4f * (i - 1)), new Vector2(a.face * (1 + i * .4f), .6f * (i - 1)), 4, k, a);
                     break;
+                case AttackKind.Summon:
+                    // Sancağı diker: iki yanında, yalnız sağlam zeminde birer nefer; döngü bitince doğarlar
+                    for (int i = 0; i < k.summonCount; i++)
+                    {
+                        float x = a.position.x + (i % 2 == 0 ? -2.2f : 2.2f) * (1 + i / 2);
+                        if (Standable(x, out float y)) spawnQueue.Add((new Vector2(x, y), k.summon));
+                    }
+                    break;
+                case AttackKind.Rage:
+                    effects.GlowBurst(a.position + Vector2.up * 1.4f, new Color(1, .35f, .15f));
+                    break;
             }
         }
 
@@ -241,7 +267,8 @@ namespace KaramaniReborn
         {
             if (Mathf.Abs(player.position.y - a.position.y) > 1.2f) return false;
             float d = (player.position.x - a.position.x) * a.face;
-            return k.kind == AttackKind.Slam ? Mathf.Abs(d) <= k.reach : d >= -.2f && d <= k.reach + .23f;
+            float r = k.hitReach > 0 ? k.hitReach : k.reach;
+            return k.kind == AttackKind.Slam ? Mathf.Abs(d) <= r : d >= -.2f && d <= r + .23f;
         }
     }
 }
